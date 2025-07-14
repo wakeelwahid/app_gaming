@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -112,7 +111,7 @@ export default function App() {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     if (currentWallet >= amount) {
       setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
-      
+
       const newBet = {
         id: Date.now(),
         number: selectedNumber,
@@ -120,7 +119,7 @@ export default function App() {
         type: currentBetType,
         game: selectedGame.title
       };
-      
+
       setBetList([...betList, newBet]);
       setShowAmountModal(false);
       Alert.alert('Bet Placed!', `आपका ₹${amount} का bet ${selectedNumber} पर लगा दिया गया है।`);
@@ -296,7 +295,7 @@ export default function App() {
                         {game.id <= 4 ? '⭐' : '💎'} {game.title}
                       </Text>
                     </View>
-                    
+
                     <View style={styles.gameDetails}>
                       <View style={styles.gameTime}>
                         <Text style={styles.timeLabel}>Open:</Text>
@@ -307,9 +306,9 @@ export default function App() {
                         <Text style={styles.timeValue}>{game.closeTime}</Text>
                       </View>
                     </View>
-                    
+
                     <Text style={styles.gameStatus}>{game.status}</Text>
-                    
+
                     <TouchableOpacity 
                       style={[styles.playButton, { backgroundColor: game.color }]}
                       onPress={() => handlePlayNow(game)}
@@ -379,17 +378,17 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
-      
+
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuButton}>
           <Ionicons name="menu" size={24} color="#FFD700" />
         </TouchableOpacity>
-        
+
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>👑 VN Gaming</Text>
         </View>
-        
+
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.walletButton}>
             <Text style={styles.walletLabel}>Wallet</Text>
