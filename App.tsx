@@ -14,6 +14,7 @@ export default function App() {
   const [selectedNumbers, setSelectedNumbers] = useState([]);
   const [betList, setBetList] = useState([]);
   const [currentBetType, setCurrentBetType] = useState('numbers'); // 'numbers', 'andar', 'bahar'
+  const [activeTab, setActiveTab] = useState('home');
 
   const gameCards = [
     {
@@ -155,10 +156,8 @@ export default function App() {
           ]}
           onPress={() => {
             if (isSelected) {
-              // Unselect the number
               removeBet(bet.id);
             } else {
-              // Select the number
               handleNumberSelect(i, 'numbers');
             }
           }}
@@ -194,10 +193,8 @@ export default function App() {
           ]}
           onPress={() => {
             if (isSelected) {
-              // Unselect the number
               removeBet(bet.id);
             } else {
-              // Select the number
               handleNumberSelect(numberKey, 'andar');
             }
           }}
@@ -233,10 +230,8 @@ export default function App() {
           ]}
           onPress={() => {
             if (isSelected) {
-              // Unselect the number
               removeBet(bet.id);
             } else {
-              // Select the number
               handleNumberSelect(numberKey, 'bahar');
             }
           }}
@@ -256,18 +251,130 @@ export default function App() {
     return numbers;
   };
 
-  const renderBetItem = ({ item }) => (
-    <View style={styles.betItem}>
-      <View style={styles.betInfo}>
-        <Text style={styles.betNumber}>{item.number}</Text>
-        <Text style={styles.betAmount}>₹{item.amount}</Text>
-        <Text style={styles.betType}>{item.type}</Text>
-      </View>
-      <TouchableOpacity onPress={() => removeBet(item.id)} style={styles.removeBetButton}>
-        <Ionicons name="close-circle" size={20} color="#E74C3C" />
-      </TouchableOpacity>
-    </View>
-  );
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return (
+          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+            {/* Promotional Banner */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
+              <View style={styles.promoCard}>
+                <Text style={styles.promoText}>🎊 आज का जैकपॉट: ₹25,00,000</Text>
+              </View>
+              <View style={styles.promoCard}>
+                <Text style={styles.promoText}>🎮 नया गेम लॉन्च: डायमंड किंग</Text>
+              </View>
+              <View style={styles.promoCard}>
+                <Text style={styles.promoText}>🎁 विशेष ऑफर: पहली डिपॉजिट पर 100% बोनस</Text>
+              </View>
+            </ScrollView>
+
+            {/* Features Section */}
+            <Text style={styles.sectionTitle}>भारत का नंबर 1 गेमिंग प्लेटफॉर्म</Text>
+            <View style={styles.featuresContainer}>
+              {features.map((feature, index) => (
+                <View key={index} style={styles.featureCard}>
+                  <Text style={styles.featureIcon}>{feature.icon}</Text>
+                  <Text style={styles.featureTitle}>{feature.title}</Text>
+                  <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Current Time */}
+            <View style={styles.timeContainer}>
+              <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
+            </View>
+
+            {/* Game Cards */}
+            <View style={styles.gamesContainer}>
+              <View style={styles.gameRow}>
+                {gameCards.map((game, index) => (
+                  <TouchableOpacity key={game.id} style={[styles.gameCard, { backgroundColor: game.bgColor }]}>
+                    <View style={styles.gameHeader}>
+                      <Text style={[styles.gameTitle, { color: game.color }]}>
+                        {game.id <= 4 ? '⭐' : '💎'} {game.title}
+                      </Text>
+                    </View>
+                    
+                    <View style={styles.gameDetails}>
+                      <View style={styles.gameTime}>
+                        <Text style={styles.timeLabel}>Open:</Text>
+                        <Text style={styles.timeValue}>{game.openTime}</Text>
+                      </View>
+                      <View style={styles.gameTime}>
+                        <Text style={styles.timeLabel}>Close:</Text>
+                        <Text style={styles.timeValue}>{game.closeTime}</Text>
+                      </View>
+                    </View>
+                    
+                    <Text style={styles.gameStatus}>{game.status}</Text>
+                    
+                    <TouchableOpacity 
+                      style={[styles.playButton, { backgroundColor: game.color }]}
+                      onPress={() => handlePlayNow(game)}
+                    >
+                      <Text style={styles.playButtonText}>Play Now →</Text>
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+            <View style={styles.bottomSpacing} />
+          </ScrollView>
+        );
+      case 'wallet':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>💰 Wallet</Text>
+            <View style={styles.walletCard}>
+              <Text style={styles.walletBalance}>{wallet}</Text>
+              <Text style={styles.walletLabel}>Current Balance</Text>
+            </View>
+            <View style={styles.winningsCard}>
+              <Text style={styles.winningsBalance}>{winnings}</Text>
+              <Text style={styles.winningsLabel}>Total Winnings</Text>
+            </View>
+          </View>
+        );
+      case 'history':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>📋 Bet History</Text>
+            {betList.length > 0 ? (
+              <FlatList
+                data={betList}
+                renderItem={({ item }) => (
+                  <View style={styles.historyItem}>
+                    <Text style={styles.historyNumber}>{item.number}</Text>
+                    <Text style={styles.historyGame}>{item.game}</Text>
+                    <Text style={styles.historyAmount}>₹{item.amount}</Text>
+                  </View>
+                )}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            ) : (
+              <Text style={styles.noHistory}>कोई bet history नहीं है</Text>
+            )}
+          </View>
+        );
+      case 'profile':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>👤 Profile</Text>
+            <View style={styles.profileCard}>
+              <Text style={styles.profileName}>User Name</Text>
+              <Text style={styles.profilePhone}>+91 98765 43210</Text>
+              <TouchableOpacity style={styles.profileButton}>
+                <Text style={styles.profileButtonText}>Edit Profile</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -280,7 +387,7 @@ export default function App() {
         </TouchableOpacity>
         
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>👑 VN</Text>
+          <Text style={styles.headerTitle}>👑 VN Gaming</Text>
         </View>
         
         <View style={styles.headerRight}>
@@ -288,91 +395,48 @@ export default function App() {
             <Text style={styles.walletLabel}>Wallet</Text>
             <Text style={styles.walletAmount}>{wallet}</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.winningsButton}>
-            <Text style={styles.winningsLabel}>Winnings</Text>
-            <Text style={styles.winningsAmount}>{winnings}</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Game Rules and My Bets */}
-      <View style={styles.actionButtons}>
-        <TouchableOpacity style={styles.gameRulesButton}>
-          <Text style={styles.buttonText}>📋 Game Rules</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.myBetsButton}>
-          <Text style={styles.buttonText}>🎯 MY BETS ({betList.length})</Text>
-        </TouchableOpacity>
+      {/* Content */}
+      <View style={styles.content}>
+        {renderContent()}
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Promotional Banner */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
-          <View style={styles.promoCard}>
-            <Text style={styles.promoText}>🎊 आज का जैकपॉट: ₹25,00,000</Text>
-          </View>
-          <View style={styles.promoCard}>
-            <Text style={styles.promoText}>🎮 नया गेम लॉन्च: डायमंड किंग</Text>
-          </View>
-          <View style={styles.promoCard}>
-            <Text style={styles.promoText}>🎁 विशेष ऑफर: पहली डिपॉजिट पर 100% बोनस</Text>
-          </View>
-        </ScrollView>
+      {/* Bottom Menu */}
+      <View style={styles.bottomMenu}>
+        <TouchableOpacity 
+          style={[styles.menuItem, activeTab === 'home' && styles.activeMenuItem]}
+          onPress={() => setActiveTab('home')}
+        >
+          <Ionicons name="home" size={24} color={activeTab === 'home' ? '#FFD700' : '#666'} />
+          <Text style={[styles.menuText, activeTab === 'home' && styles.activeMenuText]}>Home</Text>
+        </TouchableOpacity>
 
-        {/* Features Section */}
-        <Text style={styles.sectionTitle}>भारत का नंबर 1 गेमिंग प्लेटफॉर्म</Text>
-        <View style={styles.featuresContainer}>
-          {features.map((feature, index) => (
-            <View key={index} style={styles.featureCard}>
-              <Text style={styles.featureIcon}>{feature.icon}</Text>
-              <Text style={styles.featureTitle}>{feature.title}</Text>
-              <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
-            </View>
-          ))}
-        </View>
+        <TouchableOpacity 
+          style={[styles.menuItem, activeTab === 'wallet' && styles.activeMenuItem]}
+          onPress={() => setActiveTab('wallet')}
+        >
+          <Ionicons name="wallet" size={24} color={activeTab === 'wallet' ? '#FFD700' : '#666'} />
+          <Text style={[styles.menuText, activeTab === 'wallet' && styles.activeMenuText]}>Wallet</Text>
+        </TouchableOpacity>
 
-        {/* Current Time */}
-        <View style={styles.timeContainer}>
-          <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
-        </View>
+        <TouchableOpacity 
+          style={[styles.menuItem, activeTab === 'history' && styles.activeMenuItem]}
+          onPress={() => setActiveTab('history')}
+        >
+          <Ionicons name="time" size={24} color={activeTab === 'history' ? '#FFD700' : '#666'} />
+          <Text style={[styles.menuText, activeTab === 'history' && styles.activeMenuText]}>History</Text>
+        </TouchableOpacity>
 
-        {/* Game Cards */}
-        <View style={styles.gamesContainer}>
-          <View style={styles.gameRow}>
-            {gameCards.map((game, index) => (
-              <TouchableOpacity key={game.id} style={[styles.gameCard, { backgroundColor: game.bgColor }]}>
-                <View style={styles.gameHeader}>
-                  <Text style={[styles.gameTitle, { color: game.color }]}>
-                    {game.id <= 4 ? '⭐' : '💎'} {game.title}
-                  </Text>
-                </View>
-                
-                <View style={styles.gameDetails}>
-                  <View style={styles.gameTime}>
-                    <Text style={styles.timeLabel}>Open:</Text>
-                    <Text style={styles.timeValue}>{game.openTime}</Text>
-                  </View>
-                  <View style={styles.gameTime}>
-                    <Text style={styles.timeLabel}>Close:</Text>
-                    <Text style={styles.timeValue}>{game.closeTime}</Text>
-                  </View>
-                </View>
-                
-                <Text style={styles.gameStatus}>{game.status}</Text>
-                
-                <TouchableOpacity 
-                  style={[styles.playButton, { backgroundColor: game.color }]}
-                  onPress={() => handlePlayNow(game)}
-                >
-                  <Text style={styles.playButtonText}>Play Now →</Text>
-                </TouchableOpacity>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
+        <TouchableOpacity 
+          style={[styles.menuItem, activeTab === 'profile' && styles.activeMenuItem]}
+          onPress={() => setActiveTab('profile')}
+        >
+          <Ionicons name="person" size={24} color={activeTab === 'profile' ? '#FFD700' : '#666'} />
+          <Text style={[styles.menuText, activeTab === 'profile' && styles.activeMenuText]}>Profile</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Betting Modal */}
       <Modal
@@ -450,8 +514,6 @@ export default function App() {
                 </View>
               )}
 
-              
-
               {/* Dynamic Content based on selected tab */}
               {currentBetType === 'numbers' && (
                 <>
@@ -514,7 +576,7 @@ export default function App() {
 
               <Text style={styles.amountLabel}>Quick Select:</Text>
               <View style={styles.amountButtonsGrid}>
-                {[10, 50, 200, 500, 1000].map((amount) => (
+                {[10, 50, 200, 300, 500, 1000].map((amount) => (
                   <TouchableOpacity
                     key={amount}
                     style={styles.amountButton}
@@ -605,50 +667,147 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  winningsButton: {
-    backgroundColor: '#4a4a2a',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  winningsLabel: {
-    color: '#fff',
-    fontSize: 12,
-  },
-  winningsAmount: {
-    color: '#FFD700',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    gap: 10,
-  },
-  gameRulesButton: {
+  content: {
     flex: 1,
-    backgroundColor: '#00AA55',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  myBetsButton: {
-    flex: 1,
-    backgroundColor: '#00AA55',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   scrollView: {
     flex: 1,
+  },
+  bottomSpacing: {
+    height: 100,
+  },
+  bottomMenu: {
+    flexDirection: 'row',
+    backgroundColor: '#1a1a1a',
+    paddingVertical: 10,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+  },
+  menuItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  activeMenuItem: {
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  menuText: {
+    color: '#666',
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: '500',
+  },
+  activeMenuText: {
+    color: '#FFD700',
+    fontWeight: 'bold',
+  },
+  tabContent: {
+    flex: 1,
+    padding: 20,
+  },
+  tabTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  walletCard: {
+    backgroundColor: '#2a4a2a',
+    padding: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#00FF88',
+  },
+  walletBalance: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#00FF88',
+    marginBottom: 10,
+  },
+  winningsCard: {
+    backgroundColor: '#4a4a2a',
+    padding: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFD700',
+  },
+  winningsBalance: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 10,
+  },
+  winningsLabel: {
+    color: '#ccc',
+    fontSize: 16,
+  },
+  historyItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  historyNumber: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  historyGame: {
+    color: '#ccc',
+    fontSize: 14,
+  },
+  historyAmount: {
+    color: '#00FF88',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  noHistory: {
+    color: '#666',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 50,
+  },
+  profileCard: {
+    backgroundColor: '#2a2a2a',
+    padding: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 10,
+  },
+  profilePhone: {
+    fontSize: 16,
+    color: '#ccc',
+    marginBottom: 20,
+  },
+  profileButton: {
+    backgroundColor: '#FFD700',
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  profileButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   promoScroll: {
     paddingVertical: 10,
@@ -851,7 +1010,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  
+  selectedChipAmount: {
+    color: '#FFD700',
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  totalAmountDisplay: {
+    backgroundColor: '#FFD700',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  totalAmountText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   numbersGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -873,11 +1049,6 @@ const styles = StyleSheet.create({
   selectedNumberButton: {
     backgroundColor: '#FFD700',
     borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
   },
   numberText: {
     color: '#fff',
@@ -886,17 +1057,6 @@ const styles = StyleSheet.create({
   },
   selectedNumberText: {
     color: '#000',
-  },
-  selectedIndicator: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    backgroundColor: '#00FF88',
-    borderRadius: 8,
-    width: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   betAmountBadge: {
     position: 'absolute',
@@ -960,21 +1120,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#00FF88',
     borderColor: '#00FF88',
     borderWidth: 2,
-    shadowColor: '#00FF88',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 8,
   },
   selectedBaharButton: {
     backgroundColor: '#FF4444',
     borderColor: '#FF4444',
     borderWidth: 2,
-    shadowColor: '#FF4444',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 8,
   },
   andarBaharText: {
     color: '#fff',
@@ -986,17 +1136,6 @@ const styles = StyleSheet.create({
   },
   selectedBaharText: {
     color: '#fff',
-  },
-  selectedIndicatorSmall: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: '#FFD700',
-    borderRadius: 6,
-    width: 12,
-    height: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   amountModal: {
     backgroundColor: '#1a1a1a',
@@ -1047,11 +1186,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 3,
   },
   amountButtonText: {
     color: '#000',
@@ -1074,11 +1208,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#00AA55',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 3,
   },
   customAmountButtonText: {
     color: '#fff',
@@ -1103,11 +1232,6 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     backgroundColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
   },
   tabText: {
     color: '#ccc',
@@ -1117,24 +1241,6 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: '#000',
-    fontWeight: 'bold',
-  },
-  selectedChipAmount: {
-    color: '#FFD700',
-    fontSize: 10,
-    fontWeight: 'bold',
-    marginTop: 2,
-  },
-  totalAmountDisplay: {
-    backgroundColor: '#FFD700',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  totalAmountText: {
-    color: '#000',
-    fontSize: 16,
     fontWeight: 'bold',
   },
 });
