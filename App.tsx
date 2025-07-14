@@ -1,11 +1,16 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function App() {
-  const [wallet, setWallet] = useState('₹0.00');
+  const [wallet, setWallet] = useState('₹1000.00');
   const [winnings, setWinnings] = useState('₹0.00');
+  const [showBettingModal, setShowBettingModal] = useState(false);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [showAmountModal, setShowAmountModal] = useState(false);
+  const [selectedNumber, setSelectedNumber] = useState(null);
+  const [customAmount, setCustomAmount] = useState('');
 
   const gameCards = [
     {
@@ -86,6 +91,71 @@ export default function App() {
       subtitle: 'सुरक्षित और भरोसेमंद'
     }
   ];
+
+  const handlePlayNow = (game) => {
+    setSelectedGame(game);
+    setShowBettingModal(true);
+  };
+
+  const handleNumberSelect = (number) => {
+    setSelectedNumber(number);
+    setShowAmountModal(true);
+  };
+
+  const handleBetPlace = (amount) => {
+    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+    if (currentWallet >= amount) {
+      setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+      setShowAmountModal(false);
+      setShowBettingModal(false);
+      Alert.alert('Bet Placed!', `आपका ₹${amount} का bet number ${selectedNumber} पर लगा दिया गया है।`);
+    } else {
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+    }
+  };
+
+  const renderNumbers = () => {
+    const numbers = [];
+    for (let i = 1; i <= 100; i++) {
+      numbers.push(
+        <TouchableOpacity
+          key={i}
+          style={styles.numberButton}
+          onPress={() => handleNumberSelect(i)}
+        >
+          <Text style={styles.numberText}>{i}</Text>
+        </TouchableOpacity>
+      );
+    }
+    return numbers;
+  };
+
+  const renderAndarBaharNumbers = () => {
+    const numbers = [];
+    for (let i = 0; i <= 9; i++) {
+      numbers.push(
+        <TouchableOpacity
+          key={`andar-${i}`}
+          style={styles.andarBaharButton}
+          onPress={() => handleNumberSelect(`Andar ${i}`)}
+        >
+          <Text style={styles.andarBaharText}>Andar {i}</Text>
+        </TouchableOpacity>
+      );
+    }
+    for (let i = 0; i <= 9; i++) {
+      numbers.push(
+        <TouchableOpacity
+          key={`bahar-${i}`}
+          style={styles.andarBaharButton}
+          onPress={() => handleNumberSelect(`Bahar ${i}`)}
+        >
+          <Text style={styles.andarBaharText}>Bahar {i}</Text>
+        </TouchableOpacity>
+      );
+    }
+    return numbers;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -180,7 +250,10 @@ export default function App() {
                 
                 <Text style={styles.gameStatus}>{game.status}</Text>
                 
-                <TouchableOpacity style={[styles.playButton, { backgroundColor: game.color }]}>
+                <TouchableOpacity 
+                  style={[styles.playButton, { backgroundColor: game.color }]}
+                  onPress={() => handlePlayNow(game)}
+                >
                   <Text style={styles.playButtonText}>Play Now →</Text>
                 </TouchableOpacity>
               </TouchableOpacity>
@@ -188,6 +261,99 @@ export default function App() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Betting Modal */}
+      <Modal
+        visible={showBettingModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowBettingModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.bettingModal}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {selectedGame?.title} - Select Number
+              </Text>
+              <TouchableOpacity onPress={() => setShowBettingModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalContent}>
+              <Text style={styles.sectionTitle}>1 to 100 Numbers</Text>
+              <View style={styles.numbersGrid}>
+                {renderNumbers()}
+              </View>
+
+              <Text style={styles.sectionTitle}>Andar Bahar (0-9)</Text>
+              <View style={styles.andarBaharGrid}>
+                {renderAndarBaharNumbers()}
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Amount Selection Modal */}
+      <Modal
+        visible={showAmountModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowAmountModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.amountModal}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                Select Bet Amount - {selectedNumber}
+              </Text>
+              <TouchableOpacity onPress={() => setShowAmountModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.amountContent}>
+              <Text style={styles.amountLabel}>Quick Select:</Text>
+              <View style={styles.amountButtonsGrid}>
+                {[10, 50, 200, 500, 1000].map((amount) => (
+                  <TouchableOpacity
+                    key={amount}
+                    style={styles.amountButton}
+                    onPress={() => handleBetPlace(amount)}
+                  >
+                    <Text style={styles.amountButtonText}>₹{amount}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text style={styles.amountLabel}>Custom Amount:</Text>
+              <TextInput
+                style={styles.customAmountInput}
+                placeholder="Enter amount"
+                placeholderTextColor="#999"
+                value={customAmount}
+                onChangeText={setCustomAmount}
+                keyboardType="numeric"
+              />
+              <TouchableOpacity
+                style={styles.customAmountButton}
+                onPress={() => {
+                  const amount = parseFloat(customAmount);
+                  if (amount >= 10) {
+                    handleBetPlace(amount);
+                    setCustomAmount('');
+                  } else {
+                    Alert.alert('Invalid Amount', 'Minimum bet amount is ₹10');
+                  }
+                }}
+              >
+                <Text style={styles.customAmountButtonText}>Place Bet</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -411,6 +577,137 @@ const styles = StyleSheet.create({
   playButtonText: {
     color: '#000',
     fontSize: 14,
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bettingModal: {
+    backgroundColor: '#1a1a1a',
+    width: '95%',
+    maxHeight: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  modalTitle: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalContent: {
+    padding: 20,
+  },
+  numbersGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  numberButton: {
+    width: '18%',
+    aspectRatio: 1,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  numberText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  andarBaharGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  andarBaharButton: {
+    width: '48%',
+    padding: 15,
+    backgroundColor: '#2a4a2a',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#00AA55',
+  },
+  andarBaharText: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  amountModal: {
+    backgroundColor: '#1a1a1a',
+    width: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  amountContent: {
+    padding: 20,
+  },
+  amountLabel: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  amountButtonsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 25,
+  },
+  amountButton: {
+    width: '30%',
+    padding: 15,
+    backgroundColor: '#FFD700',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  amountButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  customAmountInput: {
+    backgroundColor: '#2a2a2a',
+    borderRadius: 8,
+    padding: 15,
+    color: '#fff',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#444',
+    marginBottom: 15,
+  },
+  customAmountButton: {
+    backgroundColor: '#00AA55',
+    padding: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  customAmountButtonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
