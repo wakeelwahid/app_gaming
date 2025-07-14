@@ -19,6 +19,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [showSideMenu, setShowSideMenu] = useState(false);
   const [slideAnim] = useState(new Animated.Value(-SCREEN_WIDTH));
+  const [showQuickActions, setShowQuickActions] = useState(false);
 
   const gameCards = [
     {
@@ -424,21 +425,27 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
 
-      {/* Header */}
+      {/* Enhanced Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuButton} onPress={toggleSideMenu}>
-          <Ionicons name="menu" size={24} color="#FFD700" />
-        </TouchableOpacity>
-
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>👑 VN Gaming</Text>
+        <View style={styles.headerLeft}>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoIcon}>👑</Text>
+            <Text style={styles.logoText}>VN Gaming</Text>
+          </View>
+          <Text style={styles.headerSubtitle}>India's #1 Gaming Platform</Text>
         </View>
 
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.walletButton}>
-            <Text style={styles.walletLabel}>Wallet</Text>
-            <Text style={styles.walletAmount}>{wallet}</Text>
-          </TouchableOpacity>
+          <View style={styles.walletContainer}>
+            <View style={styles.walletInfo}>
+              <Text style={styles.walletLabel}>Wallet Balance</Text>
+              <Text style={styles.walletAmount}>{wallet}</Text>
+            </View>
+            <View style={styles.winningsInfo}>
+              <Text style={styles.winningsLabel}>Winnings</Text>
+              <Text style={styles.winningsAmount}>{winnings}</Text>
+            </View>
+          </View>
         </View>
       </View>
 
@@ -447,11 +454,75 @@ export default function App() {
         {renderContent()}
       </View>
 
-      {/* Bottom Menu Button */}
-      <TouchableOpacity style={styles.bottomMenuButton} onPress={toggleSideMenu}>
-        <Ionicons name="menu" size={28} color="#000" />
-        <Text style={styles.bottomMenuText}>Menu</Text>
-      </TouchableOpacity>
+      {/* Enhanced Bottom Action Center */}
+      <View style={styles.bottomActionContainer}>
+        <TouchableOpacity style={styles.bottomMenuButton} onPress={toggleSideMenu}>
+          <Ionicons name="menu" size={24} color="#000" />
+          <Text style={styles.bottomMenuText}>Menu</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.bottomQuickActionsButton} 
+          onPress={() => setShowQuickActions(!showQuickActions)}
+        >
+          <Ionicons name="flash" size={24} color="#fff" />
+          <Text style={styles.bottomQuickActionsText}>Quick Actions</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.bottomWalletButton} onPress={() => setActiveTab('wallet')}>
+          <Ionicons name="wallet" size={24} color="#fff" />
+          <Text style={styles.bottomWalletText}>Wallet</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Quick Actions Popup */}
+      {showQuickActions && (
+        <View style={styles.quickActionsPopup}>
+          <TouchableOpacity 
+            style={styles.quickActionItem} 
+            onPress={() => {
+              setActiveTab('profile');
+              setShowQuickActions(false);
+            }}
+          >
+            <Ionicons name="person" size={20} color="#FFD700" />
+            <Text style={styles.quickActionText}>Profile</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.quickActionItem} 
+            onPress={() => {
+              setActiveTab('history');
+              setShowQuickActions(false);
+            }}
+          >
+            <Ionicons name="time" size={20} color="#FFD700" />
+            <Text style={styles.quickActionText}>History</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.quickActionItem} 
+            onPress={() => {
+              setActiveTab('transactions');
+              setShowQuickActions(false);
+            }}
+          >
+            <Ionicons name="swap-horizontal" size={20} color="#FFD700" />
+            <Text style={styles.quickActionText}>Transactions</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.quickActionItem} 
+            onPress={() => {
+              setActiveTab('refer');
+              setShowQuickActions(false);
+            }}
+          >
+            <Ionicons name="people" size={20} color="#FFD700" />
+            <Text style={styles.quickActionText}>Refer & Earn</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Side Menu */}
       {showSideMenu && (
@@ -692,43 +763,71 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 15,
     backgroundColor: '#1a1a1a',
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFD700',
+    elevation: 5,
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  menuButton: {
-    padding: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  headerCenter: {
+  headerLeft: {
     flex: 1,
-    alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 20,
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  logoIcon: {
+    fontSize: 24,
+    marginRight: 8,
+  },
+  logoText: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFD700',
   },
-  headerRight: {
-    flexDirection: 'row',
-    gap: 10,
+  headerSubtitle: {
+    fontSize: 12,
+    color: '#ccc',
+    fontStyle: 'italic',
   },
-  walletButton: {
-    backgroundColor: '#2a4a2a',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+  headerRight: {
+    alignItems: 'flex-end',
+  },
+  walletContainer: {
+    backgroundColor: '#2a2a2a',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+    minWidth: 120,
+  },
+  walletInfo: {
     alignItems: 'center',
+    marginBottom: 8,
   },
   walletLabel: {
-    color: '#fff',
-    fontSize: 12,
+    color: '#ccc',
+    fontSize: 10,
   },
   walletAmount: {
     color: '#00FF88',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  winningsInfo: {
+    alignItems: 'center',
+  },
+  winningsLabel: {
+    color: '#ccc',
+    fontSize: 10,
+  },
+  winningsAmount: {
+    color: '#FFD700',
     fontWeight: 'bold',
     fontSize: 14,
   },
@@ -741,14 +840,20 @@ const styles = StyleSheet.create({
   bottomSpacing: {
     height: 100,
   },
-  bottomMenuButton: {
+  bottomActionContainer: {
     position: 'absolute',
     bottom: 20,
-    alignSelf: 'center',
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  bottomMenuButton: {
     backgroundColor: '#FFD700',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 25,
     shadowColor: '#000',
@@ -759,9 +864,77 @@ const styles = StyleSheet.create({
   },
   bottomMenuText: {
     color: '#000',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 6,
+  },
+  bottomQuickActionsButton: {
+    backgroundColor: '#9B59B6',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  bottomQuickActionsText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 6,
+  },
+  bottomWalletButton: {
+    backgroundColor: '#00AA55',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  bottomWalletText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 6,
+  },
+  quickActionsPopup: {
+    position: 'absolute',
+    bottom: 100,
+    left: 20,
+    right: 20,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 15,
+    padding: 15,
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
+  },
+  quickActionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  quickActionText: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 12,
   },
   sideMenuOverlay: {
     flex: 1,
