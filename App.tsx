@@ -430,23 +430,7 @@ export default function App() {
                 </View>
               )}
 
-              {/* Current Bets */}
-              {betList.length > 0 && (
-                <View style={styles.currentBetsSection}>
-                  <View style={styles.currentBetsHeader}>
-                    <Text style={styles.currentBetsTitle}>
-                      Current Bets - Total: ₹{getTotalBetAmount()}
-                    </Text>
-                  </View>
-                  <FlatList
-                    data={betList}
-                    renderItem={renderBetItem}
-                    keyExtractor={(item) => item.id.toString()}
-                    style={styles.betsList}
-                    scrollEnabled={false}
-                  />
-                </View>
-              )}
+              
 
               {/* Dynamic Content based on selected tab */}
               {currentBetType === 'numbers' && (
@@ -832,57 +816,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  currentBetsSection: {
-    backgroundColor: '#2a2a4a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#9B59B6',
-  },
-  currentBetsHeader: {
-    marginBottom: 10,
-  },
-  currentBetsTitle: {
-    color: '#9B59B6',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  betsList: {
-    maxHeight: 200,
-  },
-  betItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#3a3a5a',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  betInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  betNumber: {
-    color: '#FFD700',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  betAmount: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  betType: {
-    color: '#ccc',
-    fontSize: 12,
-  },
-  removeBetButton: {
-    marginLeft: 10,
-  },
+  
   numbersGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
