@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function App() {
@@ -11,6 +11,9 @@ export default function App() {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
+  const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [betList, setBetList] = useState([]);
+  const [currentBetType, setCurrentBetType] = useState('numbers'); // 'numbers', 'andar', 'bahar'
 
   const gameCards = [
     {
@@ -94,11 +97,19 @@ export default function App() {
 
   const handlePlayNow = (game) => {
     setSelectedGame(game);
+    setSelectedNumbers([]);
+    setBetList([]);
     setShowBettingModal(true);
   };
 
-  const handleNumberSelect = (number) => {
+  const handleNumberSelect = (number, type = 'numbers') => {
+    if (selectedNumbers.includes(number)) {
+      setSelectedNumbers(selectedNumbers.filter(n => n !== number));
+    } else {
+      setSelectedNumbers([...selectedNumbers, number]);
+    }
     setSelectedNumber(number);
+    setCurrentBetType(type);
     setShowAmountModal(true);
   };
 
@@ -106,56 +117,137 @@ export default function App() {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     if (currentWallet >= amount) {
       setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+      
+      const newBet = {
+        id: Date.now(),
+        number: selectedNumber,
+        amount: amount,
+        type: currentBetType,
+        game: selectedGame.title
+      };
+      
+      setBetList([...betList, newBet]);
       setShowAmountModal(false);
-      setShowBettingModal(false);
-      Alert.alert('Bet Placed!', `आपका ₹${amount} का bet number ${selectedNumber} पर लगा दिया गया है।`);
+      Alert.alert('Bet Placed!', `आपका ₹${amount} का bet ${selectedNumber} पर लगा दिया गया है।`);
     } else {
       Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
     }
   };
 
+  const removeBet = (betId) => {
+    const bet = betList.find(b => b.id === betId);
+    if (bet) {
+      const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+      setWallet(`₹${(currentWallet + bet.amount).toFixed(2)}`);
+      setBetList(betList.filter(b => b.id !== betId));
+      setSelectedNumbers(selectedNumbers.filter(n => n !== bet.number));
+    }
+  };
+
+  const getTotalBetAmount = () => {
+    return betList.reduce((total, bet) => total + bet.amount, 0);
+  };
+
   const renderNumbers = () => {
     const numbers = [];
     for (let i = 1; i <= 100; i++) {
+      const isSelected = selectedNumbers.includes(i);
       numbers.push(
         <TouchableOpacity
           key={i}
-          style={styles.numberButton}
-          onPress={() => handleNumberSelect(i)}
+          style={[
+            styles.numberButton,
+            isSelected && styles.selectedNumberButton
+          ]}
+          onPress={() => handleNumberSelect(i, 'numbers')}
         >
-          <Text style={styles.numberText}>{i}</Text>
+          <Text style={[
+            styles.numberText,
+            isSelected && styles.selectedNumberText
+          ]}>{i}</Text>
+          {isSelected && (
+            <View style={styles.selectedIndicator}>
+              <Ionicons name="checkmark" size={12} color="#000" />
+            </View>
+          )}
         </TouchableOpacity>
       );
     }
     return numbers;
   };
 
-  const renderAndarBaharNumbers = () => {
+  const renderAndarNumbers = () => {
     const numbers = [];
     for (let i = 0; i <= 9; i++) {
+      const numberKey = `Andar ${i}`;
+      const isSelected = selectedNumbers.includes(numberKey);
       numbers.push(
         <TouchableOpacity
-          key={`andar-${i}`}
-          style={styles.andarBaharButton}
-          onPress={() => handleNumberSelect(`Andar ${i}`)}
+          key={numberKey}
+          style={[
+            styles.andarBaharButton,
+            styles.andarButton,
+            isSelected && styles.selectedAndarBaharButton
+          ]}
+          onPress={() => handleNumberSelect(numberKey, 'andar')}
         >
-          <Text style={styles.andarBaharText}>Andar {i}</Text>
-        </TouchableOpacity>
-      );
-    }
-    for (let i = 0; i <= 9; i++) {
-      numbers.push(
-        <TouchableOpacity
-          key={`bahar-${i}`}
-          style={styles.andarBaharButton}
-          onPress={() => handleNumberSelect(`Bahar ${i}`)}
-        >
-          <Text style={styles.andarBaharText}>Bahar {i}</Text>
+          <Text style={[
+            styles.andarBaharText,
+            isSelected && styles.selectedAndarBaharText
+          ]}>Andar {i}</Text>
+          {isSelected && (
+            <View style={styles.selectedIndicatorSmall}>
+              <Ionicons name="checkmark" size={10} color="#000" />
+            </View>
+          )}
         </TouchableOpacity>
       );
     }
     return numbers;
   };
+
+  const renderBaharNumbers = () => {
+    const numbers = [];
+    for (let i = 0; i <= 9; i++) {
+      const numberKey = `Bahar ${i}`;
+      const isSelected = selectedNumbers.includes(numberKey);
+      numbers.push(
+        <TouchableOpacity
+          key={numberKey}
+          style={[
+            styles.andarBaharButton,
+            styles.baharButton,
+            isSelected && styles.selectedAndarBaharButton
+          ]}
+          onPress={() => handleNumberSelect(numberKey, 'bahar')}
+        >
+          <Text style={[
+            styles.andarBaharText,
+            isSelected && styles.selectedAndarBaharText
+          ]}>Bahar {i}</Text>
+          {isSelected && (
+            <View style={styles.selectedIndicatorSmall}>
+              <Ionicons name="checkmark" size={10} color="#000" />
+            </View>
+          )}
+        </TouchableOpacity>
+      );
+    }
+    return numbers;
+  };
+
+  const renderBetItem = ({ item }) => (
+    <View style={styles.betItem}>
+      <View style={styles.betInfo}>
+        <Text style={styles.betNumber}>{item.number}</Text>
+        <Text style={styles.betAmount}>₹{item.amount}</Text>
+        <Text style={styles.betType}>{item.type}</Text>
+      </View>
+      <TouchableOpacity onPress={() => removeBet(item.id)} style={styles.removeBetButton}>
+        <Ionicons name="close-circle" size={20} color="#E74C3C" />
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -191,7 +283,7 @@ export default function App() {
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.myBetsButton}>
-          <Text style={styles.buttonText}>🎯 MY BETS</Text>
+          <Text style={styles.buttonText}>🎯 MY BETS ({betList.length})</Text>
         </TouchableOpacity>
       </View>
 
@@ -273,7 +365,7 @@ export default function App() {
           <View style={styles.bettingModal}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                {selectedGame?.title} - Select Number
+                {selectedGame?.title} - Select Numbers
               </Text>
               <TouchableOpacity onPress={() => setShowBettingModal(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
@@ -281,14 +373,55 @@ export default function App() {
             </View>
 
             <ScrollView style={styles.modalContent}>
-              <Text style={styles.sectionTitle}>1 to 100 Numbers</Text>
+              {/* Selection Summary */}
+              {selectedNumbers.length > 0 && (
+                <View style={styles.selectionSummary}>
+                  <Text style={styles.summaryTitle}>
+                    Selected Numbers ({selectedNumbers.length}):
+                  </Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View style={styles.selectedNumbersList}>
+                      {selectedNumbers.map((num, index) => (
+                        <View key={index} style={styles.selectedChip}>
+                          <Text style={styles.selectedChipText}>{num}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+                </View>
+              )}
+
+              {/* Current Bets */}
+              {betList.length > 0 && (
+                <View style={styles.currentBetsSection}>
+                  <View style={styles.currentBetsHeader}>
+                    <Text style={styles.currentBetsTitle}>
+                      Current Bets - Total: ₹{getTotalBetAmount()}
+                    </Text>
+                  </View>
+                  <FlatList
+                    data={betList}
+                    renderItem={renderBetItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    style={styles.betsList}
+                    scrollEnabled={false}
+                  />
+                </View>
+              )}
+
+              <Text style={styles.sectionTitle}>🎯 1 to 100 Numbers</Text>
               <View style={styles.numbersGrid}>
                 {renderNumbers()}
               </View>
 
-              <Text style={styles.sectionTitle}>Andar Bahar (0-9)</Text>
+              <Text style={styles.sectionTitle}>🟢 Andar (0-9)</Text>
               <View style={styles.andarBaharGrid}>
-                {renderAndarBaharNumbers()}
+                {renderAndarNumbers()}
+              </View>
+
+              <Text style={styles.sectionTitle}>🔴 Bahar (0-9)</Text>
+              <View style={styles.andarBaharGrid}>
+                {renderBaharNumbers()}
               </View>
             </ScrollView>
           </View>
@@ -306,7 +439,7 @@ export default function App() {
           <View style={styles.amountModal}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                Select Bet Amount - {selectedNumber}
+                Bet Amount - {selectedNumber}
               </Text>
               <TouchableOpacity onPress={() => setShowAmountModal(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
@@ -314,6 +447,15 @@ export default function App() {
             </View>
 
             <View style={styles.amountContent}>
+              <View style={styles.betPreview}>
+                <Text style={styles.betPreviewText}>
+                  🎯 {selectedNumber} ({currentBetType})
+                </Text>
+                <Text style={styles.betPreviewGame}>
+                  Game: {selectedGame?.title}
+                </Text>
+              </View>
+
               <Text style={styles.amountLabel}>Quick Select:</Text>
               <View style={styles.amountButtonsGrid}>
                 {[10, 50, 200, 500, 1000].map((amount) => (
@@ -327,7 +469,7 @@ export default function App() {
                 ))}
               </View>
 
-              <Text style={styles.amountLabel}>Custom Amount:</Text>
+              <Text style={styles.amountLabel}>Custom Amount (Min ₹10):</Text>
               <TextInput
                 style={styles.customAmountInput}
                 placeholder="Enter amount"
@@ -348,7 +490,7 @@ export default function App() {
                   }
                 }}
               >
-                <Text style={styles.customAmountButtonText}>Place Bet</Text>
+                <Text style={styles.customAmountButtonText}>Place Custom Bet</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -609,6 +751,86 @@ const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
   },
+  selectionSummary: {
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  summaryTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  selectedNumbersList: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  selectedChip: {
+    backgroundColor: '#00AA55',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+  },
+  selectedChipText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  currentBetsSection: {
+    backgroundColor: '#2a2a4a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#9B59B6',
+  },
+  currentBetsHeader: {
+    marginBottom: 10,
+  },
+  currentBetsTitle: {
+    color: '#9B59B6',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  betsList: {
+    maxHeight: 200,
+  },
+  betItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#3a3a5a',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  betInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  betNumber: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  betAmount: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  betType: {
+    color: '#ccc',
+    fontSize: 12,
+  },
+  removeBetButton: {
+    marginLeft: 10,
+  },
   numbersGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -625,32 +847,87 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: '#444',
+    position: 'relative',
+  },
+  selectedNumberButton: {
+    backgroundColor: '#FFD700',
+    borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
   },
   numberText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  selectedNumberText: {
+    color: '#000',
+  },
+  selectedIndicator: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    backgroundColor: '#00FF88',
+    borderRadius: 8,
+    width: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   andarBaharGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginBottom: 30,
   },
   andarBaharButton: {
     width: '48%',
     padding: 15,
-    backgroundColor: '#2a4a2a',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
     borderWidth: 1,
+    position: 'relative',
+  },
+  andarButton: {
+    backgroundColor: '#2a4a2a',
     borderColor: '#00AA55',
+  },
+  baharButton: {
+    backgroundColor: '#4a2a2a',
+    borderColor: '#E74C3C',
+  },
+  selectedAndarBaharButton: {
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 8,
+    borderColor: '#FFD700',
+    borderWidth: 2,
   },
   andarBaharText: {
     color: '#00FF88',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  selectedAndarBaharText: {
+    color: '#FFD700',
+  },
+  selectedIndicatorSmall: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#FFD700',
+    borderRadius: 6,
+    width: 12,
+    height: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   amountModal: {
     backgroundColor: '#1a1a1a',
@@ -661,6 +938,25 @@ const styles = StyleSheet.create({
   },
   amountContent: {
     padding: 20,
+  },
+  betPreview: {
+    backgroundColor: '#2a2a4a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#9B59B6',
+    alignItems: 'center',
+  },
+  betPreviewText: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  betPreviewGame: {
+    color: '#ccc',
+    fontSize: 14,
   },
   amountLabel: {
     color: '#fff',
@@ -682,6 +978,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
   },
   amountButtonText: {
     color: '#000',
@@ -704,6 +1005,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#00AA55',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
   },
   customAmountButtonText: {
     color: '#fff',
