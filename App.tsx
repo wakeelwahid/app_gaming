@@ -1,6 +1,9 @@
+
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function App() {
   const [wallet, setWallet] = useState('₹1000.00');
@@ -14,6 +17,8 @@ export default function App() {
   const [betList, setBetList] = useState([]);
   const [currentBetType, setCurrentBetType] = useState('numbers'); // 'numbers', 'andar', 'bahar'
   const [activeTab, setActiveTab] = useState('home');
+  const [showSideMenu, setShowSideMenu] = useState(false);
+  const [slideAnim] = useState(new Animated.Value(-SCREEN_WIDTH));
 
   const gameCards = [
     {
@@ -94,6 +99,41 @@ export default function App() {
       subtitle: 'सुरक्षित और भरोसेमंद'
     }
   ];
+
+  const menuItems = [
+    { icon: 'home', title: 'Home', key: 'home' },
+    { icon: 'game-controller', title: 'Play', key: 'play' },
+    { icon: 'person', title: 'My Profile', key: 'profile' },
+    { icon: 'wallet', title: 'My Wallet', key: 'wallet' },
+    { icon: 'time', title: 'Game History', key: 'history' },
+    { icon: 'swap-horizontal', title: 'Transactions', key: 'transactions' },
+    { icon: 'people', title: 'Refer & Earn', key: 'refer' },
+    { icon: 'document-text', title: 'Terms & Conditions', key: 'terms' },
+    { icon: 'refresh', title: 'Refund Policy', key: 'refund' },
+    { icon: 'shield-checkmark', title: 'Privacy Policy', key: 'privacy' },
+  ];
+
+  const toggleSideMenu = () => {
+    if (showSideMenu) {
+      Animated.timing(slideAnim, {
+        toValue: -SCREEN_WIDTH,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setShowSideMenu(false));
+    } else {
+      setShowSideMenu(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
+  const handleMenuItemPress = (key) => {
+    setActiveTab(key);
+    toggleSideMenu();
+  };
 
   const handlePlayNow = (game) => {
     setSelectedGame(game);
@@ -371,7 +411,12 @@ export default function App() {
           </View>
         );
       default:
-        return null;
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>🚧 Coming Soon</Text>
+            <Text style={styles.comingSoonText}>यह फीचर जल्द ही आएगा</Text>
+          </View>
+        );
     }
   };
 
@@ -381,7 +426,7 @@ export default function App() {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuButton}>
+        <TouchableOpacity style={styles.menuButton} onPress={toggleSideMenu}>
           <Ionicons name="menu" size={24} color="#FFD700" />
         </TouchableOpacity>
 
@@ -402,40 +447,61 @@ export default function App() {
         {renderContent()}
       </View>
 
-      {/* Bottom Menu */}
-      <View style={styles.bottomMenu}>
-        <TouchableOpacity 
-          style={[styles.menuItem, activeTab === 'home' && styles.activeMenuItem]}
-          onPress={() => setActiveTab('home')}
-        >
-          <Ionicons name="home" size={24} color={activeTab === 'home' ? '#FFD700' : '#666'} />
-          <Text style={[styles.menuText, activeTab === 'home' && styles.activeMenuText]}>Home</Text>
-        </TouchableOpacity>
+      {/* Bottom Menu Button */}
+      <TouchableOpacity style={styles.bottomMenuButton} onPress={toggleSideMenu}>
+        <Ionicons name="menu" size={28} color="#000" />
+        <Text style={styles.bottomMenuText}>Menu</Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.menuItem, activeTab === 'wallet' && styles.activeMenuItem]}
-          onPress={() => setActiveTab('wallet')}
+      {/* Side Menu */}
+      {showSideMenu && (
+        <Modal
+          transparent={true}
+          animationType="none"
+          visible={showSideMenu}
+          onRequestClose={toggleSideMenu}
         >
-          <Ionicons name="wallet" size={24} color={activeTab === 'wallet' ? '#FFD700' : '#666'} />
-          <Text style={[styles.menuText, activeTab === 'wallet' && styles.activeMenuText]}>Wallet</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.menuItem, activeTab === 'history' && styles.activeMenuItem]}
-          onPress={() => setActiveTab('history')}
-        >
-          <Ionicons name="time" size={24} color={activeTab === 'history' ? '#FFD700' : '#666'} />
-          <Text style={[styles.menuText, activeTab === 'history' && styles.activeMenuText]}>History</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.menuItem, activeTab === 'profile' && styles.activeMenuItem]}
-          onPress={() => setActiveTab('profile')}
-        >
-          <Ionicons name="person" size={24} color={activeTab === 'profile' ? '#FFD700' : '#666'} />
-          <Text style={[styles.menuText, activeTab === 'profile' && styles.activeMenuText]}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.sideMenuOverlay}>
+            <TouchableOpacity 
+              style={styles.sideMenuBackdrop} 
+              onPress={toggleSideMenu}
+            />
+            <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
+              <View style={styles.sideMenuHeader}>
+                <Text style={styles.sideMenuTitle}>👑 Menu</Text>
+                <TouchableOpacity onPress={toggleSideMenu}>
+                  <Ionicons name="close" size={24} color="#FFD700" />
+                </TouchableOpacity>
+              </View>
+              
+              <ScrollView style={styles.sideMenuContent}>
+                {menuItems.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.sideMenuItem,
+                      activeTab === item.key && styles.activeSideMenuItem
+                    ]}
+                    onPress={() => handleMenuItemPress(item.key)}
+                  >
+                    <Ionicons 
+                      name={item.icon} 
+                      size={20} 
+                      color={activeTab === item.key ? '#000' : '#FFD700'} 
+                    />
+                    <Text style={[
+                      styles.sideMenuItemText,
+                      activeTab === item.key && styles.activeSideMenuItemText
+                    ]}>
+                      {item.title}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </Animated.View>
+          </View>
+        </Modal>
+      )}
 
       {/* Betting Modal */}
       <Modal
@@ -675,32 +741,79 @@ const styles = StyleSheet.create({
   bottomSpacing: {
     height: 100,
   },
-  bottomMenu: {
+  bottomMenuButton: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+    backgroundColor: '#FFD700',
     flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 10,
-    paddingBottom: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-  },
-  menuItem: {
-    flex: 1,
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  activeMenuItem: {
-    backgroundColor: 'rgba(255, 215, 0, 0.1)',
-    borderRadius: 10,
-    marginHorizontal: 5,
+  bottomMenuText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
-  menuText: {
-    color: '#666',
-    fontSize: 12,
-    marginTop: 4,
+  sideMenuOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'row',
+  },
+  sideMenuBackdrop: {
+    flex: 1,
+  },
+  sideMenu: {
+    width: SCREEN_WIDTH * 0.8,
+    backgroundColor: '#1a1a1a',
+    height: '100%',
+    borderRightWidth: 1,
+    borderRightColor: '#333',
+  },
+  sideMenuHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  sideMenuTitle: {
+    color: '#FFD700',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  sideMenuContent: {
+    flex: 1,
+    paddingVertical: 10,
+  },
+  sideMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  activeSideMenuItem: {
+    backgroundColor: '#FFD700',
+  },
+  sideMenuItemText: {
+    color: '#FFD700',
+    fontSize: 16,
+    marginLeft: 15,
     fontWeight: '500',
   },
-  activeMenuText: {
-    color: '#FFD700',
+  activeSideMenuItemText: {
+    color: '#000',
     fontWeight: 'bold',
   },
   tabContent: {
@@ -713,6 +826,12 @@ const styles = StyleSheet.create({
     color: '#FFD700',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  comingSoonText: {
+    color: '#666',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 50,
   },
   walletCard: {
     backgroundColor: '#2a4a2a',
@@ -1010,7 +1129,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   selectedChipAmount: {
-    color: '#FFD700',
+    color: '#FF0000',
     fontSize: 10,
     fontWeight: 'bold',
     marginTop: 2,
@@ -1070,7 +1189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   betAmountBadgeText: {
-    color: '#000',
+    color: '#FF0000',
     fontSize: 8,
     fontWeight: 'bold',
   },
@@ -1087,7 +1206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   betAmountBadgeTextSmall: {
-    color: '#000',
+    color: '#FF0000',
     fontSize: 7,
     fontWeight: 'bold',
   },
