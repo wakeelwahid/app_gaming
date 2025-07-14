@@ -97,17 +97,11 @@ export default function App() {
 
   const handlePlayNow = (game) => {
     setSelectedGame(game);
-    setSelectedNumbers([]);
     setBetList([]);
     setShowBettingModal(true);
   };
 
   const handleNumberSelect = (number, type = 'numbers') => {
-    if (selectedNumbers.includes(number)) {
-      setSelectedNumbers(selectedNumbers.filter(n => n !== number));
-    } else {
-      setSelectedNumbers([...selectedNumbers, number]);
-    }
     setSelectedNumber(number);
     setCurrentBetType(type);
     setShowAmountModal(true);
@@ -140,7 +134,6 @@ export default function App() {
       const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
       setWallet(`₹${(currentWallet + bet.amount).toFixed(2)}`);
       setBetList(betList.filter(b => b.id !== betId));
-      setSelectedNumbers(selectedNumbers.filter(n => n !== bet.number));
     }
   };
 
@@ -151,7 +144,8 @@ export default function App() {
   const renderNumbers = () => {
     const numbers = [];
     for (let i = 1; i <= 100; i++) {
-      const isSelected = selectedNumbers.includes(i);
+      const bet = betList.find(b => b.number === i && b.type === 'numbers');
+      const isSelected = !!bet;
       numbers.push(
         <TouchableOpacity
           key={i}
@@ -166,8 +160,8 @@ export default function App() {
             isSelected && styles.selectedNumberText
           ]}>{i}</Text>
           {isSelected && (
-            <View style={styles.selectedIndicator}>
-              <Ionicons name="checkmark" size={12} color="#000" />
+            <View style={styles.betAmountBadge}>
+              <Text style={styles.betAmountBadgeText}>₹{bet.amount}</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -180,24 +174,25 @@ export default function App() {
     const numbers = [];
     for (let i = 0; i <= 9; i++) {
       const numberKey = `Andar ${i}`;
-      const isSelected = selectedNumbers.includes(numberKey);
+      const bet = betList.find(b => b.number === numberKey && b.type === 'andar');
+      const isSelected = !!bet;
       numbers.push(
         <TouchableOpacity
           key={numberKey}
           style={[
             styles.andarBaharButton,
             styles.andarButton,
-            isSelected && styles.selectedAndarBaharButton
+            isSelected && styles.selectedAndarButton
           ]}
           onPress={() => handleNumberSelect(numberKey, 'andar')}
         >
           <Text style={[
             styles.andarBaharText,
-            isSelected && styles.selectedAndarBaharText
+            isSelected && styles.selectedAndarText
           ]}>Andar {i}</Text>
           {isSelected && (
-            <View style={styles.selectedIndicatorSmall}>
-              <Ionicons name="checkmark" size={10} color="#000" />
+            <View style={styles.betAmountBadgeSmall}>
+              <Text style={styles.betAmountBadgeTextSmall}>₹{bet.amount}</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -210,24 +205,25 @@ export default function App() {
     const numbers = [];
     for (let i = 0; i <= 9; i++) {
       const numberKey = `Bahar ${i}`;
-      const isSelected = selectedNumbers.includes(numberKey);
+      const bet = betList.find(b => b.number === numberKey && b.type === 'bahar');
+      const isSelected = !!bet;
       numbers.push(
         <TouchableOpacity
           key={numberKey}
           style={[
             styles.andarBaharButton,
             styles.baharButton,
-            isSelected && styles.selectedAndarBaharButton
+            isSelected && styles.selectedBaharButton
           ]}
           onPress={() => handleNumberSelect(numberKey, 'bahar')}
         >
           <Text style={[
             styles.andarBaharText,
-            isSelected && styles.selectedAndarBaharText
+            isSelected && styles.selectedBaharText
           ]}>Bahar {i}</Text>
           {isSelected && (
-            <View style={styles.selectedIndicatorSmall}>
-              <Ionicons name="checkmark" size={10} color="#000" />
+            <View style={styles.betAmountBadgeSmall}>
+              <Text style={styles.betAmountBadgeTextSmall}>₹{bet.amount}</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -402,21 +398,21 @@ export default function App() {
               </View>
 
               {/* Selection Summary with Amount */}
-              {selectedNumbers.length > 0 && (
+              {betList.length > 0 && (
                 <View style={styles.selectionSummary}>
                   <Text style={styles.summaryTitle}>
-                    Selected Numbers ({selectedNumbers.length}):
+                    Total Bets ({betList.length}):
                   </Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <View style={styles.selectedNumbersList}>
-                      {selectedNumbers.map((num, index) => {
-                        const bet = betList.find(b => b.number === num);
+                      {betList.map((bet, index) => {
+                        const chipStyle = bet.type === 'andar' ? styles.andarChip : 
+                                        bet.type === 'bahar' ? styles.baharChip : 
+                                        styles.selectedChip;
                         return (
-                          <View key={index} style={styles.selectedChip}>
-                            <Text style={styles.selectedChipText}>{num}</Text>
-                            {bet && (
-                              <Text style={styles.selectedChipAmount}>₹{bet.amount}</Text>
-                            )}
+                          <View key={index} style={chipStyle}>
+                            <Text style={styles.selectedChipText}>{bet.number}</Text>
+                            <Text style={styles.selectedChipAmount}>₹{bet.amount}</Text>
                           </View>
                         );
                       })}
@@ -806,13 +802,28 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   selectedChip: {
+    backgroundColor: '#FFD700',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+    marginRight: 5,
+  },
+  andarChip: {
     backgroundColor: '#00AA55',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 15,
+    marginRight: 5,
+  },
+  baharChip: {
+    backgroundColor: '#E74C3C',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+    marginRight: 5,
   },
   selectedChipText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -863,6 +874,40 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  betAmountBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#00FF88',
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    minWidth: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  betAmountBadgeText: {
+    color: '#000',
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
+  betAmountBadgeSmall: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: '#00FF88',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    minWidth: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  betAmountBadgeTextSmall: {
+    color: '#000',
+    fontSize: 7,
+    fontWeight: 'bold',
+  },
   andarBaharGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -887,22 +932,36 @@ const styles = StyleSheet.create({
     backgroundColor: '#4a2a2a',
     borderColor: '#E74C3C',
   },
-  selectedAndarBaharButton: {
-    shadowColor: '#FFD700',
+  selectedAndarButton: {
+    backgroundColor: '#00FF88',
+    borderColor: '#00FF88',
+    borderWidth: 2,
+    shadowColor: '#00FF88',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 8,
     elevation: 8,
-    borderColor: '#FFD700',
+  },
+  selectedBaharButton: {
+    backgroundColor: '#FF4444',
+    borderColor: '#FF4444',
     borderWidth: 2,
+    shadowColor: '#FF4444',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 8,
   },
   andarBaharText: {
-    color: '#00FF88',
+    color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
   },
-  selectedAndarBaharText: {
-    color: '#FFD700',
+  selectedAndarText: {
+    color: '#000',
+  },
+  selectedBaharText: {
+    color: '#fff',
   },
   selectedIndicatorSmall: {
     position: 'absolute',
