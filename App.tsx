@@ -373,7 +373,35 @@ export default function App() {
             </View>
 
             <ScrollView style={styles.modalContent}>
-              {/* Selection Summary */}
+              {/* Betting Type Tabs */}
+              <View style={styles.bettingTabs}>
+                <TouchableOpacity 
+                  style={[styles.tab, currentBetType === 'numbers' && styles.activeTab]}
+                  onPress={() => setCurrentBetType('numbers')}
+                >
+                  <Text style={[styles.tabText, currentBetType === 'numbers' && styles.activeTabText]}>
+                    🎯 Numbers (1-100)
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.tab, currentBetType === 'andar' && styles.activeTab]}
+                  onPress={() => setCurrentBetType('andar')}
+                >
+                  <Text style={[styles.tabText, currentBetType === 'andar' && styles.activeTabText]}>
+                    🟢 Andar (0-9)
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.tab, currentBetType === 'bahar' && styles.activeTab]}
+                  onPress={() => setCurrentBetType('bahar')}
+                >
+                  <Text style={[styles.tabText, currentBetType === 'bahar' && styles.activeTabText]}>
+                    🔴 Bahar (0-9)
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Selection Summary with Amount */}
               {selectedNumbers.length > 0 && (
                 <View style={styles.selectionSummary}>
                   <Text style={styles.summaryTitle}>
@@ -381,13 +409,24 @@ export default function App() {
                   </Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <View style={styles.selectedNumbersList}>
-                      {selectedNumbers.map((num, index) => (
-                        <View key={index} style={styles.selectedChip}>
-                          <Text style={styles.selectedChipText}>{num}</Text>
-                        </View>
-                      ))}
+                      {selectedNumbers.map((num, index) => {
+                        const bet = betList.find(b => b.number === num);
+                        return (
+                          <View key={index} style={styles.selectedChip}>
+                            <Text style={styles.selectedChipText}>{num}</Text>
+                            {bet && (
+                              <Text style={styles.selectedChipAmount}>₹{bet.amount}</Text>
+                            )}
+                          </View>
+                        );
+                      })}
                     </View>
                   </ScrollView>
+                  <View style={styles.totalAmountDisplay}>
+                    <Text style={styles.totalAmountText}>
+                      Total Bet Amount: ₹{getTotalBetAmount()}
+                    </Text>
+                  </View>
                 </View>
               )}
 
@@ -409,20 +448,33 @@ export default function App() {
                 </View>
               )}
 
-              <Text style={styles.sectionTitle}>🎯 1 to 100 Numbers</Text>
-              <View style={styles.numbersGrid}>
-                {renderNumbers()}
-              </View>
+              {/* Dynamic Content based on selected tab */}
+              {currentBetType === 'numbers' && (
+                <>
+                  <Text style={styles.sectionTitle}>🎯 Select Numbers (1-100)</Text>
+                  <View style={styles.numbersGrid}>
+                    {renderNumbers()}
+                  </View>
+                </>
+              )}
 
-              <Text style={styles.sectionTitle}>🟢 Andar (0-9)</Text>
-              <View style={styles.andarBaharGrid}>
-                {renderAndarNumbers()}
-              </View>
+              {currentBetType === 'andar' && (
+                <>
+                  <Text style={styles.sectionTitle}>🟢 Select Andar Numbers (0-9)</Text>
+                  <View style={styles.andarBaharGrid}>
+                    {renderAndarNumbers()}
+                  </View>
+                </>
+              )}
 
-              <Text style={styles.sectionTitle}>🔴 Bahar (0-9)</Text>
-              <View style={styles.andarBaharGrid}>
-                {renderBaharNumbers()}
-              </View>
+              {currentBetType === 'bahar' && (
+                <>
+                  <Text style={styles.sectionTitle}>🔴 Select Bahar Numbers (0-9)</Text>
+                  <View style={styles.andarBaharGrid}>
+                    {renderBaharNumbers()}
+                  </View>
+                </>
+              )}
             </ScrollView>
           </View>
         </View>
@@ -1013,6 +1065,58 @@ const styles = StyleSheet.create({
   },
   customAmountButtonText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  bettingTabs: {
+    flexDirection: 'row',
+    backgroundColor: '#2a2a2a',
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  activeTab: {
+    backgroundColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  tabText: {
+    color: '#ccc',
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  activeTabText: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  selectedChipAmount: {
+    color: '#FFD700',
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  totalAmountDisplay: {
+    backgroundColor: '#FFD700',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  totalAmountText: {
+    color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
   },
