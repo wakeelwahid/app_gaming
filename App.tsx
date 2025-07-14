@@ -153,7 +153,15 @@ export default function App() {
             styles.numberButton,
             isSelected && styles.selectedNumberButton
           ]}
-          onPress={() => handleNumberSelect(i, 'numbers')}
+          onPress={() => {
+            if (isSelected) {
+              // Unselect the number
+              removeBet(bet.id);
+            } else {
+              // Select the number
+              handleNumberSelect(i, 'numbers');
+            }
+          }}
         >
           <Text style={[
             styles.numberText,
@@ -184,7 +192,15 @@ export default function App() {
             styles.andarButton,
             isSelected && styles.selectedAndarButton
           ]}
-          onPress={() => handleNumberSelect(numberKey, 'andar')}
+          onPress={() => {
+            if (isSelected) {
+              // Unselect the number
+              removeBet(bet.id);
+            } else {
+              // Select the number
+              handleNumberSelect(numberKey, 'andar');
+            }
+          }}
         >
           <Text style={[
             styles.andarBaharText,
@@ -215,7 +231,15 @@ export default function App() {
             styles.baharButton,
             isSelected && styles.selectedBaharButton
           ]}
-          onPress={() => handleNumberSelect(numberKey, 'bahar')}
+          onPress={() => {
+            if (isSelected) {
+              // Unselect the number
+              removeBet(bet.id);
+            } else {
+              // Select the number
+              handleNumberSelect(numberKey, 'bahar');
+            }
+          }}
         >
           <Text style={[
             styles.andarBaharText,
