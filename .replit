@@ -1,0 +1,20 @@
+modules = ["nodejs-20"]
+run = "npm run start"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run start"]
+
+[workflows]
+runButton = "Start Expo"
+
+[[workflows.workflow]]
+name = "Start Expo"
+author = 45033065
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run start"
