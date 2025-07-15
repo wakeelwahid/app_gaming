@@ -26,7 +26,6 @@ export default function HomeScreen({ gameCards, features, onPlayNow }: HomeScree
       </ScrollView>
 
       {/* Features Section */}
-      <Text style={styles.sectionTitle}>भारत का नंबर 1 गेमिंग प्लेटफॉर्म</Text>
       <View style={styles.featuresContainer}>
         {features.map((feature, index) => (
           <View key={index} style={styles.featureCard}>

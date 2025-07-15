@@ -532,6 +532,7 @@ export default function App() {
         onBetTypeChange={setCurrentBetType}
         onNumberSelect={handleNumberSelect}
         onRemoveBet={removeBet}
+        onPlaceBets={handlePlaceBets}
       />
 
       {/* Amount Selection Modal */}
