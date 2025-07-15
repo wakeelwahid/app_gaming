@@ -159,7 +159,7 @@ export default function App() {
         // Remove from selection
         setBetList(betList.filter(b => b.id !== existingBet.id));
       } else {
-        // Add to selection with default amount
+        // Add to selection with default amount of 50
         const newBet = {
           id: Date.now(),
           number,
@@ -171,31 +171,41 @@ export default function App() {
         setBetList([...betList, newBet]);
       }
     } else {
-      // Place bet with specified amount
-      const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
-
-      if (currentWallet >= amount) {
-        // Update wallet
-        setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
-
-        // Set success details
-        setLastBetDetails({
-          number,
-          amount,
-          type,
-          gameName: selectedGame?.title || '',
-        });
-
-        // Show success modal
-        setShowBetSuccess(true);
-
-        // Close betting modal after a short delay
-        setTimeout(() => {
-          setShowBettingModal(false);
-        }, 1500);
-
+      // Update existing bet with new amount or place bet
+      const existingBetIndex = betList.findIndex(b => b.number === number && b.type === type);
+      
+      if (existingBetIndex >= 0) {
+        // Update existing bet amount
+        const updatedBetList = [...betList];
+        updatedBetList[existingBetIndex].amount = amount;
+        setBetList(updatedBetList);
       } else {
-        Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+        // Place bet with specified amount
+        const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+
+        if (currentWallet >= amount) {
+          // Update wallet
+          setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+
+          // Set success details
+          setLastBetDetails({
+            number,
+            amount,
+            type,
+            gameName: selectedGame?.title || '',
+          });
+
+          // Show success modal
+          setShowBetSuccess(true);
+
+          // Close betting modal after a short delay
+          setTimeout(() => {
+            setShowBettingModal(false);
+          }, 1500);
+
+        } else {
+          Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+        }
       }
     }
   };

@@ -213,9 +213,11 @@ export default function BettingModal({
             {currentBetType === 'numbers' && (
               <>
                 <Text style={styles.sectionTitle}>🎯 Select Numbers (1-100)</Text>
-                <View style={styles.numbersGrid}>
-                  {renderNumbers()}
-                </View>
+                <ScrollView style={styles.numbersScrollContainer} showsVerticalScrollIndicator={false}>
+                  <View style={styles.numbersGrid}>
+                    {renderNumbers()}
+                  </View>
+                </ScrollView>
               </>
             )}
 
@@ -246,12 +248,10 @@ export default function BettingModal({
                       key={amount}
                       style={styles.amountButton}
                       onPress={() => {
-                        // Update all selected bets with this amount
-                        const updatedBets = betList.map(bet => ({
-                          ...bet,
-                          amount: amount
-                        }));
-                        // This would need to be handled by parent component
+                        // Update all selected numbers with this amount
+                        betList.forEach(bet => {
+                          onNumberSelect(bet.number, bet.type, amount);
+                        });
                       }}
                     >
                       <Text style={styles.amountButtonText}>₹{amount}</Text>
@@ -268,10 +268,10 @@ export default function BettingModal({
                   // Place all bets at once
                   betList.forEach(bet => {
                     if (bet.amount > 0) {
-                      // This will be handled by parent component
                       onNumberSelect(bet.number, bet.type, bet.amount);
                     }
                   });
+                  onClose(); // Close modal after placing bets
                 }}
               >
                 <Text style={styles.placeBetButtonText}>
@@ -409,6 +409,10 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     marginBottom: 15,
     textAlign: 'center',
+  },
+  numbersScrollContainer: {
+    maxHeight: 300,
+    marginBottom: 20,
   },
   numbersGrid: {
     flexDirection: 'row',
