@@ -1,0 +1,468 @@
+
+import React from 'react';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+interface BettingModalProps {
+  visible: boolean;
+  selectedGame: any;
+  currentBetType: string;
+  betList: any[];
+  onClose: () => void;
+  onBetTypeChange: (type: string) => void;
+  onNumberSelect: (number: any, type: string) => void;
+  onRemoveBet: (betId: number) => void;
+}
+
+export default function BettingModal({
+  visible,
+  selectedGame,
+  currentBetType,
+  betList,
+  onClose,
+  onBetTypeChange,
+  onNumberSelect,
+  onRemoveBet
+}: BettingModalProps) {
+  const getTotalBetAmount = () => {
+    return betList.reduce((total, bet) => total + bet.amount, 0);
+  };
+
+  const renderNumbers = () => {
+    const numbers = [];
+    for (let i = 1; i <= 100; i++) {
+      const bet = betList.find(b => b.number === i && b.type === 'numbers');
+      const isSelected = !!bet;
+      numbers.push(
+        <TouchableOpacity
+          key={i}
+          style={[
+            styles.numberButton,
+            isSelected && styles.selectedNumberButton
+          ]}
+          onPress={() => {
+            if (isSelected) {
+              onRemoveBet(bet.id);
+            } else {
+              onNumberSelect(i, 'numbers');
+            }
+          }}
+        >
+          <Text style={[
+            styles.numberText,
+            isSelected && styles.selectedNumberText
+          ]}>{i}</Text>
+          {isSelected && (
+            <View style={styles.betAmountBadge}>
+              <Text style={styles.betAmountBadgeText}>₹{bet.amount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      );
+    }
+    return numbers;
+  };
+
+  const renderAndarNumbers = () => {
+    const numbers = [];
+    for (let i = 0; i <= 9; i++) {
+      const numberKey = `Andar ${i}`;
+      const bet = betList.find(b => b.number === numberKey && b.type === 'andar');
+      const isSelected = !!bet;
+      numbers.push(
+        <TouchableOpacity
+          key={numberKey}
+          style={[
+            styles.andarBaharButton,
+            styles.andarButton,
+            isSelected && styles.selectedAndarButton
+          ]}
+          onPress={() => {
+            if (isSelected) {
+              onRemoveBet(bet.id);
+            } else {
+              onNumberSelect(numberKey, 'andar');
+            }
+          }}
+        >
+          <Text style={[
+            styles.andarBaharText,
+            isSelected && styles.selectedAndarText
+          ]}>Andar {i}</Text>
+          {isSelected && (
+            <View style={styles.betAmountBadgeSmall}>
+              <Text style={styles.betAmountBadgeTextSmall}>₹{bet.amount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      );
+    }
+    return numbers;
+  };
+
+  const renderBaharNumbers = () => {
+    const numbers = [];
+    for (let i = 0; i <= 9; i++) {
+      const numberKey = `Bahar ${i}`;
+      const bet = betList.find(b => b.number === numberKey && b.type === 'bahar');
+      const isSelected = !!bet;
+      numbers.push(
+        <TouchableOpacity
+          key={numberKey}
+          style={[
+            styles.andarBaharButton,
+            styles.baharButton,
+            isSelected && styles.selectedBaharButton
+          ]}
+          onPress={() => {
+            if (isSelected) {
+              onRemoveBet(bet.id);
+            } else {
+              onNumberSelect(numberKey, 'bahar');
+            }
+          }}
+        >
+          <Text style={[
+            styles.andarBaharText,
+            isSelected && styles.selectedBaharText
+          ]}>Bahar {i}</Text>
+          {isSelected && (
+            <View style={styles.betAmountBadgeSmall}>
+              <Text style={styles.betAmountBadgeTextSmall}>₹{bet.amount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      );
+    }
+    return numbers;
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.bettingModal}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>
+              {selectedGame?.title} - Select Numbers
+            </Text>
+            <TouchableOpacity onPress={onClose}>
+              <Ionicons name="close" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalContent}>
+            <View style={styles.bettingTabs}>
+              <TouchableOpacity 
+                style={[styles.tab, currentBetType === 'numbers' && styles.activeTab]}
+                onPress={() => onBetTypeChange('numbers')}
+              >
+                <Text style={[styles.tabText, currentBetType === 'numbers' && styles.activeTabText]}>
+                  🎯 Numbers (1-100)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.tab, currentBetType === 'andar' && styles.activeTab]}
+                onPress={() => onBetTypeChange('andar')}
+              >
+                <Text style={[styles.tabText, currentBetType === 'andar' && styles.activeTabText]}>
+                  🟢 Andar (0-9)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.tab, currentBetType === 'bahar' && styles.activeTab]}
+                onPress={() => onBetTypeChange('bahar')}
+              >
+                <Text style={[styles.tabText, currentBetType === 'bahar' && styles.activeTabText]}>
+                  🔴 Bahar (0-9)
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {betList.length > 0 && (
+              <View style={styles.selectionSummary}>
+                <Text style={styles.summaryTitle}>
+                  Total Bets ({betList.length}):
+                </Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View style={styles.selectedNumbersList}>
+                    {betList.map((bet, index) => {
+                      const chipStyle = bet.type === 'andar' ? styles.andarChip : 
+                                      bet.type === 'bahar' ? styles.baharChip : 
+                                      styles.selectedChip;
+                      return (
+                        <View key={index} style={chipStyle}>
+                          <Text style={styles.selectedChipText}>{bet.number}</Text>
+                          <Text style={styles.selectedChipAmount}>₹{bet.amount}</Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+                <View style={styles.totalAmountDisplay}>
+                  <Text style={styles.totalAmountText}>
+                    Total Bet Amount: ₹{getTotalBetAmount()}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            {currentBetType === 'numbers' && (
+              <>
+                <Text style={styles.sectionTitle}>🎯 Select Numbers (1-100)</Text>
+                <View style={styles.numbersGrid}>
+                  {renderNumbers()}
+                </View>
+              </>
+            )}
+
+            {currentBetType === 'andar' && (
+              <>
+                <Text style={styles.sectionTitle}>🟢 Select Andar Numbers (0-9)</Text>
+                <View style={styles.andarBaharGrid}>
+                  {renderAndarNumbers()}
+                </View>
+              </>
+            )}
+
+            {currentBetType === 'bahar' && (
+              <>
+                <Text style={styles.sectionTitle}>🔴 Select Bahar Numbers (0-9)</Text>
+                <View style={styles.andarBaharGrid}>
+                  {renderBaharNumbers()}
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bettingModal: {
+    backgroundColor: '#0a0a0a',
+    width: '95%',
+    maxHeight: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    flex: 1,
+  },
+  modalContent: {
+    padding: 20,
+  },
+  bettingTabs: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#333',
+    marginRight: 5,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  activeTab: {
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
+  },
+  tabText: {
+    color: '#999',
+    fontSize: 11,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  activeTabText: {
+    color: '#000',
+  },
+  selectionSummary: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  summaryTitle: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  selectedNumbersList: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  selectedChip: {
+    backgroundColor: '#4A90E2',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+    alignItems: 'center',
+  },
+  andarChip: {
+    backgroundColor: '#00FF88',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+    alignItems: 'center',
+  },
+  baharChip: {
+    backgroundColor: '#E74C3C',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+    alignItems: 'center',
+  },
+  selectedChipText: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  selectedChipAmount: {
+    color: '#000',
+    fontSize: 10,
+  },
+  totalAmountDisplay: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  totalAmountText: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  numbersGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  numberButton: {
+    width: '18%',
+    aspectRatio: 1,
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    position: 'relative',
+  },
+  selectedNumberButton: {
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
+  },
+  numberText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  selectedNumberText: {
+    color: '#000',
+  },
+  betAmountBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#E74C3C',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+  },
+  betAmountBadgeText: {
+    color: '#fff',
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
+  andarBaharGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  andarBaharButton: {
+    width: '48%',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    position: 'relative',
+    borderWidth: 2,
+  },
+  andarButton: {
+    backgroundColor: '#1a4a1a',
+    borderColor: '#00FF88',
+  },
+  selectedAndarButton: {
+    backgroundColor: '#00FF88',
+  },
+  baharButton: {
+    backgroundColor: '#4a1a1a',
+    borderColor: '#E74C3C',
+  },
+  selectedBaharButton: {
+    backgroundColor: '#E74C3C',
+  },
+  andarBaharText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  selectedAndarText: {
+    color: '#000',
+  },
+  selectedBaharText: {
+    color: '#000',
+  },
+  betAmountBadgeSmall: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#000',
+    borderRadius: 6,
+    paddingHorizontal: 3,
+    paddingVertical: 1,
+  },
+  betAmountBadgeTextSmall: {
+    color: '#fff',
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
+});
