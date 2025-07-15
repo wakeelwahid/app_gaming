@@ -1,158 +1,113 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-interface Bet {
-  id: string;
-  number: string;
-  amount: number;
-  bet_type: 'andar' | 'bahar' | 'single';
-  status: 'pending' | 'won' | 'lost';
-  created_at: string;
-  game: string;
-  session_start?: string;
-  session_end?: string;
-}
-
-interface BetGroup {
-  game: string;
-  date: string;
-  status: string;
-  bets: Bet[];
-}
-
-export default function MyBet() {
-  const [loading] = useState(false);
-  
-  // Dummy data for testing
-  const [bets] = useState<BetGroup[]>([
+const MyBet = () => {
+  // Dummy data for testing - grouped by game and date
+  const dummyBets = [
     {
       game: 'Jaipur King',
-      date: '2025-01-15',
+      date: '2024-01-15',
       status: 'pending',
+      sessionTime: '09:00 PM - 04:50 PM',
       bets: [
-        {
-          id: '1',
-          number: '14',
-          amount: 100,
-          bet_type: 'single',
-          status: 'pending',
-          created_at: '2025-01-15T14:30:00Z',
-          game: 'Jaipur King',
-          session_start: '2025-01-15T09:00:00Z',
-          session_end: '2025-01-15T16:50:00Z'
-        },
-        {
-          id: '2',
-          number: '2',
-          amount: 50,
-          bet_type: 'andar',
-          status: 'pending',
-          created_at: '2025-01-15T14:30:00Z',
-          game: 'Jaipur King',
-          session_start: '2025-01-15T09:00:00Z',
-          session_end: '2025-01-15T16:50:00Z'
-        },
-        {
-          id: '3',
-          number: '7',
-          amount: 75,
-          bet_type: 'bahar',
-          status: 'pending',
-          created_at: '2025-01-15T14:30:00Z',
-          game: 'Jaipur King',
-          session_start: '2025-01-15T09:00:00Z',
-          session_end: '2025-01-15T16:50:00Z'
-        }
+        { id: 1, number: '14', amount: 100, type: 'single', status: 'pending' },
+        { id: 2, number: '2', amount: 100, type: 'andar', status: 'pending' },
+        { id: 3, number: '61', amount: 100, type: 'single', status: 'pending' },
+        { id: 4, number: '5', amount: 50, type: 'bahar', status: 'pending' },
+        { id: 5, number: '77', amount: 200, type: 'jodi', status: 'pending' },
+        { id: 6, number: '9', amount: 150, type: 'single', status: 'pending' }
       ]
     },
     {
-      game: 'Delhi Bazar',
-      date: '2025-01-15',
-      status: 'won',
+      game: 'Faridabad',
+      date: '2024-01-15',
+      status: 'mixed',
+      sessionTime: '10:00 PM - 06:40 PM',
       bets: [
-        {
-          id: '4',
-          number: '25',
-          amount: 200,
-          bet_type: 'single',
-          status: 'won',
-          created_at: '2025-01-15T12:15:00Z',
-          game: 'Delhi Bazar',
-          session_start: '2025-01-15T10:00:00Z',
-          session_end: '2025-01-15T18:00:00Z'
-        },
-        {
-          id: '5',
-          number: '8',
-          amount: 100,
-          bet_type: 'andar',
-          status: 'won',
-          created_at: '2025-01-15T12:15:00Z',
-          game: 'Delhi Bazar',
-          session_start: '2025-01-15T10:00:00Z',
-          session_end: '2025-01-15T18:00:00Z'
-        }
+        { id: 7, number: '6', amount: 100, type: 'single', status: 'win', winAmount: 900 },
+        { id: 8, number: '8', amount: 100, type: 'single', status: 'win', winAmount: 900 },
+        { id: 9, number: '1', amount: 100, type: 'andar', status: 'win', winAmount: 180 },
+        { id: 10, number: '27', amount: 100, type: 'single', status: 'loss' },
+        { id: 11, number: '33', amount: 100, type: 'single', status: 'loss' },
+        { id: 12, number: '4', amount: 100, type: 'bahar', status: 'loss' }
       ]
     },
     {
-      game: 'Gali Disawar',
-      date: '2025-01-14',
-      status: 'lost',
+      game: 'Ghaziabad',
+      date: '2024-01-14',
+      status: 'mixed',
+      sessionTime: '11:00 PM - 07:50 PM',
       bets: [
-        {
-          id: '6',
-          number: '42',
-          amount: 150,
-          bet_type: 'single',
-          status: 'lost',
-          created_at: '2025-01-14T15:45:00Z',
-          game: 'Gali Disawar',
-          session_start: '2025-01-14T11:00:00Z',
-          session_end: '2025-01-14T19:00:00Z'
-        },
-        {
-          id: '7',
-          number: '3',
-          amount: 80,
-          bet_type: 'bahar',
-          status: 'lost',
-          created_at: '2025-01-14T15:45:00Z',
-          game: 'Gali Disawar',
-          session_start: '2025-01-14T11:00:00Z',
-          session_end: '2025-01-14T19:00:00Z'
-        }
+        { id: 13, number: '89', amount: 200, type: 'jodi', status: 'loss' },
+        { id: 14, number: '45', amount: 150, type: 'single', status: 'win', winAmount: 1350 },
+        { id: 15, number: '3', amount: 100, type: 'single', status: 'win', winAmount: 900 },
+        { id: 16, number: '7', amount: 50, type: 'bahar', status: 'loss' }
+      ]
+    },
+    {
+      game: 'Gali',
+      date: '2024-01-14',
+      status: 'pending',
+      sessionTime: '04:00 AM - 10:30 PM',
+      bets: [
+        { id: 17, number: '12', amount: 300, type: 'single', status: 'pending' },
+        { id: 18, number: '3', amount: 200, type: 'bahar', status: 'pending' },
+        { id: 19, number: '88', amount: 150, type: 'jodi', status: 'pending' },
+        { id: 20, number: '5', amount: 100, type: 'single', status: 'pending' }
+      ]
+    },
+    {
+      game: 'Disawer',
+      date: '2024-01-13',
+      status: 'mixed',
+      sessionTime: '07:00 AM - 02:30 AM',
+      bets: [
+        { id: 21, number: '23', amount: 100, type: 'single', status: 'win', winAmount: 900 },
+        { id: 22, number: '67', amount: 200, type: 'jodi', status: 'loss' },
+        { id: 23, number: '4', amount: 50, type: 'bahar', status: 'win', winAmount: 90 },
+        { id: 24, number: '1', amount: 150, type: 'single', status: 'loss' }
       ]
     }
-  ]);
+  ];
 
-  const getBetChipStyle = (bet: Bet) => {
-    const baseStyle = [styles.betNumberChip];
-    
-    if (bet.bet_type === 'andar') {
-      baseStyle.push(styles.andarChip);
-    } else if (bet.bet_type === 'bahar') {
-      baseStyle.push(styles.baharChip);
-    }
-    
-    return baseStyle;
-  };
-
-  const getStatusStyle = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'won':
-        return styles.betStatusWon;
-      case 'lost':
-        return styles.betStatusLost;
-      default:
-        return styles.betStatusPending;
+      case 'win': return '#00FF88';
+      case 'loss': return '#FF4444';
+      case 'pending': return '#FFD700';
+      default: return '#999';
     }
   };
 
-  const formatTime = (timeString: string) => {
-    const date = new Date(timeString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'win': return 'checkmark-circle';
+      case 'loss': return 'close-circle';
+      case 'pending': return 'time';
+      default: return 'help-circle';
+    }
+  };
+
+  const getBetTypeDisplay = (type: string) => {
+    switch (type) {
+      case 'single': return 'Single';
+      case 'jodi': return 'Jodi';
+      case 'andar': return 'Andar';
+      case 'bahar': return 'Bahar';
+      default: return type;
+    }
+  };
+
+  const calculateGroupStats = (bets: any[]) => {
+    const totalAmount = bets.reduce((sum, bet) => sum + bet.amount, 0);
+    const totalWin = bets.reduce((sum, bet) => sum + (bet.winAmount || 0), 0);
+    const winCount = bets.filter(bet => bet.status === 'win').length;
+    const lossCount = bets.filter(bet => bet.status === 'loss').length;
+    const pendingCount = bets.filter(bet => bet.status === 'pending').length;
+
+    return { totalAmount, totalWin, winCount, lossCount, pendingCount };
   };
 
   return (
@@ -162,77 +117,101 @@ export default function MyBet() {
         <Text style={styles.betLogo}>My Bets</Text>
       </View>
 
-      <ScrollView style={styles.myContainer} showsVerticalScrollIndicator={false}>
-        {loading ? (
-          <Text style={styles.centerText}>Loading...</Text>
-        ) : bets.length === 0 ? (
-          <Text style={styles.centerText}>No bets found.</Text>
-        ) : (
-          bets.map((group, idx) => (
-            <View key={idx} style={styles.betCard}>
-              {/* Card Header */}
-              <View style={styles.betCardHeader}>
-                <Text style={styles.betMarket}>{group.game?.toUpperCase()}</Text>
-                <Text style={styles.betDate}>{group.date}</Text>
-              </View>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.myContainer}>
+          {dummyBets.length === 0 ? (
+            <Text style={styles.noBetsText}>No bets found.</Text>
+          ) : (
+            dummyBets.map((group, idx) => {
+              const stats = calculateGroupStats(group.bets);
+              return (
+                <View key={idx} style={styles.betCard}>
+                  {/* Game Header */}
+                  <View style={styles.gameHeader}>
+                    <View style={styles.gameInfo}>
+                      <Text style={styles.gameTitle}>{group.game}</Text>
+                      <Text style={styles.gameDate}>{group.date}</Text>
+                      <Text style={styles.sessionTime}>{group.sessionTime}</Text>
+                    </View>
+                    <View style={styles.gameStats}>
+                      <Text style={styles.totalBets}>{group.bets.length} Bets</Text>
+                      <Text style={styles.totalAmount}>₹{stats.totalAmount}</Text>
+                      {stats.totalWin > 0 && (
+                        <Text style={styles.totalWin}>Won: ₹{stats.totalWin}</Text>
+                      )}
+                    </View>
+                  </View>
 
-              {/* Bet Numbers */}
-              <View style={styles.betNumbers}>
-                {group.bets.map((bet, i) => (
-                  <View key={i} style={getBetChipStyle(bet)}>
-                    <Text style={styles.chipText}>
-                      {bet.number} ₹{bet.amount}
-                    </Text>
-                    {bet.bet_type === 'andar' && (
-                      <Text style={styles.betSectionMarkAndar}>A</Text>
+                  {/* Game Status Summary */}
+                  <View style={styles.statusSummary}>
+                    {stats.pendingCount > 0 && (
+                      <View style={styles.statusItem}>
+                        <Ionicons name="time" size={12} color="#FFD700" />
+                        <Text style={[styles.statusText, { color: '#FFD700' }]}>
+                          {stats.pendingCount} Pending
+                        </Text>
+                      </View>
                     )}
-                    {bet.bet_type === 'bahar' && (
-                      <Text style={styles.betSectionMarkBahar}>B</Text>
+                    {stats.winCount > 0 && (
+                      <View style={styles.statusItem}>
+                        <Ionicons name="checkmark-circle" size={12} color="#00FF88" />
+                        <Text style={[styles.statusText, { color: '#00FF88' }]}>
+                          {stats.winCount} Won
+                        </Text>
+                      </View>
+                    )}
+                    {stats.lossCount > 0 && (
+                      <View style={styles.statusItem}>
+                        <Ionicons name="close-circle" size={12} color="#FF4444" />
+                        <Text style={[styles.statusText, { color: '#FF4444' }]}>
+                          {stats.lossCount} Lost
+                        </Text>
+                      </View>
                     )}
                   </View>
-                ))}
-              </View>
 
-              {/* Card Footer */}
-              <View style={styles.betFooter}>
-                <View style={styles.footerRow}>
-                  <Text style={[styles.betStatus, getStatusStyle(group.status)]}>
-                    {group.status === 'pending' ? 'Pending' : 
-                     group.status === 'won' ? 'Won' : 'Lost'}
-                  </Text>
-                  <Text style={styles.betAmount}>
-                    Total Numbers: {group.bets.length}
-                  </Text>
-                </View>
-                
-                <View style={styles.footerRow}>
-                  <Text style={styles.betPayout}>
-                    Amount: ₹{group.bets.reduce((sum, b) => sum + Number(b.amount), 0)}
-                  </Text>
-                </View>
+                  {/* Individual Bets */}
+                  <View style={styles.betsContainer}>
+                    {group.bets.map((bet, betIdx) => (
+                      <View key={bet.id} style={styles.betItem}>
+                        <View style={styles.betLeft}>
+                          <View style={styles.betNumberContainer}>
+                            <Text style={styles.betNumber}>{bet.number}</Text>
+                            <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
+                          </View>
+                        </View>
 
-                {/* Session Info */}
-                {group.bets[0]?.session_start && group.bets[0]?.session_end && (
-                  <View style={styles.sessionInfo}>
-                    <Text style={styles.betSession}>
-                      Session: {formatTime(group.bets[0].session_start)} - {formatTime(group.bets[0].session_end)}
-                    </Text>
+                        <View style={styles.betCenter}>
+                          <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                          {bet.winAmount && (
+                            <Text style={styles.winAmount}>Won: ₹{bet.winAmount}</Text>
+                          )}
+                        </View>
+
+                        <View style={styles.betRight}>
+                          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                            <Ionicons 
+                              name={getStatusIcon(bet.status)} 
+                              size={14} 
+                              color={getStatusColor(bet.status)} 
+                            />
+                            <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                              {bet.status.toUpperCase()}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    ))}
                   </View>
-                )}
-              </View>
-            </View>
-          ))
-        )}
-
-        {/* Back Button */}
-        <TouchableOpacity style={styles.betBackBtn}>
-          <Ionicons name="arrow-back" size={16} color="#000" />
-          <Text style={styles.backBtnText}> Back to Dashboard</Text>
-        </TouchableOpacity>
+                </View>
+              );
+            })
+          )}
+        </View>
       </ScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -241,173 +220,171 @@ const styles = StyleSheet.create({
   },
   betHeader: {
     backgroundColor: '#1a1a1a',
-    paddingVertical: 15,
-    marginBottom: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.5,
-    shadowRadius: 15,
-    elevation: 5,
+    padding: 15,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFD700',
+    marginBottom: 10,
   },
   betLogo: {
     textAlign: 'center',
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFD700',
     letterSpacing: 2,
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFD700',
-    paddingVertical: 15,
-    marginHorizontal: 20,
+  },
+  scrollView: {
+    flex: 1,
   },
   myContainer: {
-    maxWidth: 1200,
-    paddingHorizontal: 20,
+    padding: 15,
   },
-  centerText: {
+  noBetsText: {
     textAlign: 'center',
     color: '#999',
     fontSize: 16,
     marginTop: 50,
   },
   betCard: {
-    backgroundColor: 'rgba(26, 26, 26, 0.8)',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#333',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-    elevation: 3,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  betCardHeader: {
+  gameHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 15,
-    paddingBottom: 10,
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
-  betMarket: {
-    backgroundColor: '#8A2BE2',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+  gameInfo: {
+    flex: 1,
+  },
+  gameTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#191619',
-    fontSize: 12,
+    color: '#4A90E2',
+    marginBottom: 4,
   },
-  betDate: {
-    color: '#aaa',
+  gameDate: {
     fontSize: 12,
+    color: '#999',
+    marginBottom: 2,
   },
-  betNumbers: {
+  sessionTime: {
+    fontSize: 11,
+    color: '#666',
+  },
+  gameStats: {
+    alignItems: 'flex-end',
+  },
+  totalBets: {
+    fontSize: 12,
+    color: '#4A90E2',
+    fontWeight: 'bold',
+  },
+  totalAmount: {
+    fontSize: 16,
+    color: '#FFD700',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  totalWin: {
+    fontSize: 14,
+    color: '#00FF88',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  statusSummary: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
     marginBottom: 15,
-    justifyContent: 'center',
   },
-  betNumberChip: {
-    borderRadius: 20,
+  statusItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: '#A55CD3',
+    gap: 4,
   },
-  andarChip: {
-    backgroundColor: 'rgba(0, 100, 0, 0.5)',
-    borderLeftWidth: 3,
-    borderLeftColor: '#00FF00',
+  statusText: {
+    fontSize: 11,
+    fontWeight: '600',
   },
-  baharChip: {
-    backgroundColor: 'rgba(139, 0, 0, 0.5)',
-    borderLeftWidth: 3,
-    borderLeftColor: '#FF0000',
+  betsContainer: {
+    gap: 8,
   },
-  chipText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  betSectionMarkAndar: {
-    marginLeft: 5,
-    fontWeight: 'bold',
-    color: '#00FF88',
-  },
-  betSectionMarkBahar: {
-    marginLeft: 5,
-    fontWeight: 'bold',
-    color: '#FF6B6B',
-  },
-  betFooter: {
-    marginTop: 15,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-  },
-  footerRow: {
+  betItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    backgroundColor: '#0f0f0f',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
-  betStatus: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    fontWeight: 'bold',
-    fontSize: 12,
+  betLeft: {
+    flex: 2,
   },
-  betStatusPending: {
-    backgroundColor: 'rgba(255, 165, 0, 0.2)',
-    color: '#FFA500',
+  betNumberContainer: {
+    alignItems: 'flex-start',
   },
-  betStatusWon: {
-    backgroundColor: 'rgba(0, 255, 0, 0.2)',
-    color: '#00FF88',
-  },
-  betStatusLost: {
-    backgroundColor: 'rgba(255, 0, 0, 0.2)',
-    color: '#FF6B6B',
-  },
-  betAmount: {
+  betNumber: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFD700',
-    fontSize: 12,
+    marginBottom: 2,
   },
-  betPayout: {
-    color: '#00FF88',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  sessionInfo: {
-    marginTop: 8,
-  },
-  betSession: {
-    color: '#4A90E2',
+  betType: {
     fontSize: 11,
-    fontStyle: 'italic',
+    color: '#999',
+    backgroundColor: '#333',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    overflow: 'hidden',
   },
-  betBackBtn: {
+  betCenter: {
+    flex: 2,
+    alignItems: 'center',
+  },
+  betAmount: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  winAmount: {
+    fontSize: 12,
+    color: '#00FF88',
+    marginTop: 2,
+  },
+  betRight: {
+    flex: 2,
+    alignItems: 'flex-end',
+  },
+  statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-    marginBottom: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#FFD700',
-    borderRadius: 5,
-    alignSelf: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
   },
-  backBtnText: {
-    color: '#000',
+  statusLabel: {
+    fontSize: 10,
     fontWeight: 'bold',
-    fontSize: 14,
   },
 });
+
+export default MyBet;

@@ -1932,7 +1932,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     color: '#fff',
     fontSize: 16,
-    width: ''100%',
+    width: '100%',
     textAlign: 'center',
     marginBottom: 20,
   },
