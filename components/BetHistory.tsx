@@ -74,15 +74,37 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
 
     return (
       <View key={gameName} style={styles.gameSection}>
-        {/* Game Header */}
-        <View style={styles.gameHeader}>
-          <Text style={styles.gameName}>{gameName}</Text>
-          <Text style={styles.gameDate}>2025-07-15</Text>
+        {/* Enhanced Game Header */}
+        <View style={styles.gameHeaderContainer}>
+          <View style={styles.gameHeaderLeft}>
+            <Text style={styles.gameHeaderTitle}>🎮 {gameName}</Text>
+            <Text style={styles.gameHeaderStats}>
+              {totalBets} bets • ₹{totalAmount} total
+            </Text>
+          </View>
+          <View style={styles.gameHeaderRight}>
+            <Text style={styles.gameHeaderDate}>Today</Text>
+          </View>
         </View>
 
-        {/* Date-wise bet grouping */}
-        {Object.entries(dateData).map(([date, bets]: [string, any]) => (
+        {/* Date-wise bet grouping with better separation */}
+        {Object.entries(dateData).map(([date, bets]: [string, any], dateIndex: number) => (
           <View key={date} style={styles.dateSection}>
+            {/* Session Header */}
+            <View style={styles.sessionHeader}>
+              <Text style={styles.sessionTitle}>
+                Session {dateIndex + 1} • {bets[0]?.sessionTime || '09:00 PM - 04:50 PM'}
+              </Text>
+              <Text style={[styles.sessionStatus, 
+                bets[0]?.status === 'win' ? styles.sessionStatusWin : 
+                bets[0]?.status === 'loss' ? styles.sessionStatusLoss : 
+                styles.sessionStatusPending
+              ]}>
+                {bets[0]?.status === 'pending' ? '⏳ Pending' : 
+                 bets[0]?.status === 'win' ? '🏆 Win' : '❌ Loss'}
+              </Text>
+            </View>
+
             {/* Bet Chips Row */}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsContainer}>
               {bets.map((bet: any, index: number) => (
@@ -99,23 +121,16 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
               ))}
             </ScrollView>
 
-            {/* Session Info */}
-            <View style={styles.sessionInfo}>
-              <View style={styles.sessionLeft}>
-                <Text style={styles.statusBadge}>
-                  {bets[0]?.status === 'pending' ? 'Pending' : 
-                   bets[0]?.status === 'win' ? 'Win' : 'Loss'}
-                </Text>
-                <Text style={styles.sessionDetails}>
-                  Total Numbers: {bets.length}
-                </Text>
+            {/* Session Summary */}
+            <View style={styles.sessionSummary}>
+              <View style={styles.summaryLeft}>
+                <Text style={styles.summaryLabel}>Numbers Played:</Text>
+                <Text style={styles.summaryValue}>{bets.length}</Text>
               </View>
-              <View style={styles.sessionRight}>
-                <Text style={styles.sessionAmount}>
-                  amount: ₹{bets.reduce((sum: number, bet: any) => sum + (bet.amount || 0), 0)}
-                </Text>
-                <Text style={styles.sessionTime}>
-                  Session: {bets[0]?.sessionTime || '09:00 PM - 04:50 PM'}
+              <View style={styles.summaryRight}>
+                <Text style={styles.summaryLabel}>Total Amount:</Text>
+                <Text style={styles.summaryAmount}>
+                  ₹{bets.reduce((sum: number, bet: any) => sum + (bet.amount || 0), 0)}
                 </Text>
               </View>
             </View>
@@ -239,30 +254,67 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   gameSection: {
-    marginBottom: 20,
+    marginBottom: 25,
+    borderBottomWidth: 2,
+    borderBottomColor: '#333',
+    paddingBottom: 15,
   },
-  gameHeader: {
+  gameHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#1a1a1a',
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 15,
-    borderRadius: 8,
+    borderRadius: 10,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  gameHeaderLeft: {
+    flex: 1,
+  },
+  gameHeaderTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 4,
+  },
+  gameHeaderStats: {
+    fontSize: 12,
+    color: '#999',
+  },
+  gameHeaderRight: {
+    alignItems: 'flex-end',
+  },
+  gameHeaderDate: {
+    fontSize: 12,
+    color: '#FFD700',
+    fontWeight: 'bold',
+  },
+  sessionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
   },
-  gameName: {
+  sessionTitle: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
-    backgroundColor: '#9C27B0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
   },
-  gameDate: {
+  sessionStatus: {
     fontSize: 12,
-    color: '#999',
+    fontWeight: 'bold',
+  },
+  sessionStatusWin: {
+    color: '#00FF88',
+  },
+  sessionStatusLoss: {
+    color: '#FF6B6B',
+  },
+  sessionStatusPending: {
+    color: '#FFD700',
   },
   dateSection: {
     backgroundColor: '#1a1a1a',
@@ -302,41 +354,36 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 2,
   },
-  sessionInfo: {
+  sessionSummary: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#0f0f0f',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    marginTop: 10,
   },
-  sessionLeft: {
+  summaryLeft: {
     flex: 1,
   },
-  sessionRight: {
+  summaryRight: {
     alignItems: 'flex-end',
   },
-  statusBadge: {
-    color: '#FFD700',
-    fontSize: 12,
-    fontWeight: 'bold',
-    backgroundColor: '#333',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginBottom: 5,
-  },
-  sessionDetails: {
-    color: '#4A90E2',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  sessionAmount: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
+  summaryLabel: {
+    color: '#999',
+    fontSize: 11,
     marginBottom: 2,
   },
-  sessionTime: {
-    color: '#999',
-    fontSize: 10,
+  summaryValue: {
+    color: '#4A90E2',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  summaryAmount: {
+    color: '#00FF88',
+    fontSize: 13,
+    fontWeight: 'bold',
   },
   emptyContainer: {
     flex: 1,
