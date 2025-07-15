@@ -540,7 +540,7 @@ export default function App() {
             </Animated.View>
           </View>
         </Modal>
-      )}</li>
+      )}
 
       {/* Betting Modal */}
       <Modal
