@@ -903,7 +903,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFD700',
   },
-  headerRight: {
+  headerRight:{
     flexDirection: 'row',
     gap: 10,
   },
@@ -1301,7 +1301,7 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   activeBottomMenuItem: {
-    borderColor: '#FFD700',
+    borderColor: '#4A90E2',
   },
   bottomMenuItemIcon: {
     width: 50,
@@ -1313,7 +1313,7 @@ const styles = StyleSheet.create({
   },
   activeBottomMenuItemIcon: {
     borderWidth: 2,
-    borderColor: '#FFD700',
+    borderColor: '#4A90E2',
   },
   bottomMenuItemText: {
     fontSize: 11,
