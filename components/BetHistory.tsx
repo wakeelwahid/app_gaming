@@ -120,7 +120,7 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
         </TouchableOpacity>
       </View>
 
-      {betHistory.length > 0 ? (
+      {betHistory && betHistory.length > 0 ? (
         <>
           {renderGameFilter()}
           <FlatList

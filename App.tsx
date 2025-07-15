@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -29,7 +29,56 @@ export default function App() {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
-  const [betList, setBetList] = useState([]);
+  const [betList, setBetList] = useState([
+    {
+      id: 1,
+      number: '123',
+      amount: 100,
+      type: 'single',
+      game: 'Sridevi Day',
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+      winAmount: null
+    },
+    {
+      id: 2,
+      number: '45',
+      amount: 200,
+      type: 'andar',
+      game: 'Madhur Day',
+      status: 'win',
+      timestamp: new Date(Date.now() - 86400000).toISOString(),
+      winAmount: 400
+    },
+    {
+      id: 3,
+      number: '789',
+      amount: 150,
+      type: 'bahar',
+      game: 'Time Bazar',
+      status: 'loss',
+      timestamp: new Date(Date.now() - 172800000).toISOString(),
+      winAmount: 0
+    }
+  ]);
+
+  // Function to fetch bet history from API
+  const fetchBetHistory = async () => {
+    try {
+      // If you have real API, uncomment below:
+      // const response = await apiService.getBetHistory();
+      // if (response.success) {
+      //   setBetList(response.data);
+      // }
+    } catch (error) {
+      console.error('Error fetching bet history:', error);
+    }
+  };
+
+  // Call fetchBetHistory on component mount
+  useEffect(() => {
+    fetchBetHistory();
+  }, []);
   const [currentBetType, setCurrentBetType] = useState('numbers');
   const [activeTab, setActiveTab] = useState('home');
 
