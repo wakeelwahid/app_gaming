@@ -910,7 +910,7 @@ export default function App() {
                     />
                   </View>
 
-                  <View style={styles.inputContainer>
+                  <View style={styles.inputContainer}>
                     <Text style={styles.inputLabel}>Confirm Password *</Text>
                     <TextInput
                       style={styles.textInput}
