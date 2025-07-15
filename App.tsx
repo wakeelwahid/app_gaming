@@ -35,6 +35,8 @@ export default function App() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [utrNumber, setUtrNumber] = useState('');
+  const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
+  const [countdownSeconds, setCountdownSeconds] = useState(5);
 
   const gameCards = [
     {
@@ -239,11 +241,8 @@ export default function App() {
   };
 
   const handlePaymentMethodSelect = (method: string) => {
-    if (!depositAmount || parseFloat(depositAmount) < 100) {
-      Alert.alert('Invalid Amount', 'Please enter minimum ₹100 to proceed');
-      return;
-    }
     setSelectedPaymentMethod(method);
+    setShowAddCashModal(false);
     setShowPaymentModal(true);
   };
 
@@ -257,14 +256,14 @@ export default function App() {
     const amount = parseFloat(depositAmount);
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
-    
+
     // Reset states
     setShowPaymentModal(false);
     setShowAddCashModal(false);
     setDepositAmount('');
     setUtrNumber('');
     setSelectedPaymentMethod('');
-    
+
     Alert.alert(
       'Payment Successful!', 
       'Your payment has been confirmed. Amount will be added to your wallet within 5 minutes after admin verification.',
@@ -286,7 +285,7 @@ export default function App() {
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>💰 Wallet</Text>
-            
+
             {/* Total Balance Card */}
             <View style={styles.totalBalanceCard}>
               <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
@@ -317,7 +316,7 @@ export default function App() {
               >
                 <Text style={styles.addCashButtonText}>ADD CASH</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity 
                 style={styles.withdrawButton}
                 onPress={() => setShowWithdrawModal(true)}
@@ -748,7 +747,10 @@ export default function App() {
               />
 
               <TouchableOpacity
-                style={[styles.confirmPaymentButton, utrNumber.length !== 12 && styles.confirmPaymentButtonDisabled]}
+                style={[
+                  styles.confirmPaymentButton,
+                  utrNumber.length !== 12 && styles.confirmPaymentButtonDisabled
+                ]}
                 onPress={handleUTRConfirmation}
                 disabled={utrNumber.length !== 12}
               >
@@ -832,6 +834,68 @@ export default function App() {
           </View>
         </View>
       </Modal>
+
+            {/* Payment Success Modal */}
+            <Modal
+                visible={showPaymentSuccessModal}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => {}}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.paymentSuccessModalContainer}>
+                        <View style={styles.successContent}>
+                            {/* Success Icon */}
+                            <View style={styles.successIcon}>
+                                <Text style={styles.successIconText}>✅</Text>
+                            </View>
+
+                            {/* Success Message */}
+                            <Text style={styles.successTitle}>Payment Pending!</Text>
+                            <Text style={styles.successMessage}>
+                                Your payment of ₹{depositAmount && calculateDepositDetails(parseFloat(depositAmount)).total} via {selectedPaymentMethod} is being processed.
+                            </Text>
+
+                            {/* UTR Display */}
+                            <View style={styles.utrDisplayContainer}>
+                                <Text style={styles.utrDisplayLabel}>UTR Number:</Text>
+                                <Text style={styles.utrDisplayValue}>{utrNumber}</Text>
+                            </View>
+
+                            {/* Timer Message */}
+                            <View style={styles.timerContainer}>
+                                <Text style={styles.timerMessage}>
+                                    💰 Wallet will be updated in 5 minutes
+                                </Text>
+                                <Text style={styles.timerNote}>
+                                    Admin approval required for security
+                                </Text>
+                            </View>
+
+                            {/* Countdown */}
+                            <View style={styles.countdownContainer}>
+                                <Text style={styles.countdownText}>
+                                    Redirecting to home in {countdownSeconds} seconds...
+                                </Text>
+                            </View>
+
+                            {/* Manual Home Button */}
+                            <TouchableOpacity
+                                style={styles.goHomeButton}
+                                onPress={() => {
+                                    setShowPaymentSuccessModal(false);
+                                    setActiveTab('home');
+                                    setUtrNumber('');
+                                    setDepositAmount('');
+                                    setSelectedPaymentMethod('');
+                                }}
+                            >
+                                <Text style={styles.goHomeButtonText}>GO TO HOME</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
     </SafeAreaView>
   );
 }
@@ -1508,4 +1572,93 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 4,
   },
+
+    // Payment Success Modal Styles
+    paymentSuccessModalContainer: {
+      backgroundColor: '#0a0a0a',
+      width: '90%',
+      borderRadius: 15,
+      padding: 20,
+      alignItems: 'center',
+    },
+    successContent: {
+      alignItems: 'center',
+    },
+    successIcon: {
+      backgroundColor: '#00FF88',
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    successIconText: {
+      fontSize: 30,
+      color: '#000',
+    },
+    successTitle: {
+      color: '#FFD700',
+      fontSize: 22,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    successMessage: {
+      color: '#999',
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 20,
+      lineHeight: 22,
+    },
+    utrDisplayContainer: {
+      backgroundColor: '#1a1a1a',
+      padding: 15,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#333',
+      width: '100%',
+      marginBottom: 20,
+    },
+    utrDisplayLabel: {
+      color: '#4A90E2',
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    utrDisplayValue: {
+      color: '#fff',
+      fontSize: 16,
+      marginTop: 5,
+    },
+    timerContainer: {
+      marginBottom: 20,
+      alignItems: 'center',
+    },
+    timerMessage: {
+      color: '#00FF88',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    timerNote: {
+      color: '#999',
+      fontSize: 12,
+    },
+    countdownContainer: {
+      marginBottom: 20,
+    },
+    countdownText: {
+      color: '#FFD700',
+      fontSize: 16,
+    },
+    goHomeButton: {
+      backgroundColor: '#4A90E2',
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+    },
+    goHomeButtonText: {
+      color: '#000',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+
 });
