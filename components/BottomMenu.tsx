@@ -54,6 +54,18 @@ export default function BottomMenu({
         </TouchableOpacity>
 
         <TouchableOpacity 
+          style={[styles.tabItem, activeTab === 'mybets' && styles.activeTabItem]} 
+          onPress={() => onMenuItemPress('mybets')}
+        >
+          <Ionicons 
+            name="list-circle" 
+            size={24} 
+            color={activeTab === 'mybets' ? '#4A90E2' : '#999'} 
+          />
+          <Text style={[styles.tabText, activeTab === 'mybets' && styles.activeTabText]}>My Bets</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
           style={[styles.tabItem, activeTab === 'wallet' && styles.activeTabItem]} 
           onPress={() => onMenuItemPress('wallet')}
         >
@@ -62,19 +74,7 @@ export default function BottomMenu({
             size={24} 
             color={activeTab === 'wallet' ? '#4A90E2' : '#999'} 
           />
-          <Text style={[styles.tabText, activeTab === 'wallet' && styles.activeTabText]}>My Matches</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'rewards' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('rewards')}
-        >
-          <Ionicons 
-            name="diamond" 
-            size={24} 
-            color={activeTab === 'rewards' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'rewards' && styles.activeTabText]}>DreamCoins</Text>
+          <Text style={[styles.tabText, activeTab === 'wallet' && styles.activeTabText]}>Wallet</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 

@@ -5,14 +5,20 @@ import { Ionicons } from '@expo/vector-icons';
 
 interface HeaderProps {
   wallet: string;
+  onMenuItemPress?: (key: string) => void;
 }
 
-export default function Header({ wallet }: HeaderProps) {
+export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const profileMenuItems = [
     { icon: 'person', title: 'Profile', key: 'profile' },
+    { icon: 'swap-horizontal', title: 'Transactions', key: 'transactions' },
+    { icon: 'time', title: 'Game History', key: 'history' },
+    { icon: 'people', title: 'Refer & Earn', key: 'refer' },
     { icon: 'settings', title: 'Settings', key: 'settings' },
+    { icon: 'document-text', title: 'Terms & Conditions', key: 'terms' },
+    { icon: 'shield-checkmark', title: 'Privacy Policy', key: 'privacy' },
     { icon: 'help-circle', title: 'Help & Support', key: 'help' },
     { icon: 'information-circle', title: 'About', key: 'about' },
     { icon: 'log-out', title: 'Logout', key: 'logout' },
@@ -20,7 +26,9 @@ export default function Header({ wallet }: HeaderProps) {
 
   const handleMenuItemPress = (key: string) => {
     setShowProfileMenu(false);
-    // Handle menu item actions here
+    if (onMenuItemPress) {
+      onMenuItemPress(key);
+    }
     console.log('Menu item pressed:', key);
   };
 

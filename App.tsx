@@ -358,10 +358,11 @@ export default function App() {
             </View>
           </View>
         );
+      case 'mybets':
       case 'history':
         return (
           <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>📋 Bet History</Text>
+            <Text style={styles.tabTitle}>📋 My Bets</Text>
             {betList.length > 0 ? (
               <FlatList
                 data={betList}
@@ -377,6 +378,47 @@ export default function App() {
             ) : (
               <Text style={styles.noHistory}>कोई bet history नहीं है</Text>
             )}
+          </View>
+        );
+      case 'transactions':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>💸 Transactions</Text>
+            <Text style={styles.comingSoonText}>Transaction history जल्द ही आएगा</Text>
+          </View>
+        );
+      case 'refer':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>🎁 Refer & Earn</Text>
+            <View style={styles.referContainer}>
+              <Text style={styles.referTitle}>अपने दोस्तों को invite करें</Text>
+              <Text style={styles.referCode}>Referral Code: {userData.referralCode}</Text>
+              <TouchableOpacity style={styles.shareButton}>
+                <Text style={styles.shareButtonText}>Share Code</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      case 'terms':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>📋 Terms & Conditions</Text>
+            <Text style={styles.comingSoonText}>Terms & Conditions जल्द ही उपलब्ध होंगे</Text>
+          </View>
+        );
+      case 'privacy':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>🛡️ Privacy Policy</Text>
+            <Text style={styles.comingSoonText}>Privacy Policy जल्द ही उपलब्ध होगी</Text>
+          </View>
+        );
+      case 'games':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>🎮 All Games</Text>
+            <Text style={styles.comingSoonText}>और भी games जल्द ही आएंगी</Text>
           </View>
         );
       case 'profile':
@@ -400,7 +442,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header Component */}
-      <Header wallet={wallet} />
+      <Header wallet={wallet} onMenuItemPress={handleMenuItemPress} />
 
       {/* Content */}
       <View style={styles.content}>
@@ -1014,6 +1056,39 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     textDecorationLine: 'underline',
+  },
+  referContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333',
+    width: '100%',
+  },
+  referTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  referCode: {
+    fontSize: 16,
+    color: '#00FF88',
+    marginBottom: 20,
+    fontWeight: 'bold',
+  },
+  shareButton: {
+    backgroundColor: '#4A90E2',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  shareButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   // Add Cash Modal Styles
   addCashModalContainer: {
