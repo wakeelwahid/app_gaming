@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     gap: 15,
-    marginBottom: 100, // Add margin to avoid menu button overlap
+    marginBottom: 120, // Increased margin to avoid menu button overlap
     position: 'relative',
     zIndex: 1,
   },
