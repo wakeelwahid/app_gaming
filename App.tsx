@@ -28,6 +28,10 @@ export default function App() {
   const [slideAnim] = useState(new Animated.Value(SCREEN_WIDTH));
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const [showAddCashModal, setShowAddCashModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
 
   const gameCards = [
     {
@@ -200,6 +204,37 @@ export default function App() {
     setShowAuthModal(false);
   };
 
+  const handleAddCash = async (amount: number) => {
+    // Here you can make API call to add money
+    // const result = await apiService.addMoney(amount);
+    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+    setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
+    setShowAddCashModal(false);
+    setDepositAmount('');
+    Alert.alert('Deposit Successful', `₹${amount} has been added to your wallet. Admin approval pending.`);
+  };
+
+  const handleWithdraw = async (amount: number) => {
+    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+    if (currentWallet >= amount) {
+      // Here you can make API call to withdraw money
+      // const result = await apiService.withdrawMoney(amount);
+      setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+      setShowWithdrawModal(false);
+      setWithdrawAmount('');
+      Alert.alert('Withdrawal Request', `₹${amount} withdrawal request submitted. Processing time: 5-10 minutes.`);
+    } else {
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+    }
+  };
+
+  const calculateDepositDetails = (amount: number) => {
+    const gst = Math.round(amount * 0.28);
+    const cashback = amount >= 2000 ? Math.round(amount * 0.05) : 0;
+    const total = amount + gst;
+    return { gst, cashback, total };
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
@@ -239,11 +274,17 @@ export default function App() {
 
             {/* Action Buttons */}
             <View style={styles.walletActions}>
-              <TouchableOpacity style={styles.addCashButton}>
+              <TouchableOpacity 
+                style={styles.addCashButton}
+                onPress={() => setShowAddCashModal(true)}
+              >
                 <Text style={styles.addCashButtonText}>ADD CASH</Text>
               </TouchableOpacity>
               
-              <TouchableOpacity style={styles.withdrawButton}>
+              <TouchableOpacity 
+                style={styles.withdrawButton}
+                onPress={() => setShowWithdrawModal(true)}
+              >
                 <Text style={styles.withdrawButtonText}>WITHDRAW</Text>
               </TouchableOpacity>
             </View>
@@ -522,6 +563,179 @@ export default function App() {
                   </TouchableOpacity>
                 </View>
               )}
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Add Cash Modal */}
+      <Modal
+        visible={showAddCashModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowAddCashModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.addCashModalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>💰 Add Money via UPI</Text>
+              <TouchableOpacity onPress={() => setShowAddCashModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.addCashContent}>
+              <Text style={styles.depositLabel}>Deposit Amount (₹)</Text>
+              <TextInput
+                style={styles.depositInput}
+                placeholder="Enter amount"
+                placeholderTextColor="#999"
+                value={depositAmount}
+                onChangeText={setDepositAmount}
+                keyboardType="numeric"
+              />
+
+              <View style={styles.quickAmountsGrid}>
+                {[100, 200, 500, 1000, 5000, 10000].map((amount) => (
+                  <TouchableOpacity
+                    key={amount}
+                    style={styles.quickAmountButton}
+                    onPress={() => setDepositAmount(amount.toString())}
+                  >
+                    <Text style={styles.quickAmountText}>₹{amount}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {depositAmount && parseFloat(depositAmount) >= 100 && (
+                <View style={styles.depositSummary}>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Deposit Amount (Excl. Govt. Tax)</Text>
+                    <Text style={styles.summaryValue}>₹{depositAmount}</Text>
+                  </View>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Govt. Tax (28% GST)</Text>
+                    <Text style={styles.summaryValue}>₹{calculateDepositDetails(parseFloat(depositAmount)).gst}</Text>
+                  </View>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Cashback Bonus</Text>
+                    <Text style={styles.summaryValueGreen}>+₹{calculateDepositDetails(parseFloat(depositAmount)).cashback}</Text>
+                  </View>
+                  <View style={styles.summaryDivider} />
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabelTotal}>Total (A + B)</Text>
+                    <Text style={styles.summaryValueTotal}>₹{calculateDepositDetails(parseFloat(depositAmount)).total}</Text>
+                  </View>
+                </View>
+              )}
+
+              <Text style={styles.paymentMethodLabel}>UPI Payment Method</Text>
+              <View style={styles.paymentMethods}>
+                <TouchableOpacity style={styles.paymentMethod}>
+                  <Text style={styles.paymentMethodText}>📱 PhonePe</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.paymentMethod}>
+                  <Text style={styles.paymentMethodText}>🟢 Google Pay</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.paymentMethod}>
+                  <Text style={styles.paymentMethodText}>💙 Paytm</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.depositInfo}>
+                <Text style={styles.depositInfoTitle}>📌 Deposit Information:</Text>
+                <Text style={styles.depositInfoText}>• Minimum deposit: ₹100</Text>
+                <Text style={styles.depositInfoText}>• Instant UPI deposits (Max ₹50,000)</Text>
+                <Text style={styles.depositInfoText}>• 28% GST applicable on all deposits</Text>
+                <Text style={styles.depositInfoText}>• 5% cashback on deposits above ₹2000</Text>
+                <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.depositButton, (!depositAmount || parseFloat(depositAmount) < 100) && styles.depositButtonDisabled]}
+                onPress={() => {
+                  const amount = parseFloat(depositAmount);
+                  if (amount >= 100) {
+                    handleAddCash(amount);
+                  } else {
+                    Alert.alert('Invalid Amount', 'Minimum deposit amount is ₹100');
+                  }
+                }}
+                disabled={!depositAmount || parseFloat(depositAmount) < 100}
+              >
+                <Text style={styles.depositButtonText}>
+                  {depositAmount && parseFloat(depositAmount) >= 100 
+                    ? `Pay ₹${calculateDepositDetails(parseFloat(depositAmount)).total}` 
+                    : 'Enter Amount'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Withdraw Modal */}
+      <Modal
+        visible={showWithdrawModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowWithdrawModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.withdrawModalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>💳 Withdraw Chips to Your Account</Text>
+              <TouchableOpacity onPress={() => setShowWithdrawModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.withdrawContent}>
+              <Text style={styles.withdrawLabel}>Amount (₹)</Text>
+              <TextInput
+                style={styles.withdrawInput}
+                placeholder="Enter amount"
+                placeholderTextColor="#999"
+                value={withdrawAmount}
+                onChangeText={setWithdrawAmount}
+                keyboardType="numeric"
+              />
+
+              <View style={styles.quickAmountsGrid}>
+                {[100, 500, 1000, 2000, 5000, 10000].map((amount) => (
+                  <TouchableOpacity
+                    key={amount}
+                    style={styles.quickAmountButton}
+                    onPress={() => setWithdrawAmount(amount.toString())}
+                  >
+                    <Text style={styles.quickAmountText}>₹{amount}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TouchableOpacity
+                style={[styles.withdrawRequestButton, (!withdrawAmount || parseFloat(withdrawAmount) < 100) && styles.withdrawButtonDisabled]}
+                onPress={() => {
+                  const amount = parseFloat(withdrawAmount);
+                  if (amount >= 100) {
+                    handleWithdraw(amount);
+                  } else {
+                    Alert.alert('Invalid Amount', 'Minimum withdrawal amount is ₹100');
+                  }
+                }}
+                disabled={!withdrawAmount || parseFloat(withdrawAmount) < 100}
+              >
+                <Text style={styles.withdrawRequestButtonText}>REQUEST WITHDRAWAL</Text>
+              </TouchableOpacity>
+
+              <View style={styles.withdrawInfo}>
+                <Text style={styles.withdrawInfoTitle}>ℹ️ Withdrawal Information:</Text>
+                <Text style={styles.withdrawInfoText}>• Minimum withdrawal: ₹100</Text>
+                <Text style={styles.withdrawInfoText}>• Maximum per request: ₹30,000</Text>
+                <Text style={styles.withdrawInfoText}>• Processing time: 5 to 10 minutes</Text>
+                <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
+                <Text style={styles.withdrawInfoText}>• Bank charges may apply</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -873,5 +1087,222 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     textDecorationLine: 'underline',
+  },
+  // Add Cash Modal Styles
+  addCashModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '95%',
+    maxHeight: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  addCashContent: {
+    flex: 1,
+    padding: 20,
+  },
+  depositLabel: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  depositInput: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#FFD700',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  quickAmountsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  quickAmountButton: {
+    width: '30%',
+    backgroundColor: '#1a1a1a',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#00FF88',
+  },
+  quickAmountText: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  depositSummary: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  summaryLabel: {
+    color: '#999',
+    fontSize: 14,
+  },
+  summaryValue: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  summaryValueGreen: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  summaryLabelTotal: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  summaryValueTotal: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  summaryDivider: {
+    height: 1,
+    backgroundColor: '#333',
+    marginVertical: 8,
+  },
+  paymentMethodLabel: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  paymentMethods: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  paymentMethod: {
+    backgroundColor: '#1a1a1a',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  paymentMethodText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  depositInfo: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  depositInfoTitle: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  depositInfoText: {
+    color: '#999',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  depositButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  depositButtonDisabled: {
+    backgroundColor: '#333',
+  },
+  depositButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  // Withdraw Modal Styles
+  withdrawModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '95%',
+    maxHeight: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  withdrawContent: {
+    flex: 1,
+    padding: 20,
+  },
+  withdrawLabel: {
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  withdrawInput: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  withdrawRequestButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  withdrawButtonDisabled: {
+    backgroundColor: '#333',
+  },
+  withdrawRequestButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  withdrawInfo: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  withdrawInfoTitle: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  withdrawInfoText: {
+    color: '#999',
+    fontSize: 12,
+    marginBottom: 4,
   },
 });
