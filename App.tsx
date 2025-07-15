@@ -407,10 +407,11 @@ export default function App() {
         );
       case 'mybets':
       case 'history':
+      case 'bets':
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>📋 My Bets</Text>
-            {betList.length > 0 ? (
+            {betList && betList.length > 0 ? (
               <FlatList
                 data={betList}
                 renderItem={({ item }) => (
@@ -420,7 +421,7 @@ export default function App() {
                     <Text style={styles.historyAmount}>₹{item.amount}</Text>
                   </View>
                 )}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
               />
             ) : (
               <Text style={styles.noHistory}>कोई bet history नहीं है</Text>
@@ -749,11 +750,13 @@ export default function App() {
         amount={withdrawAmount}
         onClose={handleWithdrawSuccessClose}
       />
-      <BetHistory 
-        visible={activeTab === 'bets'} 
-        betHistory={betList}
-        onClose={() => setActiveTab('home')}
-      />
+      {activeTab === 'bets' && (
+        <BetHistory 
+          visible={true} 
+          betHistory={betList || []}
+          onClose={() => setActiveTab('home')}
+        />
+      )}
 
       <BetSuccessModal
         visible={showBetSuccess}
