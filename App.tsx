@@ -9,6 +9,7 @@ import BottomMenu from './components/BottomMenu';
 import BettingModal from './components/BettingModal';
 import WalletOperations from './components/WalletOperations';
 import PaymentSuccess from './components/PaymentSuccess';
+import WithdrawSuccess from './components/WithdrawSuccess';
 
 // Import API service
 import { apiService } from './services/apiService';
@@ -38,6 +39,7 @@ export default function App() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [utrNumber, setUtrNumber] = useState('');
   const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
+  const [showWithdrawSuccessModal, setShowWithdrawSuccessModal] = useState(false);
   const [countdownSeconds, setCountdownSeconds] = useState(5);
 
   const gameCards = [
@@ -228,11 +230,16 @@ export default function App() {
       // const result = await apiService.withdrawMoney(amount);
       setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
       setShowWithdrawModal(false);
-      setWithdrawAmount('');
-      Alert.alert('Withdrawal Request', `₹${amount} withdrawal request submitted. Processing time: 5-10 minutes.`);
+      setShowWithdrawSuccessModal(true);
     } else {
       Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
     }
+  };
+
+  const handleWithdrawSuccessClose = () => {
+    setShowWithdrawSuccessModal(false);
+    setWithdrawAmount('');
+    setActiveTab('home');
   };
 
   const calculateDepositDetails = (amount: number) => {
@@ -629,6 +636,13 @@ export default function App() {
         paymentMethod={selectedPaymentMethod}
         onClose={handlePaymentSuccessClose}
       />
+
+      {/* Withdraw Success Component */}
+      <WithdrawSuccess
+        visible={showWithdrawSuccessModal}
+        amount={withdrawAmount}
+        onClose={handleWithdrawSuccessClose}
+      />
     </SafeAreaView>
   );
 }
@@ -720,6 +734,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     gap: 15,
+    marginBottom: 100, // Add margin to avoid menu button overlap
+    position: 'relative',
+    zIndex: 1,
   },
   addCashButton: {
     flex: 1,
