@@ -32,6 +32,9 @@ export default function App() {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [utrNumber, setUtrNumber] = useState('');
 
   const gameCards = [
     {
@@ -233,6 +236,40 @@ export default function App() {
     const cashback = amount >= 2000 ? Math.round(amount * 0.05) : 0;
     const total = amount + gst;
     return { gst, cashback, total };
+  };
+
+  const handlePaymentMethodSelect = (method: string) => {
+    if (!depositAmount || parseFloat(depositAmount) < 100) {
+      Alert.alert('Invalid Amount', 'Please enter minimum ₹100 to proceed');
+      return;
+    }
+    setSelectedPaymentMethod(method);
+    setShowPaymentModal(true);
+  };
+
+  const handleUTRConfirmation = () => {
+    if (utrNumber.length !== 12) {
+      Alert.alert('Invalid UTR', 'Please enter a valid 12-digit UTR number');
+      return;
+    }
+
+    // Process payment
+    const amount = parseFloat(depositAmount);
+    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+    setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
+    
+    // Reset states
+    setShowPaymentModal(false);
+    setShowAddCashModal(false);
+    setDepositAmount('');
+    setUtrNumber('');
+    setSelectedPaymentMethod('');
+    
+    Alert.alert(
+      'Payment Successful!', 
+      'Your payment has been confirmed. Amount will be added to your wallet within 5 minutes after admin verification.',
+      [{ text: 'OK' }]
+    );
   };
 
   const renderContent = () => {
@@ -631,13 +668,22 @@ export default function App() {
 
               <Text style={styles.paymentMethodLabel}>UPI Payment Method</Text>
               <View style={styles.paymentMethods}>
-                <TouchableOpacity style={styles.paymentMethod}>
+                <TouchableOpacity 
+                  style={styles.paymentMethod}
+                  onPress={() => handlePaymentMethodSelect('PhonePe')}
+                >
                   <Text style={styles.paymentMethodText}>📱 PhonePe</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.paymentMethod}>
+                <TouchableOpacity 
+                  style={styles.paymentMethod}
+                  onPress={() => handlePaymentMethodSelect('Google Pay')}
+                >
                   <Text style={styles.paymentMethodText}>🟢 Google Pay</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.paymentMethod}>
+                <TouchableOpacity 
+                  style={styles.paymentMethod}
+                  onPress={() => handlePaymentMethodSelect('Paytm')}
+                >
                   <Text style={styles.paymentMethodText}>💙 Paytm</Text>
                 </TouchableOpacity>
               </View>
@@ -653,25 +699,68 @@ export default function App() {
                   <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
                 </View>
               )}
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Payment QR Code Modal */}
+      <Modal
+        visible={showPaymentModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowPaymentModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.paymentQRModalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Complete Your Payment</Text>
+              <TouchableOpacity onPress={() => setShowPaymentModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.paymentQRContent}>
+              {/* QR Code Display */}
+              <View style={styles.qrCodeContainer}>
+                <View style={styles.qrCodePlaceholder}>
+                  <View style={styles.qrSquare} />
+                  <View style={styles.qrSquare} />
+                  <View style={styles.qrSquare} />
+                  <View style={styles.qrSquare} />
+                </View>
+              </View>
+
+              <Text style={styles.scanInstructions}>
+                Scan this code using <Text style={styles.highlightText}>{selectedPaymentMethod}</Text> to pay ₹{depositAmount && calculateDepositDetails(parseFloat(depositAmount)).total}
+              </Text>
+
+              {/* UTR Input */}
+              <Text style={styles.utrLabel}>UTR Number</Text>
+              <TextInput
+                style={styles.utrInput}
+                placeholder="Enter 12-digit UTR"
+                placeholderTextColor="#999"
+                value={utrNumber}
+                onChangeText={setUtrNumber}
+                keyboardType="numeric"
+                maxLength={12}
+              />
 
               <TouchableOpacity
-                style={[styles.depositButton, (!depositAmount || parseFloat(depositAmount) < 100) && styles.depositButtonDisabled]}
-                onPress={() => {
-                  const amount = parseFloat(depositAmount);
-                  if (amount >= 100) {
-                    handleAddCash(amount);
-                  } else {
-                    Alert.alert('Invalid Amount', 'Minimum deposit amount is ₹100');
-                  }
-                }}
-                disabled={!depositAmount || parseFloat(depositAmount) < 100}
+                style={[styles.confirmPaymentButton, utrNumber.length !== 12 && styles.confirmPaymentButtonDisabled]}
+                onPress={handleUTRConfirmation}
+                disabled={utrNumber.length !== 12}
               >
-                <Text style={styles.depositButtonText}>
-                  {depositAmount && parseFloat(depositAmount) >= 100 
-                    ? `Pay ₹${calculateDepositDetails(parseFloat(depositAmount)).total}` 
-                    : 'Enter Amount'}
-                </Text>
+                <Text style={styles.confirmPaymentButtonText}>CONFIRM PAYMENT</Text>
               </TouchableOpacity>
+
+              {/* UTR Help */}
+              <View style={styles.utrHelp}>
+                <Text style={styles.utrHelpTitle}>How to Find Your UTR Number:</Text>
+                <Text style={styles.utrHelpText}>• Check your bank SMS for the transaction confirmation</Text>
+                <Text style={styles.utrHelpText}>• Look for a 12-digit number labeled "UTR" or "Ref No"</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -1251,6 +1340,110 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     letterSpacing: 0.5,
     flexWrap: 'wrap',
+  },
+  // Payment QR Modal Styles
+  paymentQRModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '95%',
+    maxHeight: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  paymentQRContent: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+  },
+  qrCodeContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: '#FFD700',
+  },
+  qrCodePlaceholder: {
+    width: 200,
+    height: 200,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+  },
+  qrSquare: {
+    width: '48%',
+    height: '48%',
+    backgroundColor: '#ccc',
+    margin: '1%',
+    borderRadius: 5,
+  },
+  scanInstructions: {
+    color: '#FFD700',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 30,
+    lineHeight: 22,
+  },
+  highlightText: {
+    color: '#00FF88',
+    fontWeight: 'bold',
+  },
+  utrLabel: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+  },
+  utrInput: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    color: '#fff',
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  confirmPaymentButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  confirmPaymentButtonDisabled: {
+    backgroundColor: '#333',
+  },
+  confirmPaymentButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  utrHelp: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#333',
+    width: '100%',
+  },
+  utrHelpTitle: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  utrHelpText: {
+    color: '#999',
+    fontSize: 12,
+    marginBottom: 4,
   },
   // Withdraw Modal Styles
   withdrawModalContainer: {
