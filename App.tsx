@@ -424,37 +424,17 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
 
-      {/* Enhanced Header */}
+      {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            <View style={styles.brandContainer}>
-              <Text style={styles.brandEmoji}>👑</Text>
-              <View>
-                <Text style={styles.headerTitle}>VN Gaming</Text>
-                <Text style={styles.headerSubtitle}>भारत का #1 गेमिंग प्लेटफॉर्म</Text>
-              </View>
-            </View>
-          </View>
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>👑 VN Gaming</Text>
+        </View>
 
-          <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.walletButton}>
-              <View style={styles.walletIcon}>
-                <Text style={styles.walletEmojiIcon}>💰</Text>
-              </View>
-              <View style={styles.walletInfo}>
-                <Text style={styles.walletLabel}>Balance</Text>
-                <Text style={styles.walletAmount}>{wallet}</Text>
-              </View>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.notificationButton}>
-              <Ionicons name="notifications" size={20} color="#FFD700" />
-              <View style={styles.notificationBadge}>
-                <Text style={styles.notificationBadgeText}>3</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.walletButton}>
+            <Text style={styles.walletLabel}>Wallet</Text>
+            <Text style={styles.walletAmount}>{wallet}</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -469,11 +449,11 @@ export default function App() {
         <Text style={styles.bottomMenuText}>Menu</Text>
       </TouchableOpacity>
 
-      {/* Enhanced Side Menu Popup */}
+      {/* Side Menu */}
       {showSideMenu && (
         <Modal
           transparent={true}
-          animationType="fade"
+          animationType="none"
           visible={showSideMenu}
           onRequestClose={toggleSideMenu}
         >
@@ -481,41 +461,16 @@ export default function App() {
             <TouchableOpacity 
               style={styles.sideMenuBackdrop} 
               onPress={toggleSideMenu}
-              activeOpacity={1}
             />
             <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
-              {/* Enhanced Menu Header */}
               <View style={styles.sideMenuHeader}>
-                <View style={styles.menuHeaderContent}>
-                  <View style={styles.menuBrandSection}>
-                    <Text style={styles.menuBrandEmoji}>👑</Text>
-                    <View>
-                      <Text style={styles.sideMenuTitle}>VN Gaming</Text>
-                      <Text style={styles.menuSubtitle}>आपका भरोसेमंद साथी</Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity 
-                    style={styles.closeButton}
-                    onPress={toggleSideMenu}
-                  >
-                    <Ionicons name="close-circle" size={28} color="#FFD700" />
-                  </TouchableOpacity>
-                </View>
+                <Text style={styles.sideMenuTitle}>👑 Menu</Text>
+                <TouchableOpacity onPress={toggleSideMenu}>
+                  <Ionicons name="close" size={24} color="#FFD700" />
+                </TouchableOpacity>
               </View>
               
-              {/* User Profile Section */}
-              <View style={styles.userProfileSection}>
-                <View style={styles.userAvatar}>
-                  <Text style={styles.userAvatarText}>👤</Text>
-                </View>
-                <View style={styles.userInfo}>
-                  <Text style={styles.userName}>Welcome, Player!</Text>
-                  <Text style={styles.userLevel}>Level 5 • VIP Member</Text>
-                </View>
-              </View>
-              
-              {/* Menu Items */}
-              <ScrollView style={styles.sideMenuContent} showsVerticalScrollIndicator={false}>
+              <ScrollView style={styles.sideMenuContent}>
                 {menuItems.map((item, index) => (
                   <TouchableOpacity
                     key={index}
@@ -525,33 +480,20 @@ export default function App() {
                     ]}
                     onPress={() => handleMenuItemPress(item.key)}
                   >
-                    <View style={styles.menuItemIcon}>
-                      <Ionicons 
-                        name={item.icon} 
-                        size={22} 
-                        color={activeTab === item.key ? '#000' : '#FFD700'} 
-                      />
-                    </View>
+                    <Ionicons 
+                      name={item.icon} 
+                      size={20} 
+                      color={activeTab === item.key ? '#000' : '#FFD700'} 
+                    />
                     <Text style={[
                       styles.sideMenuItemText,
                       activeTab === item.key && styles.activeSideMenuItemText
                     ]}>
                       {item.title}
                     </Text>
-                    <Ionicons 
-                      name="chevron-forward" 
-                      size={18} 
-                      color={activeTab === item.key ? '#000' : '#666'} 
-                    />
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-              
-              {/* Menu Footer */}
-              <View style={styles.menuFooter}>
-                <Text style={styles.menuFooterText}>Version 2.1.0</Text>
-                <Text style={styles.menuFooterSubtext}>Made with ❤️ in India</Text>
-              </View>
             </Animated.View>
           </View>
         </Modal>
@@ -743,107 +685,48 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0a0a',
   },
   header: {
-    backgroundColor: '#1a1a1a',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 8,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  brandContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  brandEmoji: {
-    fontSize: 32,
-    marginRight: 12,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    letterSpacing: 1,
-  },
-  headerSubtitle: {
-    fontSize: 11,
-    color: '#FFD700',
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
-  },
-  walletButton: {
-    backgroundColor: '#2a4a2a',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 12,
+    backgroundColor: '#1a1a1a',
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  menuButton: {
+    padding: 8,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#00FF88',
-    shadowColor: '#00FF88',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 3,
+    borderColor: '#FFD700',
   },
-  walletIcon: {
-    marginRight: 8,
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
   },
-  walletEmojiIcon: {
-    fontSize: 18,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFD700',
   },
-  walletInfo: {
-    alignItems: 'flex-start',
+  headerRight: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  walletButton: {
+    backgroundColor: '#2a4a2a',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
   },
   walletLabel: {
-    color: '#ccc',
-    fontSize: 11,
-    marginBottom: 2,
+    color: '#fff',
+    fontSize: 12,
   },
   walletAmount: {
     color: '#00FF88',
     fontWeight: 'bold',
     fontSize: 14,
-  },
-  notificationButton: {
-    position: 'relative',
-    backgroundColor: '#2a2a2a',
-    padding: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: '#FF4444',
-    borderRadius: 10,
-    minWidth: 18,
-    height: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationBadgeText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
   },
   content: {
     flex: 1,
@@ -878,149 +761,56 @@ const styles = StyleSheet.create({
   },
   sideMenuOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flexDirection: 'row',
   },
   sideMenuBackdrop: {
     flex: 1,
   },
   sideMenu: {
-    width: SCREEN_WIDTH * 0.85,
+    width: SCREEN_WIDTH * 0.8,
     backgroundColor: '#1a1a1a',
     height: '100%',
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
-    borderRightWidth: 3,
-    borderRightColor: '#FFD700',
-    shadowColor: '#000',
-    shadowOffset: { width: 5, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 15,
+    borderRightWidth: 1,
+    borderRightColor: '#333',
   },
   sideMenuHeader: {
-    backgroundColor: '#2a2a2a',
-    paddingVertical: 25,
-    paddingHorizontal: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFD700',
-    borderTopRightRadius: 25,
-  },
-  menuHeaderContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  menuBrandSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  menuBrandEmoji: {
-    fontSize: 28,
-    marginRight: 12,
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
   },
   sideMenuTitle: {
     color: '#FFD700',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    letterSpacing: 1,
-  },
-  menuSubtitle: {
-    color: '#FFD700',
-    fontSize: 12,
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  closeButton: {
-    padding: 5,
-  },
-  userProfileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2a2a4a',
-    margin: 15,
-    padding: 15,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#9B59B6',
-  },
-  userAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#FFD700',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  userAvatarText: {
-    fontSize: 24,
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  userLevel: {
-    color: '#9B59B6',
-    fontSize: 12,
-    marginTop: 2,
   },
   sideMenuContent: {
     flex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   sideMenuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    marginVertical: 2,
-    marginHorizontal: 5,
-    borderRadius: 12,
-    borderBottomWidth: 0,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
   },
   activeSideMenuItem: {
     backgroundColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  menuItemIcon: {
-    width: 30,
-    alignItems: 'center',
   },
   sideMenuItemText: {
     color: '#FFD700',
     fontSize: 16,
     marginLeft: 15,
     fontWeight: '500',
-    flex: 1,
   },
   activeSideMenuItemText: {
     color: '#000',
     fontWeight: 'bold',
-  },
-  menuFooter: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-    alignItems: 'center',
-  },
-  menuFooterText: {
-    color: '#666',
-    fontSize: 12,
-  },
-  menuFooterSubtext: {
-    color: '#666',
-    fontSize: 10,
-    marginTop: 2,
   },
   tabContent: {
     flex: 1,
