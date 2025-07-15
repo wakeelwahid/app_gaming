@@ -1,4 +1,3 @@
-
 import { ApiResponse } from './apiService';
 
 export interface WalletBalance {
@@ -35,7 +34,7 @@ export interface WithdrawalRequest {
 }
 
 class WalletService {
-  private baseUrl = 'https://your-api-url.com/api/wallet';
+  private baseUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/wallet` : 'https://api.example.com/api/wallet';
 
   private async makeRequest<T>(
     endpoint: string,

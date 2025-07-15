@@ -26,7 +26,7 @@ export interface RegisterData {
 }
 
 class UserService {
-  private baseUrl = 'https://your-api-url.com/api/user';
+  private baseUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/user` : 'https://api.example.com/api/user';
 
   private async makeRequest<T>(
     endpoint: string,
@@ -70,12 +70,26 @@ class UserService {
   }
 
   private getToken(): string {
-    // In a real app, get token from secure storage
-    return localStorage.getItem('authToken') || '';
+    // In React Native, use AsyncStorage or secure storage
+    try {
+      if (typeof localStorage !== 'undefined') {
+        return localStorage.getItem('authToken') || '';
+      }
+      return '';
+    } catch (error) {
+      console.error('Error getting token:', error);
+      return '';
+    }
   }
 
   private setToken(token: string): void {
-    localStorage.setItem('authToken', token);
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('authToken', token);
+      }
+    } catch (error) {
+      console.error('Error setting token:', error);
+    }
   }
 
   // Authentication APIs
@@ -100,9 +114,16 @@ class UserService {
   }
 
   async logout(): Promise<ApiResponse<{ success: boolean }>> {
-    const result = await this.makeRequest<{ success: boolean }>('/logout', 'POST');
-    localStorage.removeItem('authToken');
-    return result;
+    try {
+      const result = await this.makeRequest<{ success: boolean }>('/logout', 'POST');
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('authToken');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error during logout:', error);
+      return { success: false, error: 'Logout failed' };
+    }
   }
 
   // Profile APIs

@@ -1,4 +1,3 @@
-
 import { ApiResponse } from './apiService';
 
 export interface Game {
@@ -44,7 +43,7 @@ export interface GameResult {
 }
 
 class GameService {
-  private baseUrl = 'https://your-api-url.com/api/games';
+  private baseUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/games` : 'https://api.example.com/api/games';
 
   private async makeRequest<T>(
     endpoint: string,

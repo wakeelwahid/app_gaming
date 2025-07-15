@@ -34,7 +34,7 @@ interface BetData {
 }
 
 class ApiService {
-  private baseUrl = 'https://your-api-url.com/api'; // Replace with your actual API URL
+  private baseUrl = process.env.REACT_APP_API_URL || 'https://api.example.com/api'; // Use environment variable or fallback
 
   // Generic API call method
   private async makeRequest<T>(
