@@ -8,6 +8,7 @@ import HomeScreen from './components/HomeScreen';
 import BottomMenu from './components/BottomMenu';
 import BettingModal from './components/BettingModal';
 import BetSuccessModal from './components/BetSuccessModal';
+import MyBet from './components/MyBet';
 import WalletOperations from './components/WalletOperations';
 import PaymentSuccess from './components/PaymentSuccess';
 import WithdrawSuccess from './components/WithdrawSuccess';
@@ -92,7 +93,7 @@ export default function App() {
       timestamp: Date.now() - 3600000,
       sessionTime: '09:00 PM - 04:50 PM'
     },
-    
+
     // Faridabad bets (Mixed results)
     {
       id: '7',
@@ -199,7 +200,7 @@ export default function App() {
       timestamp: Date.now() - 7200000,
       sessionTime: '10:00 PM - 06:40 PM'
     },
-    
+
     // Ghaziabad bets (Yesterday)
     {
       id: '17',
@@ -264,7 +265,7 @@ export default function App() {
       timestamp: Date.now() - 86400000,
       sessionTime: '11:00 PM - 07:50 PM'
     },
-    
+
     // Gali bets (Current session)
     {
       id: '23',
@@ -316,7 +317,7 @@ export default function App() {
       timestamp: Date.now() - 1800000,
       sessionTime: '04:00 AM - 10:30 PM'
     },
-    
+
     // Disawer bets (Mixed results)
     {
       id: '28',
@@ -371,7 +372,7 @@ export default function App() {
       timestamp: Date.now() - 10800000,
       sessionTime: '07:00 AM - 02:30 AM'
     },
-    
+
     // Diamond King bets (Multiple sessions)
     {
       id: '33',
@@ -436,7 +437,7 @@ export default function App() {
       timestamp: Date.now() - 14400000,
       sessionTime: '06:00 AM - 10:10 PM'
     },
-    
+
     // More Jaipur King bets (Previous sessions)
     {
       id: '39',
@@ -480,7 +481,7 @@ export default function App() {
       timestamp: Date.now() - 172800000,
       sessionTime: '09:00 PM - 04:50 PM'
     },
-    
+
     // More Faridabad bets (Different amounts)
     {
       id: '43',
@@ -514,7 +515,7 @@ export default function App() {
       timestamp: Date.now() - 259200000,
       sessionTime: '10:00 PM - 06:40 PM'
     },
-    
+
     // Additional mixed results for variety
     {
       id: '46',
@@ -886,8 +887,7 @@ export default function App() {
     setShowPaymentSuccessModal(false);
     setActiveTab('home');
     setUtrNumber('');
-    setDepositAmount('');
-    setSelectedPaymentMethod('');
+    setDepositAmount('');    setSelectedPaymentMethod('');
     setShowAddCashModal(false);
   };
 
@@ -985,26 +985,8 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-        return (
-          <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>📋 My Bets</Text>
-            {betList && betList.length > 0 ? (
-              <FlatList
-                data={betList}
-                renderItem={({ item }) => (
-                  <View style={styles.historyItem}>
-                    <Text style={styles.historyNumber}>{item.number}</Text>
-                    <Text style={styles.historyGame}>{item.game}</Text>
-                    <Text style={styles.historyAmount}>₹{item.amount}</Text>
-                  </View>
-                )}
-                keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-              />
-            ) : (
-              <Text style={styles.noHistory}>कोई bet history नहीं है</Text>
-            )}
-          </View>
-        );
+        
+        return <MyBet />;
       case 'transactions':
         return (
           <View style={styles.tabContent}>
@@ -1950,7 +1932,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     color: '#fff',
     fontSize: 16,
-    width: '100%',
+    width: ''100%',
     textAlign: 'center',
     marginBottom: 20,
   },
