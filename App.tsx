@@ -642,14 +642,17 @@ export default function App() {
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.depositInfo}>
-                <Text style={styles.depositInfoTitle}>📌 Deposit Information:</Text>
-                <Text style={styles.depositInfoText}>• Minimum deposit: ₹100</Text>
-                <Text style={styles.depositInfoText}>• Instant UPI deposits (Max ₹50,000)</Text>
-                <Text style={styles.depositInfoText}>• 28% GST applicable on all deposits</Text>
-                <Text style={styles.depositInfoText}>• 5% cashback on deposits above ₹2000</Text>
-                <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
-              </View>
+              {/* Show deposit info only when no amount is entered or amount is below 100 */}
+              {(!depositAmount || parseFloat(depositAmount) < 100) && (
+                <View style={styles.depositInfo}>
+                  <Text style={styles.depositInfoTitle}>📌 Deposit Information:</Text>
+                  <Text style={styles.depositInfoText}>• Minimum deposit: ₹100</Text>
+                  <Text style={styles.depositInfoText}>• Instant UPI deposits (Max ₹50,000)</Text>
+                  <Text style={styles.depositInfoText}>• 28% GST applicable on all deposits</Text>
+                  <Text style={styles.depositInfoText}>• 5% cashback on deposits above ₹2000</Text>
+                  <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
+                </View>
+              )}
 
               <TouchableOpacity
                 style={[styles.depositButton, (!depositAmount || parseFloat(depositAmount) < 100) && styles.depositButtonDisabled]}
