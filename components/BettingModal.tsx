@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface BettingModalProps {
@@ -23,6 +23,10 @@ export default function BettingModal({
   onNumberSelect,
   onRemoveBet
 }: BettingModalProps) {
+  const [showAmountPopup, setShowAmountPopup] = React.useState(false);
+  const [selectedNumber, setSelectedNumber] = React.useState<any>(null);
+  const [selectedType, setSelectedType] = React.useState<string>('');
+  const [customAmount, setCustomAmount] = React.useState<string>('');
   const getTotalBetAmount = () => {
     return betList.reduce((total, bet) => total + bet.amount, 0);
   };
@@ -43,7 +47,9 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(i, 'numbers', 0); // Just select, don't place bet
+              setSelectedNumber(i);
+              setSelectedType('numbers');
+              setShowAmountPopup(true);
             }
           }}
         >
@@ -80,7 +86,9 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(numberKey, 'andar', 0); // Just select, don't place bet
+              setSelectedNumber(numberKey);
+              setSelectedType('andar');
+              setShowAmountPopup(true);
             }
           }}
         >
@@ -117,7 +125,9 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(numberKey, 'bahar', 0); // Just select, don't place bet
+              setSelectedNumber(numberKey);
+              setSelectedType('bahar');
+              setShowAmountPopup(true);
             }
           }}
         >
@@ -247,36 +257,12 @@ export default function BettingModal({
 
             </ScrollView>
 
-            {/* Fixed Bottom Section */}
+            {/* Fixed Bottom Section - Only Place Bet Button */}
             {betList.length > 0 && (
               <View style={styles.fixedBottomSection}>
-                <View style={styles.betAmountSection}>
-                  <Text style={styles.betAmountTitle}>💰 Select Bet Amount:</Text>
-                  <View style={styles.amountButtonsGrid}>
-                    {[10, 50, 100, 200, 500, 1000].map((amount) => (
-                      <TouchableOpacity
-                        key={amount}
-                        style={styles.amountButton}
-                        onPress={() => {
-                          betList.forEach(bet => {
-                            onNumberSelect(bet.number, bet.type, amount);
-                          });
-                        }}
-                      >
-                        <Text style={styles.amountButtonText}>₹{amount}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-
                 <TouchableOpacity 
                   style={styles.placeBetButton}
                   onPress={() => {
-                    betList.forEach(bet => {
-                      if (bet.amount > 0) {
-                        onNumberSelect(bet.number, bet.type, bet.amount);
-                      }
-                    });
                     onClose();
                   }}
                 >
@@ -289,6 +275,71 @@ export default function BettingModal({
           </View>
         </View>
       </View>
+
+      {/* Amount Selection Popup */}
+      <Modal
+        visible={showAmountPopup}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowAmountPopup(false)}
+      >
+        <View style={styles.popupOverlay}>
+          <View style={styles.amountPopup}>
+            <View style={styles.popupHeader}>
+              <Text style={styles.popupTitle}>
+                Bet Amount - {selectedNumber}
+              </Text>
+              <TouchableOpacity onPress={() => setShowAmountPopup(false)}>
+                <Ionicons name="close" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.popupContent}>
+              <Text style={styles.amountLabel}>Quick Select:</Text>
+              <View style={styles.quickAmountGrid}>
+                {[10, 50, 100, 200, 500, 1000].map((amount) => (
+                  <TouchableOpacity
+                    key={amount}
+                    style={styles.quickAmountButton}
+                    onPress={() => {
+                      onNumberSelect(selectedNumber, selectedType, amount);
+                      setShowAmountPopup(false);
+                    }}
+                  >
+                    <Text style={styles.quickAmountText}>₹{amount}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text style={styles.amountLabel}>Custom Amount (₹10 - ₹5000):</Text>
+              <TextInput
+                style={styles.customAmountInput}
+                placeholder="Enter amount"
+                placeholderTextColor="#999"
+                value={customAmount}
+                onChangeText={setCustomAmount}
+                keyboardType="numeric"
+              />
+
+              <TouchableOpacity 
+                style={styles.confirmButton}
+                onPress={() => {
+                  const amount = parseInt(customAmount);
+                  if (amount >= 10 && amount <= 5000) {
+                    onNumberSelect(selectedNumber, selectedType, amount);
+                    setCustomAmount('');
+                    setShowAmountPopup(false);
+                  } else {
+                    Alert.alert('Invalid Amount', 'Please enter amount between ₹10 and ₹5000');
+                  }
+                }}
+              >
+                <Text style={styles.confirmButtonText}>Confirm Bet</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }
@@ -688,6 +739,86 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   placeBetButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  popupOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  amountPopup: {
+    backgroundColor: '#1a1a1a',
+    width: '90%',
+    maxWidth: 400,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  popupHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  popupTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    flex: 1,
+  },
+  popupContent: {
+    padding: 20,
+  },
+  amountLabel: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  quickAmountGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    gap: 8,
+  },
+  quickAmountButton: {
+    width: '30%',
+    backgroundColor: '#2a2a2a',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00FF88',
+  },
+  quickAmountText: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  customAmountInput: {
+    backgroundColor: '#2a2a2a',
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  confirmButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
