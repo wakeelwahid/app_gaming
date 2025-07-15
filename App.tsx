@@ -953,7 +953,6 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     marginBottom: 10,
   },
-  ```text
   profilePhone: {
     color: '#999',
     fontSize: 16,
