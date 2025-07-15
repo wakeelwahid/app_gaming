@@ -50,34 +50,60 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
       }
     };
 
+    const getBetChipStyle = (type: string, status: string) => {
+      let baseStyle = styles.betChip;
+      
+      if (type?.toLowerCase() === 'andar') {
+        baseStyle = [styles.betChip, styles.andarChip];
+      } else if (type?.toLowerCase() === 'bahar') {
+        baseStyle = [styles.betChip, styles.baharChip];
+      } else {
+        baseStyle = [styles.betChip, styles.numberChip];
+      }
+
+      // Add status-based styling
+      if (status?.toLowerCase() === 'win') {
+        baseStyle = [...baseStyle, styles.winChip];
+      } else if (status?.toLowerCase() === 'loss') {
+        baseStyle = [...baseStyle, styles.lossChip];
+      }
+
+      return baseStyle;
+    };
+
     return (
       <View style={styles.betItem}>
         <View style={styles.betHeader}>
-          <View style={styles.betNumberContainer}>
+          <View style={styles.gameInfoContainer}>
             <Text style={styles.betIcon}>{getTypeIcon(item.type)}</Text>
-            <View>
-              <Text style={styles.betNumber}>Number: {item.number}</Text>
+            <View style={styles.gameDetails}>
               <Text style={styles.betGame}>{item.game}</Text>
+              <Text style={styles.betTime}>
+                {item.timestamp ? new Date(item.timestamp).toLocaleString('hi-IN') : 'Unknown time'}
+              </Text>
             </View>
           </View>
-          <View style={styles.betAmountContainer}>
-            <Text style={styles.betAmount}>₹{item.amount}</Text>
-            {item.winAmount && (
+          <View style={styles.statusContainer}>
+            <Text style={[styles.betStatus, { color: getStatusColor(item.status) }]}>
+              {item.status || 'Pending'}
+            </Text>
+            {item.winAmount && item.winAmount > 0 && (
               <Text style={styles.winAmount}>Win: ₹{item.winAmount}</Text>
             )}
           </View>
         </View>
 
-        <View style={styles.betDetails}>
-          <View style={styles.betDetailRow}>
-            <Text style={styles.betType}>Type: {item.type}</Text>
-            <Text style={[styles.betStatus, { color: getStatusColor(item.status) }]}>
-              {item.status || 'Pending'}
+        {/* Bet Number Chip Display */}
+        <View style={styles.betChipContainer}>
+          <View style={getBetChipStyle(item.type, item.status)}>
+            <Text style={styles.betChipNumber}>{item.number}</Text>
+            <Text style={styles.betChipAmount}>₹{item.amount}</Text>
+          </View>
+          <View style={styles.betTypeContainer}>
+            <Text style={styles.betTypeText}>
+              {item.type?.charAt(0).toUpperCase() + item.type?.slice(1)} Bet
             </Text>
           </View>
-          <Text style={styles.betTime}>
-            {item.timestamp ? new Date(item.timestamp).toLocaleString('hi-IN') : 'Unknown time'}
-          </Text>
         </View>
       </View>
     );
@@ -250,9 +276,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  betNumberContainer: {
+  gameInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
@@ -261,49 +287,88 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 10,
   },
-  betNumber: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
+  gameDetails: {
+    flex: 1,
   },
   betGame: {
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight: 'bold',
     color: '#4A90E2',
-    marginTop: 2,
+    marginBottom: 2,
   },
-  betAmountContainer: {
+  betTime: {
+    fontSize: 11,
+    color: '#666',
+  },
+  statusContainer: {
     alignItems: 'flex-end',
   },
-  betAmount: {
-    fontSize: 16,
+  betStatus: {
+    fontSize: 12,
     fontWeight: 'bold',
-    color: '#00FF88',
+    marginBottom: 2,
   },
   winAmount: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#FFD700',
-    marginTop: 2,
   },
-  betDetails: {
-    gap: 5,
-  },
-  betDetailRow: {
+  betChipContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  betType: {
-    fontSize: 12,
-    color: '#999',
+  betChip: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 15,
+    alignItems: 'center',
+    minWidth: 80,
+    borderWidth: 2,
   },
-  betStatus: {
-    fontSize: 12,
+  numberChip: {
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
+  },
+  andarChip: {
+    backgroundColor: '#00FF88',
+    borderColor: '#00FF88',
+  },
+  baharChip: {
+    backgroundColor: '#E74C3C',
+    borderColor: '#E74C3C',
+  },
+  winChip: {
+    shadowColor: '#00FF88',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  lossChip: {
+    opacity: 0.7,
+  },
+  betChipNumber: {
+    color: '#000',
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  betTime: {
-    fontSize: 11,
-    color: '#666',
+  betChipAmount: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  betTypeContainer: {
+    alignItems: 'flex-end',
+  },
+  betTypeText: {
+    fontSize: 12,
+    color: '#999',
+    fontStyle: 'italic',
   },
   emptyContainer: {
     flex: 1,
