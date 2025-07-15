@@ -1233,22 +1233,24 @@ const styles = StyleSheet.create({
   },
   depositButton: {
     backgroundColor: '#FFD700',
-    paddingVertical: 18,
-    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 25,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 50,
+    minHeight: 55,
   },
   depositButtonDisabled: {
     backgroundColor: '#333',
   },
   depositButtonText: {
     color: '#000',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 18,
+    letterSpacing: 0.5,
+    flexWrap: 'wrap',
   },
   // Withdraw Modal Styles
   withdrawModalContainer: {
