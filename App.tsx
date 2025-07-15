@@ -30,7 +30,7 @@ export default function App() {
   const [betList, setBetList] = useState([]);
   const [currentBetType, setCurrentBetType] = useState('numbers');
   const [activeTab, setActiveTab] = useState('home');
-  
+
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [showAddCashModal, setShowAddCashModal] = useState(false);
@@ -316,25 +316,43 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
-            {/* Total Balance Card */}
+            {/* Enhanced Total Balance Card */}
             <View style={styles.totalBalanceCard}>
-              <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
+              <View style={styles.balanceCardHeader}>
+                <Ionicons name="wallet" size={24} color="#4A90E2" />
+                <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
+              </View>
               <Text style={styles.totalBalanceAmount}>{wallet}</Text>
-             
+              <View style={styles.balanceCardFooter}>
+                <Ionicons name="checkmark-circle" size={16} color="#00FF88" />
+                <Text style={styles.totalBalanceSubtitle}>Available for withdrawal & games</Text>
+              </View>
             </View>
 
-            {/* Balance Breakdown */}
+            {/* Enhanced Balance Breakdown */}
             <View style={styles.balanceBreakdown}>
               <View style={styles.balanceItem}>
-                <Text style={styles.balanceItemTitle}>WINNINGS AMOUNT</Text>
-                <Text style={styles.winningsAmount}>{winnings}</Text>
-                <Text style={styles.balanceItemSubtitle}>Available for withdrawal</Text>
+                <View style={styles.balanceItemHeader}>
+                  <Ionicons name="trophy" size={20} color="#00FF88" />
+                  <Text style={styles.balanceItemTitle}>WINNINGS AMOUNT</Text>
+                </View>
+                <Text style={styles.winningsAmount}>₹1,250.00</Text>
+                <View style={styles.balanceItemFooter}>
+                  <Ionicons name="cash" size={14} color="#00FF88" />
+                  <Text style={styles.balanceItemSubtitle}>Withdrawable • No TDS deducted</Text>
+                </View>
               </View>
 
               <View style={styles.balanceItem}>
-                <Text style={styles.balanceItemTitle}>BONUS AMOUNT</Text>
-                <Text style={styles.bonusAmount}>₹0.00</Text>
-                <Text style={styles.balanceItemSubtitle}>Includes direct bonus + commission earned</Text>
+                <View style={styles.balanceItemHeader}>
+                  <Ionicons name="gift" size={20} color="#FFD700" />
+                  <Text style={styles.balanceItemTitle}>BONUS AMOUNT</Text>
+                </View>
+                <Text style={styles.bonusAmount}>₹500.00</Text>
+                <View style={styles.balanceItemFooter}>
+                  <Ionicons name="game-controller" size={14} color="#FFD700" />
+                  <Text style={styles.balanceItemSubtitle}>Can be used to join contests only</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -1482,6 +1500,26 @@ const styles = StyleSheet.create({
       color: '#000',
       fontSize: 16,
       fontWeight: 'bold',
+    },
+    balanceCardHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    balanceCardFooter: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 5,
+    },
+    balanceItemHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 5,
+    },
+    balanceItemFooter: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 5,
     },
 
 });
