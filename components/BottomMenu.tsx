@@ -21,7 +21,7 @@ export default function BottomMenu({
         >
           <Ionicons 
             name="home" 
-            size={24} 
+            size={20} 
             color={activeTab === 'home' ? '#4A90E2' : '#999'} 
           />
           <Text style={[styles.tabText, activeTab === 'home' && styles.activeTabText]}>Home</Text>
@@ -33,7 +33,7 @@ export default function BottomMenu({
         >
           <Ionicons 
             name="list-circle" 
-            size={24} 
+            size={20} 
             color={activeTab === 'mybets' ? '#4A90E2' : '#999'} 
           />
           <Text style={[styles.tabText, activeTab === 'mybets' && styles.activeTabText]}>My Bets</Text>
@@ -45,7 +45,7 @@ export default function BottomMenu({
         >
           <Ionicons 
             name="wallet" 
-            size={24} 
+            size={20} 
             color={activeTab === 'wallet' ? '#4A90E2' : '#999'} 
           />
           <Text style={[styles.tabText, activeTab === 'wallet' && styles.activeTabText]}>Wallet</Text>
@@ -57,7 +57,7 @@ export default function BottomMenu({
         >
           <Ionicons 
             name="game-controller" 
-            size={24} 
+            size={20} 
             color={activeTab === 'games' ? '#4A90E2' : '#999'} 
           />
           <Text style={[styles.tabText, activeTab === 'games' && styles.activeTabText]}>Games</Text>
@@ -69,7 +69,7 @@ export default function BottomMenu({
         >
           <Ionicons 
             name="person" 
-            size={24} 
+            size={20} 
             color={activeTab === 'profile' ? '#4A90E2' : '#999'} 
           />
           <Text style={[styles.tabText, activeTab === 'profile' && styles.activeTabText]}>Profile</Text>
@@ -83,28 +83,28 @@ const styles = StyleSheet.create({
   bottomTabBar: {
     flexDirection: 'row',
     backgroundColor: '#1a1a1a',
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 5,
     borderTopWidth: 1,
     borderTopColor: '#333',
     alignItems: 'center',
     justifyContent: 'space-around',
-    height: 70,
+    height: 60,
     position: 'relative',
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
   activeTabItem: {
     backgroundColor: 'transparent',
   },
   tabText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#999',
-    marginTop: 4,
+    marginTop: 2,
     textAlign: 'center',
   },
   activeTabText: {

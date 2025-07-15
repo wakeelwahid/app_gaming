@@ -105,12 +105,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     backgroundColor: '#1a1a1a',
     borderBottomWidth: 1,
     borderBottomColor: '#333',
-    height: 60,
+    height: 55,
   },
   headerLeft: {
     flex: 1,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#4A90E2',
   },
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderColor: '#00FF88',
   },
   walletAmount: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#00FF88',
     marginLeft: 6,
