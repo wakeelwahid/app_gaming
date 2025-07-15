@@ -255,7 +255,7 @@ export default function BettingModal({
               </>
             )}
 
-
+            
 
             </ScrollView>
 
@@ -489,8 +489,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    gap: 8,
   },
   andarBaharGrid: {
     flexDirection: 'row',
@@ -499,19 +497,20 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   numberButton: {
-    width: 65,
-    height: 65,
-    backgroundColor: '#1a2332',
-    borderRadius: 12,
+    width: '18%',
+    aspectRatio: 1,
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
-    borderWidth: 2,
-    borderColor: '#2d4057',
+    position: 'relative',
   },
   selectedNumberButton: {
-    backgroundColor: '#00d4ff',
-    borderColor: '#00d4ff',
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
   },
   numberText: {
     color: '#fff',
@@ -823,28 +822,5 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-    tabButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    backgroundColor: '#2d4057',
-    borderRadius: 25,
-    marginHorizontal: 4,
-    borderWidth: 2,
-    borderColor: '#2d4057',
-  },
-  activeTabButton: {
-    backgroundColor: '#00d4ff',
-    borderColor: '#00d4ff',
-  },
-  tabButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  activeTabButtonText: {
-    color: '#000',
   },
 });

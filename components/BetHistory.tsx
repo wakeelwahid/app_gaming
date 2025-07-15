@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,100 +13,71 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
   
   if (!visible) return null;
 
-  // Group bets by game and date
   const groupedBets = betHistory.reduce((acc, bet) => {
     const gameKey = bet.game || 'Unknown Game';
-    const date = new Date(bet.timestamp).toDateString();
-    const key = `${gameKey}_${date}`;
-    
-    if (!acc[key]) {
-      acc[key] = {
-        game: gameKey,
-        date: date,
-        bets: [],
-        totalAmount: 0,
-        totalNumbers: 0
-      };
+    if (!acc[gameKey]) {
+      acc[gameKey] = [];
     }
-    acc[key].bets.push(bet);
-    acc[key].totalAmount += bet.amount;
-    acc[key].totalNumbers += 1;
+    acc[gameKey].push(bet);
     return acc;
   }, {});
 
-  const games = [...new Set(betHistory.map(bet => bet.game))];
+  const games = Object.keys(groupedBets);
   const allGames = ['All', ...games];
   
-  const filteredGroups = selectedGameFilter === 'All' 
-    ? Object.values(groupedBets)
-    : Object.values(groupedBets).filter((group: any) => group.game === selectedGameFilter);
+  const filteredBets = selectedGameFilter === 'All' 
+    ? betHistory 
+    : betHistory.filter(bet => bet.game === selectedGameFilter);
 
-  const getBetChipColor = (bet: any) => {
-    if (bet.type === 'andar') return '#00FF88';
-    if (bet.type === 'bahar') return '#FF6B6B';
-    return '#9D4EDD';
-  };
+  const renderBetItem = ({ item }: { item: any }) => {
+    const getStatusColor = (status: string) => {
+      switch (status?.toLowerCase()) {
+        case 'win': return '#00FF88';
+        case 'loss': return '#FF6B6B';
+        case 'pending': return '#FFD700';
+        default: return '#FFD700';
+      }
+    };
 
-  const getBetChipLetter = (bet: any) => {
-    if (bet.type === 'andar') return 'A';
-    if (bet.type === 'bahar') return 'B';
-    return '';
-  };
+    const getTypeIcon = (type: string) => {
+      switch (type?.toLowerCase()) {
+        case 'andar': return '🟢';
+        case 'bahar': return '🔴';
+        case 'single': return '🎯';
+        case 'jodi': return '🔢';
+        case 'panna': return '📊';
+        default: return '🎲';
+      }
+    };
 
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'win': return '#00FF88';
-      case 'loss': return '#FF6B6B';
-      case 'pending': return '#FFD700';
-      default: return '#FFD700';
-    }
-  };
-
-  const renderGameGroup = ({ item }: { item: any }) => {
-    const sessionTime = "09:00 PM - 04:50 PM"; // You can make this dynamic
-    
     return (
-      <View style={styles.gameGroup}>
-        {/* Game Header */}
-        <View style={styles.gameHeader}>
-          <View style={styles.gameNameContainer}>
-            <Text style={styles.gameName}>{item.game}</Text>
+      <View style={styles.betItem}>
+        <View style={styles.betHeader}>
+          <View style={styles.betNumberContainer}>
+            <Text style={styles.betIcon}>{getTypeIcon(item.type)}</Text>
+            <View>
+              <Text style={styles.betNumber}>Number: {item.number}</Text>
+              <Text style={styles.betGame}>{item.game}</Text>
+            </View>
           </View>
-          <Text style={styles.gameDate}>{new Date(item.date).toLocaleDateString()}</Text>
+          <View style={styles.betAmountContainer}>
+            <Text style={styles.betAmount}>₹{item.amount}</Text>
+            {item.winAmount && (
+              <Text style={styles.winAmount}>Win: ₹{item.winAmount}</Text>
+            )}
+          </View>
         </View>
 
-        {/* Bet Chips Row */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.betChipsContainer}>
-          <View style={styles.betChipsRow}>
-            {item.bets.map((bet: any, index: number) => (
-              <View 
-                key={index} 
-                style={[styles.betChip, { backgroundColor: getBetChipColor(bet) }]}
-              >
-                <View style={styles.betChipContent}>
-                  <Text style={styles.betChipNumber}>
-                    {getBetChipLetter(bet)}{bet.number}
-                  </Text>
-                  <Text style={styles.betChipAmount}>₹{bet.amount}</Text>
-                </View>
-              </View>
-            ))}
+        <View style={styles.betDetails}>
+          <View style={styles.betDetailRow}>
+            <Text style={styles.betType}>Type: {item.type}</Text>
+            <Text style={[styles.betStatus, { color: getStatusColor(item.status) }]}>
+              {item.status || 'Pending'}
+            </Text>
           </View>
-        </ScrollView>
-
-        {/* Game Summary */}
-        <View style={styles.gameSummary}>
-          <View style={styles.summaryLeft}>
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>Pending</Text>
-            </View>
-            <Text style={styles.totalNumbers}>Total Numbers: {item.totalNumbers}</Text>
-          </View>
-          <View style={styles.summaryRight}>
-            <Text style={styles.totalAmountLabel}>amount: </Text>
-            <Text style={styles.totalAmount}>₹{item.totalAmount}</Text>
-            <Text style={styles.sessionTime}>Session: {sessionTime}</Text>
-          </View>
+          <Text style={styles.betTime}>
+            {item.timestamp ? new Date(item.timestamp).toLocaleString('hi-IN') : 'Unknown time'}
+          </Text>
         </View>
       </View>
     );
@@ -134,6 +104,7 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
             selectedGameFilter === game && styles.activeFilterButtonText
           ]}>
             {game}
+            {game !== 'All' && ` (${groupedBets[game]?.length || 0})`}
           </Text>
         </TouchableOpacity>
       ))}
@@ -153,11 +124,21 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
         <>
           {renderGameFilter()}
           <FlatList
-            data={filteredGroups}
-            renderItem={renderGameGroup}
-            keyExtractor={(item, index) => `${item.game}_${item.date}_${index}`}
+            data={filteredBets}
+            renderItem={renderBetItem}
+            keyExtractor={(item, index) => item.id?.toString() || index.toString()}
             style={styles.betsList}
             showsVerticalScrollIndicator={false}
+            ListHeaderComponent={() => (
+              <View style={styles.listHeader}>
+                <Text style={styles.listHeaderText}>
+                  {selectedGameFilter === 'All' 
+                    ? `All Bets (${filteredBets.length})`
+                    : `${selectedGameFilter} Bets (${filteredBets.length})`
+                  }
+                </Text>
+              </View>
+            )}
           />
         </>
       ) : (
@@ -169,6 +150,26 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
           </Text>
         </View>
       )}
+
+      <View style={styles.summaryContainer}>
+        <Text style={styles.summaryTitle}>Summary - {selectedGameFilter}</Text>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Total Bets:</Text>
+          <Text style={styles.summaryValue}>{filteredBets.length}</Text>
+        </View>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Total Amount:</Text>
+          <Text style={styles.summaryValueAmount}>
+            ₹{filteredBets.reduce((sum, bet) => sum + (bet.amount || 0), 0)}
+          </Text>
+        </View>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Total Winnings:</Text>
+          <Text style={styles.summaryValueWin}>
+            ₹{filteredBets.reduce((sum, bet) => sum + (bet.winAmount || 0), 0)}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -224,110 +225,85 @@ const styles = StyleSheet.create({
   activeFilterButtonText: {
     color: '#fff',
   },
+  listHeader: {
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  listHeaderText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+  },
   betsList: {
     flex: 1,
     padding: 15,
   },
-  gameGroup: {
+  betItem: {
     backgroundColor: '#1a1a1a',
     borderRadius: 12,
     padding: 15,
-    marginBottom: 15,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#333',
   },
-  gameHeader: {
+  betHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
+    alignItems: 'flex-start',
+    marginBottom: 10,
   },
-  gameNameContainer: {
-    backgroundColor: '#9D4EDD',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-  },
-  gameName: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  gameDate: {
-    color: '#999',
-    fontSize: 12,
-  },
-  betChipsContainer: {
-    marginBottom: 15,
-  },
-  betChipsRow: {
+  betNumberContainer: {
     flexDirection: 'row',
-    gap: 8,
-    paddingRight: 15,
-  },
-  betChip: {
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    minWidth: 60,
     alignItems: 'center',
-  },
-  betChipContent: {
-    alignItems: 'center',
-  },
-  betChipNumber: {
-    color: '#000',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  betChipAmount: {
-    color: '#000',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  gameSummary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  summaryLeft: {
     flex: 1,
   },
-  statusBadge: {
-    backgroundColor: '#FFD700',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginBottom: 5,
+  betIcon: {
+    fontSize: 20,
+    marginRight: 10,
   },
-  statusText: {
-    color: '#000',
-    fontSize: 10,
+  betNumber: {
+    fontSize: 16,
     fontWeight: 'bold',
-  },
-  totalNumbers: {
     color: '#fff',
+  },
+  betGame: {
     fontSize: 12,
-  },
-  summaryRight: {
-    alignItems: 'flex-end',
-    flex: 1,
-  },
-  totalAmountLabel: {
-    color: '#00FF88',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  totalAmount: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  sessionTime: {
-    color: '#999',
-    fontSize: 10,
+    color: '#4A90E2',
     marginTop: 2,
+  },
+  betAmountContainer: {
+    alignItems: 'flex-end',
+  },
+  betAmount: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00FF88',
+  },
+  winAmount: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginTop: 2,
+  },
+  betDetails: {
+    gap: 5,
+  },
+  betDetailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  betType: {
+    fontSize: 12,
+    color: '#999',
+  },
+  betStatus: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  betTime: {
+    fontSize: 11,
+    color: '#666',
   },
   emptyContainer: {
     flex: 1,
@@ -351,5 +327,42 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  summaryContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+  },
+  summaryTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 10,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: '#999',
+  },
+  summaryValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  summaryValueAmount: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#00FF88',
+  },
+  summaryValueWin: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFD700',
   },
 });
