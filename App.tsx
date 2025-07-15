@@ -447,17 +447,13 @@ export default function App() {
         {renderContent()}
       </View>
 
-      {/* Bottom Menu Button */}
-      <TouchableOpacity style={styles.bottomMenuButton} onPress={toggleSideMenu}>
-        <Ionicons name="menu" size={28} color="#000" />
-        <Text style={styles.bottomMenuText}>Menu</Text>
-      </TouchableOpacity>
+      
 
-      {/* Side Menu */}
+      {/* Enhanced Side Menu */}
       {showSideMenu && (
         <Modal
           transparent={true}
-          animationType="none"
+          animationType="fade"
           visible={showSideMenu}
           onRequestClose={toggleSideMenu}
         >
@@ -465,16 +461,31 @@ export default function App() {
             <TouchableOpacity 
               style={styles.sideMenuBackdrop} 
               onPress={toggleSideMenu}
+              activeOpacity={1}
             />
             <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
+              {/* Menu Header with Profile */}
               <View style={styles.sideMenuHeader}>
-                <Text style={styles.sideMenuTitle}>👑 Menu</Text>
-                <TouchableOpacity onPress={toggleSideMenu}>
+                <View style={styles.profileSection}>
+                  <View style={styles.profileAvatar}>
+                    <Ionicons name="person" size={32} color="#FFD700" />
+                  </View>
+                  <View style={styles.profileInfo}>
+                    <Text style={styles.profileName}>VN Gaming User</Text>
+                    <Text style={styles.profileId}>ID: VN123456</Text>
+                    <View style={styles.balanceInfo}>
+                      <Text style={styles.balanceAmount}>{wallet}</Text>
+                      <Text style={styles.balanceLabel}>Available Balance</Text>
+                    </View>
+                  </View>
+                </View>
+                <TouchableOpacity style={styles.closeButton} onPress={toggleSideMenu}>
                   <Ionicons name="close" size={24} color="#FFD700" />
                 </TouchableOpacity>
               </View>
               
-              <ScrollView style={styles.sideMenuContent}>
+              {/* Menu Items */}
+              <ScrollView style={styles.sideMenuContent} showsVerticalScrollIndicator={false}>
                 {menuItems.map((item, index) => (
                   <TouchableOpacity
                     key={index}
@@ -483,21 +494,60 @@ export default function App() {
                       activeTab === item.key && styles.activeSideMenuItem
                     ]}
                     onPress={() => handleMenuItemPress(item.key)}
+                    activeOpacity={0.8}
                   >
-                    <Ionicons 
-                      name={item.icon} 
-                      size={20} 
-                      color={activeTab === item.key ? '#000' : '#FFD700'} 
-                    />
+                    <View style={styles.menuItemIcon}>
+                      <Ionicons 
+                        name={item.icon} 
+                        size={22} 
+                        color={activeTab === item.key ? '#000' : '#FFD700'} 
+                      />
+                    </View>
                     <Text style={[
                       styles.sideMenuItemText,
                       activeTab === item.key && styles.activeSideMenuItemText
                     ]}>
                       {item.title}
                     </Text>
+                    <Ionicons 
+                      name="chevron-forward" 
+                      size={18} 
+                      color={activeTab === item.key ? '#000' : '#666'} 
+                    />
                   </TouchableOpacity>
                 ))}
+                
+                {/* Quick Actions */}
+                <View style={styles.quickActions}>
+                  <Text style={styles.quickActionsTitle}>Quick Actions</Text>
+                  <TouchableOpacity style={styles.quickActionButton}>
+                    <Ionicons name="add-circle" size={20} color="#00FF88" />
+                    <Text style={styles.quickActionText}>Add Money</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.quickActionButton}>
+                    <Ionicons name="remove-circle" size={20} color="#FF4444" />
+                    <Text style={styles.quickActionText}>Withdraw</Text>
+                  </TouchableOpacity>
+                </View>
+                
+                {/* Support Section */}
+                <View style={styles.supportSection}>
+                  <TouchableOpacity style={styles.supportButton}>
+                    <Ionicons name="headset" size={20} color="#9B59B6" />
+                    <Text style={styles.supportText}>24/7 Support</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.supportButton}>
+                    <Ionicons name="call" size={20} color="#9B59B6" />
+                    <Text style={styles.supportText}>Emergency Help</Text>
+                  </TouchableOpacity>
+                </View>
               </ScrollView>
+              
+              {/* Menu Footer */}
+              <View style={styles.sideMenuFooter}>
+                <Text style={styles.footerText}>VN Gaming v1.0</Text>
+                <Text style={styles.footerSubtext}>Trusted Gaming Platform</Text>
+              </View>
             </Animated.View>
           </View>
         </Modal>
@@ -741,80 +791,204 @@ const styles = StyleSheet.create({
   bottomSpacing: {
     height: 100,
   },
-  bottomMenuButton: {
-    position: 'absolute',
-    bottom: 20,
-    alignSelf: 'center',
-    backgroundColor: '#FFD700',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  bottomMenuText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
   sideMenuOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     flexDirection: 'row',
   },
   sideMenuBackdrop: {
     flex: 1,
   },
   sideMenu: {
-    width: SCREEN_WIDTH * 0.8,
+    width: SCREEN_WIDTH * 0.85,
     backgroundColor: '#1a1a1a',
     height: '100%',
-    borderRightWidth: 1,
-    borderRightColor: '#333',
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 5, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 10,
+    borderRightWidth: 2,
+    borderRightColor: '#FFD700',
   },
   sideMenuHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    backgroundColor: '#2a2a2a',
+    paddingTop: 50,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    borderTopRightRadius: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFD700',
   },
-  sideMenuTitle: {
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  profileAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#3a3a3a',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    marginRight: 15,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
     color: '#FFD700',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  profileId: {
+    color: '#ccc',
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  balanceInfo: {
+    backgroundColor: '#3a3a3a',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#00FF88',
+  },
+  balanceAmount: {
+    color: '#00FF88',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  balanceLabel: {
+    color: '#ccc',
+    fontSize: 10,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#3a3a3a',
   },
   sideMenuContent: {
     flex: 1,
-    paddingVertical: 10,
+    paddingTop: 10,
   },
   sideMenuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    paddingVertical: 18,
+    marginHorizontal: 10,
+    marginVertical: 2,
+    borderRadius: 12,
+    borderBottomWidth: 0,
   },
   activeSideMenuItem: {
     backgroundColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  menuItemIcon: {
+    width: 35,
+    alignItems: 'center',
   },
   sideMenuItemText: {
     color: '#FFD700',
     fontSize: 16,
     marginLeft: 15,
     fontWeight: '500',
+    flex: 1,
   },
   activeSideMenuItemText: {
     color: '#000',
     fontWeight: 'bold',
+  },
+  quickActions: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: '#2a2a2a',
+    marginHorizontal: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  quickActionsTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  quickActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    backgroundColor: '#3a3a3a',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  quickActionText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 12,
+  },
+  supportSection: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: '#2a2a3a',
+    marginHorizontal: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#9B59B6',
+  },
+  supportButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    backgroundColor: '#3a3a4a',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  supportText: {
+    color: '#E6E6FA',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 12,
+  },
+  sideMenuFooter: {
+    backgroundColor: '#2a2a2a',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#444',
+    borderBottomRightRadius: 20,
+    alignItems: 'center',
+  },
+  footerText: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  footerSubtext: {
+    color: '#ccc',
+    fontSize: 12,
+    marginTop: 4,
   },
   tabContent: {
     flex: 1,
