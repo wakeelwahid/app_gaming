@@ -399,8 +399,6 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
-
       {/* Header Component */}
       <Header wallet={wallet} />
 

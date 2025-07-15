@@ -40,10 +40,60 @@ export default function BottomMenu({
 }: BottomMenuProps) {
   return (
     <>
-      <View style={styles.bottomMenuContainer}>
-        <TouchableOpacity style={styles.bottomMenuButton} onPress={onToggleMenu}>
-          <Ionicons name="menu" size={28} color="#000" />
-          <Text style={styles.bottomMenuText}>Menu</Text>
+      <View style={styles.bottomTabBar}>
+        <TouchableOpacity 
+          style={[styles.tabItem, activeTab === 'home' && styles.activeTabItem]} 
+          onPress={() => onMenuItemPress('home')}
+        >
+          <Ionicons 
+            name="home" 
+            size={24} 
+            color={activeTab === 'home' ? '#4A90E2' : '#999'} 
+          />
+          <Text style={[styles.tabText, activeTab === 'home' && styles.activeTabText]}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.tabItem, activeTab === 'wallet' && styles.activeTabItem]} 
+          onPress={() => onMenuItemPress('wallet')}
+        >
+          <Ionicons 
+            name="wallet" 
+            size={24} 
+            color={activeTab === 'wallet' ? '#4A90E2' : '#999'} 
+          />
+          <Text style={[styles.tabText, activeTab === 'wallet' && styles.activeTabText]}>My Matches</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.tabItem, activeTab === 'rewards' && styles.activeTabItem]} 
+          onPress={() => onMenuItemPress('rewards')}
+        >
+          <Ionicons 
+            name="diamond" 
+            size={24} 
+            color={activeTab === 'rewards' ? '#4A90E2' : '#999'} 
+          />
+          <Text style={[styles.tabText, activeTab === 'rewards' && styles.activeTabText]}>DreamCoins</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.tabItem, activeTab === 'games' && styles.activeTabItem]} 
+          onPress={() => onMenuItemPress('games')}
+        >
+          <Ionicons 
+            name="game-controller" 
+            size={24} 
+            color={activeTab === 'games' ? '#4A90E2' : '#999'} 
+          />
+          <Text style={[styles.tabText, activeTab === 'games' && styles.activeTabText]}>Games</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.dreamPlayButton} onPress={onToggleMenu}>
+          <View style={styles.dreamPlayButtonInner}>
+            <Text style={styles.dreamPlayText}>VN</Text>
+            <Text style={styles.dreamPlaySubtext}>PLAY</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -138,33 +188,68 @@ export default function BottomMenu({
 }
 
 const styles = StyleSheet.create({
-  bottomMenuContainer: {
-    position: 'absolute',
-    bottom: 25,
-    left: 0,
-    right: 0,
+  bottomTabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#1a1a1a',
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    height: 70,
+    position: 'relative',
+  },
+  tabItem: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 999,
+    paddingVertical: 8,
   },
-  bottomMenuButton: {
-    backgroundColor: '#4A90E2',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  activeTabItem: {
+    backgroundColor: 'transparent',
   },
-  bottomMenuText: {
-    color: '#000',
-    fontSize: 14,
+  tabText: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  activeTabText: {
+    color: '#4A90E2',
     fontWeight: 'bold',
+  },
+  dreamPlayButton: {
+    position: 'absolute',
+    right: 15,
+    bottom: 15,
+    backgroundColor: '#4A90E2',
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
+  dreamPlayButtonInner: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dreamPlayText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    lineHeight: 14,
+  },
+  dreamPlaySubtext: {
+    color: '#fff',
+    fontSize: 8,
+    fontWeight: 'bold',
+    lineHeight: 10,
   },
   bottomMenuOverlay: {
     flex: 1,
