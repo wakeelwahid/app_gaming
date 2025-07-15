@@ -10,9 +10,12 @@ import BettingModal from './components/BettingModal';
 import WalletOperations from './components/WalletOperations';
 import PaymentSuccess from './components/PaymentSuccess';
 import WithdrawSuccess from './components/WithdrawSuccess';
+import Profile from './components/Profile';
 
-// Import API service
-import { apiService } from './services/apiService';
+// Import API services
+import { userService } from './services/userService';
+import { walletService } from './services/walletService';
+import { gameService } from './services/gameService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -41,6 +44,13 @@ export default function App() {
   const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
   const [showWithdrawSuccessModal, setShowWithdrawSuccessModal] = useState(false);
   const [countdownSeconds, setCountdownSeconds] = useState(5);
+  const [userData, setUserData] = useState({
+    name: 'John Doe',
+    phone: '+91 98765 43210',
+    email: 'john@example.com',
+    referralCode: 'REF12345',
+    kycStatus: 'VERIFIED' as 'VERIFIED' | 'PENDING' | 'REJECTED'
+  });
 
   const gameCards = [
     {
@@ -275,6 +285,24 @@ export default function App() {
     setShowAddCashModal(false);
   };
 
+  const handleUpdateProfile = async (profileData: any) => {
+    try {
+      // const result = await userService.updateProfile(profileData);
+      // if (result.success) {
+      setUserData(profileData);
+      Alert.alert('Success', 'Profile updated successfully!');
+      // } else {
+      //   Alert.alert('Error', result.error || 'Failed to update profile');
+      // }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update profile');
+    }
+  };
+
+  const handleCompleteKYC = () => {
+    Alert.alert('KYC Verification', 'KYC verification process will be implemented soon');
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
@@ -353,16 +381,11 @@ export default function App() {
         );
       case 'profile':
         return (
-          <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>👤 Profile</Text>
-            <View style={styles.profileCard}>
-              <Text style={styles.profileName}>User Name</Text>
-              <Text style={styles.profilePhone}>+91 98765 43210</Text>
-              <TouchableOpacity style={styles.profileButton}>
-                <Text style={styles.profileButtonText}>Edit Profile</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Profile 
+            userData={userData}
+            onUpdateProfile={handleUpdateProfile}
+            onCompleteKYC={handleCompleteKYC}
+          />
         );
       default:
         return (
