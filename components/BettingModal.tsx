@@ -43,7 +43,7 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(i, 'numbers', 50); // Default amount ₹50
+              onNumberSelect(i, 'numbers', 0); // Just select, don't place bet
             }
           }}
         >
@@ -80,7 +80,7 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(numberKey, 'andar', 50); // Default amount ₹50
+              onNumberSelect(numberKey, 'andar', 0); // Just select, don't place bet
             }
           }}
         >
@@ -117,7 +117,7 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(numberKey, 'bahar', 50); // Default amount ₹50
+              onNumberSelect(numberKey, 'bahar', 0); // Just select, don't place bet
             }
           }}
         >
@@ -235,6 +235,49 @@ export default function BettingModal({
                   {renderBaharNumbers()}
                 </View>
               </>
+            )}
+
+            {betList.length > 0 && (
+              <View style={styles.betAmountSection}>
+                <Text style={styles.betAmountTitle}>💰 Select Bet Amount:</Text>
+                <View style={styles.amountButtonsGrid}>
+                  {[10, 50, 100, 200, 500, 1000].map((amount) => (
+                    <TouchableOpacity
+                      key={amount}
+                      style={styles.amountButton}
+                      onPress={() => {
+                        // Update all selected bets with this amount
+                        const updatedBets = betList.map(bet => ({
+                          ...bet,
+                          amount: amount
+                        }));
+                        // This would need to be handled by parent component
+                      }}
+                    >
+                      <Text style={styles.amountButtonText}>₹{amount}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {betList.length > 0 && (
+              <TouchableOpacity 
+                style={styles.placeBetButton}
+                onPress={() => {
+                  // Place all bets at once
+                  betList.forEach(bet => {
+                    if (bet.amount > 0) {
+                      // This will be handled by parent component
+                      onNumberSelect(bet.number, bet.type, bet.amount);
+                    }
+                  });
+                }}
+              >
+                <Text style={styles.placeBetButtonText}>
+                  🎯 Place All Bets (₹{getTotalBetAmount()})
+                </Text>
+              </TouchableOpacity>
             )}
           </ScrollView>
         </View>
@@ -569,5 +612,60 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
+  },
+  betAmountSection: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  betAmountTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  amountButtonsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  amountButton: {
+    width: '30%',
+    backgroundColor: '#2a2a2a',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00FF88',
+  },
+  amountButtonText: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  placeBetButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#FFD700',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  placeBetButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

@@ -151,44 +151,52 @@ export default function App() {
     setShowBettingModal(true);
   };
 
-  const handleNumberSelect = (number: any, type: string, defaultAmount: number = 50) => {
-    // Auto place bet with default amount
-    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
-
-    if (currentWallet >= defaultAmount) {
-      const newBet = {
-        id: Date.now(),
-        number,
-        amount: defaultAmount,
-        type,
-        game: selectedGame?.title || '',
-        timestamp: new Date(),
-      };
-
-      // Update wallet
-      setWallet(`₹${(currentWallet - defaultAmount).toFixed(2)}`);
-
-      // Add to bet list
-      setBetList([...betList, newBet]);
-
-      // Set success details
-      setLastBetDetails({
-        number,
-        amount: defaultAmount,
-        type,
-        gameName: selectedGame?.title || '',
-      });
-
-      // Show success modal
-      setShowBetSuccess(true);
-
-      // Close betting modal after a short delay
-      setTimeout(() => {
-        setShowBettingModal(false);
-      }, 1500);
-
+  const handleNumberSelect = (number: any, type: string, amount: number = 0) => {
+    if (amount === 0) {
+      // Just select the number without placing bet
+      const existingBet = betList.find(b => b.number === number && b.type === type);
+      if (existingBet) {
+        // Remove from selection
+        setBetList(betList.filter(b => b.id !== existingBet.id));
+      } else {
+        // Add to selection with default amount
+        const newBet = {
+          id: Date.now(),
+          number,
+          amount: 50, // Default amount
+          type,
+          game: selectedGame?.title || '',
+          timestamp: new Date(),
+        };
+        setBetList([...betList, newBet]);
+      }
     } else {
-      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+      // Place bet with specified amount
+      const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+
+      if (currentWallet >= amount) {
+        // Update wallet
+        setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+
+        // Set success details
+        setLastBetDetails({
+          number,
+          amount,
+          type,
+          gameName: selectedGame?.title || '',
+        });
+
+        // Show success modal
+        setShowBetSuccess(true);
+
+        // Close betting modal after a short delay
+        setTimeout(() => {
+          setShowBettingModal(false);
+        }, 1500);
+
+      } else {
+        Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+      }
     }
   };
 
