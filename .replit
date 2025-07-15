@@ -26,7 +26,16 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx expo start --web --port 8081 --host 0.0.0.0"
+args = "npx expo start --web --port 8081 --host localhost"
+
+[[workflows.workflow]]
+name = "Start Expo Tunnel"
+author = 42554831
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx expo start --port 8081 --tunnel --web"
 
 [[ports]]
 localPort = 8081
