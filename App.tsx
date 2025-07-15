@@ -30,8 +30,7 @@ export default function App() {
   const [betList, setBetList] = useState([]);
   const [currentBetType, setCurrentBetType] = useState('numbers');
   const [activeTab, setActiveTab] = useState('home');
-  const [showSideMenu, setShowSideMenu] = useState(false);
-  const [slideAnim] = useState(new Animated.Value(SCREEN_WIDTH));
+  
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [showAddCashModal, setShowAddCashModal] = useState(false);
@@ -132,26 +131,8 @@ export default function App() {
     }
   ];
 
-  const toggleSideMenu = () => {
-    if (showSideMenu) {
-      Animated.timing(slideAnim, {
-        toValue: SCREEN_WIDTH,
-        duration: 350,
-        useNativeDriver: true,
-      }).start(() => setShowSideMenu(false));
-    } else {
-      setShowSideMenu(true);
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 350,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
-
   const handleMenuItemPress = (key: string) => {
     setActiveTab(key);
-    toggleSideMenu();
   };
 
   const handlePlayNow = (game: any) => {
@@ -451,12 +432,8 @@ export default function App() {
 
       {/* Bottom Menu Component */}
       <BottomMenu
-        showSideMenu={showSideMenu}
-        slideAnim={slideAnim}
         activeTab={activeTab}
-        onToggleMenu={toggleSideMenu}
         onMenuItemPress={handleMenuItemPress}
-        onAuthPress={handleAuthPress}
       />
 
       {/* Betting Modal Component */}
