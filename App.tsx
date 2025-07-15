@@ -311,7 +311,7 @@ export default function App() {
             <View style={styles.totalBalanceCard}>
               <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
               <Text style={styles.totalBalanceAmount}>{wallet}</Text>
-              <Text style={styles.totalBalanceSubtitle}>Total amount</Text>
+             
             </View>
 
             {/* Balance Breakdown */}
