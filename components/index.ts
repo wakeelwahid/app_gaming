@@ -4,3 +4,5 @@ export { default as HomeScreen } from './HomeScreen';
 export { default as GameCard } from './GameCard';
 export { default as BottomMenu } from './BottomMenu';
 export { default as BettingModal } from './BettingModal';
+export { default as WalletOperations } from './WalletOperations';
+export { default as PaymentSuccess } from './PaymentSuccess';

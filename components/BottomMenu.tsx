@@ -40,10 +40,12 @@ export default function BottomMenu({
 }: BottomMenuProps) {
   return (
     <>
-      <TouchableOpacity style={styles.bottomMenuButton} onPress={onToggleMenu}>
-        <Ionicons name="menu" size={28} color="#000" />
-        <Text style={styles.bottomMenuText}>Menu</Text>
-      </TouchableOpacity>
+      <View style={styles.bottomMenuContainer}>
+        <TouchableOpacity style={styles.bottomMenuButton} onPress={onToggleMenu}>
+          <Ionicons name="menu" size={28} color="#000" />
+          <Text style={styles.bottomMenuText}>Menu</Text>
+        </TouchableOpacity>
+      </View>
 
       {showSideMenu && (
         <Modal
@@ -90,35 +92,34 @@ export default function BottomMenu({
               </View>
 
               <ScrollView style={styles.bottomMenuContent} showsVerticalScrollIndicator={false}>
-                <View style={styles.menuGrid}>
+                <View style={styles.menuList}>
                   {menuItems.map((item, index) => (
                     <TouchableOpacity
                       key={index}
                       style={[
                         styles.bottomMenuItem,
-                        { backgroundColor: activeTab === item.key ? item.color : item.bgColor },
                         activeTab === item.key && styles.activeBottomMenuItem
                       ]}
                       onPress={() => onMenuItemPress(item.key)}
                     >
-                      <View style={[
-                        styles.bottomMenuItemIcon,
-                        { backgroundColor: activeTab === item.key ? '#000' : item.bgColor },
-                        activeTab === item.key && styles.activeBottomMenuItemIcon
-                      ]}>
+                      <View style={styles.bottomMenuItemIcon}>
                         <Ionicons 
                           name={item.icon} 
-                          size={26} 
-                          color={activeTab === item.key ? item.color : item.color} 
+                          size={24} 
+                          color={activeTab === item.key ? '#4A90E2' : item.color} 
                         />
                       </View>
                       <Text style={[
                         styles.bottomMenuItemText,
-                        { color: activeTab === item.key ? '#000' : item.color },
-                        activeTab === item.key && styles.activeBottomMenuItemText
+                        { color: activeTab === item.key ? '#4A90E2' : '#fff' }
                       ]}>
                         {item.title}
                       </Text>
+                      <Ionicons 
+                        name="chevron-forward" 
+                        size={20} 
+                        color={activeTab === item.key ? '#4A90E2' : '#666'} 
+                      />
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -137,10 +138,15 @@ export default function BottomMenu({
 }
 
 const styles = StyleSheet.create({
-  bottomMenuButton: {
+  bottomMenuContainer: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bottomMenuButton: {
     backgroundColor: '#4A90E2',
     paddingHorizontal: 20,
     paddingVertical: 12,
@@ -240,44 +246,37 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
   },
-  menuGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  menuList: {
     paddingVertical: 10,
   },
   bottomMenuItem: {
-    width: '48%',
-    aspectRatio: 1,
-    borderRadius: 12,
-    marginBottom: 10,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginBottom: 2,
+    borderRadius: 8,
+    backgroundColor: '#1a1a1a',
     borderWidth: 1,
     borderColor: '#333',
   },
   activeBottomMenuItem: {
+    backgroundColor: '#2a2a2a',
     borderColor: '#4A90E2',
   },
   bottomMenuItemIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
-  },
-  activeBottomMenuItemIcon: {
-    borderWidth: 2,
-    borderColor: '#4A90E2',
+    marginRight: 15,
+    backgroundColor: '#333',
   },
   bottomMenuItemText: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  activeBottomMenuItemText: {
-    color: '#000',
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
   },
   bottomMenuFooter: {
     alignItems: 'center',

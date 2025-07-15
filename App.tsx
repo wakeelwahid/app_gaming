@@ -7,6 +7,8 @@ import Header from './components/Header';
 import HomeScreen from './components/HomeScreen';
 import BottomMenu from './components/BottomMenu';
 import BettingModal from './components/BettingModal';
+import WalletOperations from './components/WalletOperations';
+import PaymentSuccess from './components/PaymentSuccess';
 
 // Import API service
 import { apiService } from './services/apiService';
@@ -252,23 +254,18 @@ export default function App() {
       return;
     }
 
-    // Process payment
-    const amount = parseFloat(depositAmount);
-    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
-    setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
-
-    // Reset states
+    // Close payment modal and show success modal
     setShowPaymentModal(false);
-    setShowAddCashModal(false);
-    setDepositAmount('');
-    setUtrNumber('');
-    setSelectedPaymentMethod('');
+    setShowPaymentSuccessModal(true);
+  };
 
-    Alert.alert(
-      'Payment Successful!', 
-      'Your payment has been confirmed. Amount will be added to your wallet within 5 minutes after admin verification.',
-      [{ text: 'OK' }]
-    );
+  const handlePaymentSuccessClose = () => {
+    setShowPaymentSuccessModal(false);
+    setActiveTab('home');
+    setUtrNumber('');
+    setDepositAmount('');
+    setSelectedPaymentMethod('');
+    setShowAddCashModal(false);
   };
 
   const renderContent = () => {
@@ -604,298 +601,34 @@ export default function App() {
         </View>
       </Modal>
 
-      {/* Add Cash Modal */}
-      <Modal
-        visible={showAddCashModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowAddCashModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.addCashModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💰 Add Money via UPI</Text>
-              <TouchableOpacity onPress={() => setShowAddCashModal(false)}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
+      {/* Wallet Operations Component */}
+      <WalletOperations
+        showAddCashModal={showAddCashModal}
+        showWithdrawModal={showWithdrawModal}
+        showPaymentModal={showPaymentModal}
+        depositAmount={depositAmount}
+        withdrawAmount={withdrawAmount}
+        selectedPaymentMethod={selectedPaymentMethod}
+        utrNumber={utrNumber}
+        onCloseAddCash={() => setShowAddCashModal(false)}
+        onCloseWithdraw={() => setShowWithdrawModal(false)}
+        onClosePayment={() => setShowPaymentModal(false)}
+        onDepositAmountChange={setDepositAmount}
+        onWithdrawAmountChange={setWithdrawAmount}
+        onPaymentMethodSelect={handlePaymentMethodSelect}
+        onUtrChange={setUtrNumber}
+        onConfirmPayment={handleUTRConfirmation}
+        onWithdrawRequest={handleWithdraw}
+      />
 
-            <View style={styles.addCashContent}>
-              <Text style={styles.depositLabel}>Deposit Amount (₹)</Text>
-              <TextInput
-                style={styles.depositInput}
-                placeholder="Enter amount"
-                placeholderTextColor="#999"
-                value={depositAmount}
-                onChangeText={setDepositAmount}
-                keyboardType="numeric"
-              />
-
-              <View style={styles.quickAmountsGrid}>
-                {[100, 200, 500, 1000, 5000, 10000].map((amount) => (
-                  <TouchableOpacity
-                    key={amount}
-                    style={styles.quickAmountButton}
-                    onPress={() => setDepositAmount(amount.toString())}
-                  >
-                    <Text style={styles.quickAmountText}>₹{amount}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              {depositAmount && parseFloat(depositAmount) >= 100 && (
-                <View style={styles.depositSummary}>
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Deposit Amount (Excl. Govt. Tax)</Text>
-                    <Text style={styles.summaryValue}>₹{depositAmount}</Text>
-                  </View>
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Govt. Tax (28% GST)</Text>
-                    <Text style={styles.summaryValue}>₹{calculateDepositDetails(parseFloat(depositAmount)).gst}</Text>
-                  </View>
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Cashback Bonus</Text>
-                    <Text style={styles.summaryValueGreen}>+₹{calculateDepositDetails(parseFloat(depositAmount)).cashback}</Text>
-                  </View>
-                  <View style={styles.summaryDivider} />
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabelTotal}>Total (A + B)</Text>
-                    <Text style={styles.summaryValueTotal}>₹{calculateDepositDetails(parseFloat(depositAmount)).total}</Text>
-                  </View>
-                </View>
-              )}
-
-              <Text style={styles.paymentMethodLabel}>UPI Payment Method</Text>
-              <View style={styles.paymentMethods}>
-                <TouchableOpacity 
-                  style={styles.paymentMethod}
-                  onPress={() => handlePaymentMethodSelect('PhonePe')}
-                >
-                  <Text style={styles.paymentMethodText}>📱 PhonePe</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.paymentMethod}
-                  onPress={() => handlePaymentMethodSelect('Google Pay')}
-                >
-                  <Text style={styles.paymentMethodText}>🟢 Google Pay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.paymentMethod}
-                  onPress={() => handlePaymentMethodSelect('Paytm')}
-                >
-                  <Text style={styles.paymentMethodText}>💙 Paytm</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Show deposit info only when no amount is entered or amount is below 100 */}
-              {(!depositAmount || parseFloat(depositAmount) < 100) && (
-                <View style={styles.depositInfo}>
-                  <Text style={styles.depositInfoTitle}>📌 Deposit Information:</Text>
-                  <Text style={styles.depositInfoText}>• Minimum deposit: ₹100</Text>
-                  <Text style={styles.depositInfoText}>• Instant UPI deposits (Max ₹50,000)</Text>
-                  <Text style={styles.depositInfoText}>• 28% GST applicable on all deposits</Text>
-                  <Text style={styles.depositInfoText}>• 5% cashback on deposits above ₹2000</Text>
-                  <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
-                </View>
-              )}
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Payment QR Code Modal */}
-      <Modal
-        visible={showPaymentModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowPaymentModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.paymentQRModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Complete Your Payment</Text>
-              <TouchableOpacity onPress={() => setShowPaymentModal(false)}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.paymentQRContent}>
-              {/* QR Code Display */}
-              <View style={styles.qrCodeContainer}>
-                <View style={styles.qrCodePlaceholder}>
-                  <View style={styles.qrSquare} />
-                  <View style={styles.qrSquare} />
-                  <View style={styles.qrSquare} />
-                  <View style={styles.qrSquare} />
-                </View>
-              </View>
-
-              <Text style={styles.scanInstructions}>
-                Scan this code using <Text style={styles.highlightText}>{selectedPaymentMethod}</Text> to pay ₹{depositAmount && calculateDepositDetails(parseFloat(depositAmount)).total}
-              </Text>
-
-              {/* UTR Input */}
-              <Text style={styles.utrLabel}>UTR Number</Text>
-              <TextInput
-                style={styles.utrInput}
-                placeholder="Enter 12-digit UTR"
-                placeholderTextColor="#999"
-                value={utrNumber}
-                onChangeText={setUtrNumber}
-                keyboardType="numeric"
-                maxLength={12}
-              />
-
-              <TouchableOpacity
-                style={[
-                  styles.confirmPaymentButton,
-                  utrNumber.length !== 12 && styles.confirmPaymentButtonDisabled
-                ]}
-                onPress={handleUTRConfirmation}
-                disabled={utrNumber.length !== 12}
-              >
-                <Text style={styles.confirmPaymentButtonText}>CONFIRM PAYMENT</Text>
-              </TouchableOpacity>
-
-              {/* UTR Help */}
-              <View style={styles.utrHelp}>
-                <Text style={styles.utrHelpTitle}>How to Find Your UTR Number:</Text>
-                <Text style={styles.utrHelpText}>• Check your bank SMS for the transaction confirmation</Text>
-                <Text style={styles.utrHelpText}>• Look for a 12-digit number labeled "UTR" or "Ref No"</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Withdraw Modal */}
-      <Modal
-        visible={showWithdrawModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowWithdrawModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.withdrawModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💳 Withdraw Chips to Your Account</Text>
-              <TouchableOpacity onPress={() => setShowWithdrawModal(false)}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.withdrawContent}>
-              <Text style={styles.withdrawLabel}>Amount (₹)</Text>
-              <TextInput
-                style={styles.withdrawInput}
-                placeholder="Enter amount"
-                placeholderTextColor="#999"
-                value={withdrawAmount}
-                onChangeText={setWithdrawAmount}
-                keyboardType="numeric"
-              />
-
-              <View style={styles.quickAmountsGrid}>
-                {[100, 500, 1000, 2000, 5000, 10000].map((amount) => (
-                  <TouchableOpacity
-                    key={amount}
-                    style={styles.quickAmountButton}
-                    onPress={() => setWithdrawAmount(amount.toString())}
-                  >
-                    <Text style={styles.quickAmountText}>₹{amount}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <TouchableOpacity
-                style={[styles.withdrawRequestButton, (!withdrawAmount || parseFloat(withdrawAmount) < 100) && styles.withdrawButtonDisabled]}
-                onPress={() => {
-                  const amount = parseFloat(withdrawAmount);
-                  if (amount >= 100) {
-                    handleWithdraw(amount);
-                  } else {
-                    Alert.alert('Invalid Amount', 'Minimum withdrawal amount is ₹100');
-                  }
-                }}
-                disabled={!withdrawAmount || parseFloat(withdrawAmount) < 100}
-              >
-                <Text style={styles.withdrawRequestButtonText}>REQUEST WITHDRAWAL</Text>
-              </TouchableOpacity>
-
-              <View style={styles.withdrawInfo}>
-                <Text style={styles.withdrawInfoTitle}>ℹ️ Withdrawal Information:</Text>
-                <Text style={styles.withdrawInfoText}>• Minimum withdrawal: ₹100</Text>
-                <Text style={styles.withdrawInfoText}>• Maximum per request: ₹30,000</Text>
-                <Text style={styles.withdrawInfoText}>• Processing time: 5 to 10 minutes</Text>
-                <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
-                <Text style={styles.withdrawInfoText}>• Bank charges may apply</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-            {/* Payment Success Modal */}
-            <Modal
-                visible={showPaymentSuccessModal}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => {}}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.paymentSuccessModalContainer}>
-                        <View style={styles.successContent}>
-                            {/* Success Icon */}
-                            <View style={styles.successIcon}>
-                                <Text style={styles.successIconText}>✅</Text>
-                            </View>
-
-                            {/* Success Message */}
-                            <Text style={styles.successTitle}>Payment Pending!</Text>
-                            <Text style={styles.successMessage}>
-                                Your payment of ₹{depositAmount && calculateDepositDetails(parseFloat(depositAmount)).total} via {selectedPaymentMethod} is being processed.
-                            </Text>
-
-                            {/* UTR Display */}
-                            <View style={styles.utrDisplayContainer}>
-                                <Text style={styles.utrDisplayLabel}>UTR Number:</Text>
-                                <Text style={styles.utrDisplayValue}>{utrNumber}</Text>
-                            </View>
-
-                            {/* Timer Message */}
-                            <View style={styles.timerContainer}>
-                                <Text style={styles.timerMessage}>
-                                    💰 Wallet will be updated in 5 minutes
-                                </Text>
-                                <Text style={styles.timerNote}>
-                                    Admin approval required for security
-                                </Text>
-                            </View>
-
-                            {/* Countdown */}
-                            <View style={styles.countdownContainer}>
-                                <Text style={styles.countdownText}>
-                                    Redirecting to home in {countdownSeconds} seconds...
-                                </Text>
-                            </View>
-
-                            {/* Manual Home Button */}
-                            <TouchableOpacity
-                                style={styles.goHomeButton}
-                                onPress={() => {
-                                    setShowPaymentSuccessModal(false);
-                                    setActiveTab('home');
-                                    setUtrNumber('');
-                                    setDepositAmount('');
-                                    setSelectedPaymentMethod('');
-                                }}
-                            >
-                                <Text style={styles.goHomeButtonText}>GO TO HOME</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+      {/* Payment Success Component */}
+      <PaymentSuccess
+        visible={showPaymentSuccessModal}
+        amount={depositAmount && calculateDepositDetails(parseFloat(depositAmount)).total.toString()}
+        utrNumber={utrNumber}
+        paymentMethod={selectedPaymentMethod}
+        onClose={handlePaymentSuccessClose}
+      />
     </SafeAreaView>
   );
 }
