@@ -290,6 +290,23 @@ export default function App() {
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>💰 Wallet</Text>
 
+            {/* Action Buttons - Moved to Top */}
+            <View style={styles.walletActionsTop}>
+              <TouchableOpacity 
+                style={styles.addCashButton}
+                onPress={() => setShowAddCashModal(true)}
+              >
+                <Text style={styles.addCashButtonText}>ADD CASH</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.withdrawButton}
+                onPress={() => setShowWithdrawModal(true)}
+              >
+                <Text style={styles.withdrawButtonText}>WITHDRAW</Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Total Balance Card */}
             <View style={styles.totalBalanceCard}>
               <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
@@ -310,23 +327,6 @@ export default function App() {
                 <Text style={styles.bonusAmount}>₹0.00</Text>
                 <Text style={styles.balanceItemSubtitle}>Includes direct bonus + commission earned</Text>
               </View>
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.walletActions}>
-              <TouchableOpacity 
-                style={styles.addCashButton}
-                onPress={() => setShowAddCashModal(true)}
-              >
-                <Text style={styles.addCashButtonText}>ADD CASH</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.withdrawButton}
-                onPress={() => setShowWithdrawModal(true)}
-              >
-                <Text style={styles.withdrawButtonText}>WITHDRAW</Text>
-              </TouchableOpacity>
             </View>
           </View>
         );
@@ -729,12 +729,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 16,
   },
-  walletActions: {
+  walletActionsTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     gap: 15,
-    marginBottom: 120, // Increased margin to avoid menu button overlap
+    marginBottom: 25,
     position: 'relative',
     zIndex: 1,
   },
