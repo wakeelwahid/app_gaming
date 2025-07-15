@@ -214,13 +214,38 @@ export default function App() {
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>💰 Wallet</Text>
-            <View style={styles.walletCard}>
-              <Text style={styles.walletBalance}>{wallet}</Text>
-              <Text style={styles.walletLabel}>Current Balance</Text>
+            
+            {/* Total Balance Card */}
+            <View style={styles.totalBalanceCard}>
+              <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
+              <Text style={styles.totalBalanceAmount}>{wallet}</Text>
+              <Text style={styles.totalBalanceSubtitle}>Total amount</Text>
             </View>
-            <View style={styles.winningsCard}>
-              <Text style={styles.winningsBalance}>{winnings}</Text>
-              <Text style={styles.winningsLabel}>Total Winnings</Text>
+
+            {/* Balance Breakdown */}
+            <View style={styles.balanceBreakdown}>
+              <View style={styles.balanceItem}>
+                <Text style={styles.balanceItemTitle}>WINNINGS AMOUNT</Text>
+                <Text style={styles.winningsAmount}>{winnings}</Text>
+                <Text style={styles.balanceItemSubtitle}>Available for withdrawal</Text>
+              </View>
+
+              <View style={styles.balanceItem}>
+                <Text style={styles.balanceItemTitle}>BONUS AMOUNT</Text>
+                <Text style={styles.bonusAmount}>₹0.00</Text>
+                <Text style={styles.balanceItemSubtitle}>Includes direct bonus + commission earned</Text>
+              </View>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.walletActions}>
+              <TouchableOpacity style={styles.addCashButton}>
+                <Text style={styles.addCashButtonText}>ADD CASH</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.withdrawButton}>
+                <Text style={styles.withdrawButtonText}>WITHDRAW</Text>
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -524,44 +549,104 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     marginBottom: 20,
   },
-  walletCard: {
+  totalBalanceCard: {
     backgroundColor: '#1a1a1a',
-    padding: 20,
+    padding: 25,
     borderRadius: 15,
     alignItems: 'center',
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#00FF88',
-    width: '100%',
-  },
-  walletBalance: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#00FF88',
-  },
-  walletLabel: {
-    color: '#999',
-    fontSize: 14,
-    marginTop: 5,
-  },
-  winningsCard: {
-    backgroundColor: '#1a1a1a',
-    padding: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#4A90E2',
     width: '100%',
   },
-  winningsBalance: {
-    fontSize: 28,
+  totalBalanceTitle: {
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#4A90E2',
+    letterSpacing: 1,
+    marginBottom: 10,
   },
-  winningsLabel: {
+  totalBalanceAmount: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#00FF88',
+    marginBottom: 5,
+  },
+  totalBalanceSubtitle: {
     color: '#999',
-    fontSize: 14,
-    marginTop: 5,
+    fontSize: 12,
+  },
+  balanceBreakdown: {
+    width: '100%',
+    marginBottom: 30,
+  },
+  balanceItem: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  balanceItemTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    letterSpacing: 1,
+    marginBottom: 8,
+  },
+  winningsAmount: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00FF88',
+    marginBottom: 5,
+  },
+  bonusAmount: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 5,
+  },
+  balanceItemSubtitle: {
+    color: '#999',
+    fontSize: 11,
+    lineHeight: 16,
+  },
+  walletActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: 15,
+  },
+  addCashButton: {
+    flex: 1,
+    backgroundColor: '#00FF88',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addCashButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  withdrawButton: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+  },
+  withdrawButtonText: {
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 1,
   },
   historyItem: {
     backgroundColor: '#1a1a1a',
