@@ -426,7 +426,7 @@ export default function App() {
 
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerCenter}>
+        <View style={styles.headerLeft}>
           <Text style={styles.headerTitle}>👑 VN Gaming</Text>
         </View>
 
@@ -453,7 +453,7 @@ export default function App() {
       {showSideMenu && (
         <Modal
           transparent={true}
-          animationType="none"
+          animationType="fade"
           visible={showSideMenu}
           onRequestClose={toggleSideMenu}
         >
@@ -461,16 +461,20 @@ export default function App() {
             <TouchableOpacity 
               style={styles.sideMenuBackdrop} 
               onPress={toggleSideMenu}
+              activeOpacity={1}
             />
             <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
               <View style={styles.sideMenuHeader}>
-                <Text style={styles.sideMenuTitle}>👑 Menu</Text>
-                <TouchableOpacity onPress={toggleSideMenu}>
-                  <Ionicons name="close" size={24} color="#FFD700" />
+                <View style={styles.menuHeaderLeft}>
+                  <Text style={styles.sideMenuTitle}>👑 VN Gaming</Text>
+                  <Text style={styles.sideMenuSubtitle}>Main Menu</Text>
+                </View>
+                <TouchableOpacity style={styles.closeButton} onPress={toggleSideMenu}>
+                  <Ionicons name="close" size={26} color="#FFD700" />
                 </TouchableOpacity>
               </View>
               
-              <ScrollView style={styles.sideMenuContent}>
+              <ScrollView style={styles.sideMenuContent} showsVerticalScrollIndicator={false}>
                 {menuItems.map((item, index) => (
                   <TouchableOpacity
                     key={index}
@@ -480,20 +484,40 @@ export default function App() {
                     ]}
                     onPress={() => handleMenuItemPress(item.key)}
                   >
-                    <Ionicons 
-                      name={item.icon} 
-                      size={20} 
-                      color={activeTab === item.key ? '#000' : '#FFD700'} 
-                    />
-                    <Text style={[
-                      styles.sideMenuItemText,
-                      activeTab === item.key && styles.activeSideMenuItemText
+                    <View style={[
+                      styles.menuItemIconContainer,
+                      activeTab === item.key && styles.activeMenuItemIconContainer
                     ]}>
-                      {item.title}
-                    </Text>
+                      <Ionicons 
+                        name={item.icon} 
+                        size={22} 
+                        color={activeTab === item.key ? '#000' : '#FFD700'} 
+                      />
+                    </View>
+                    <View style={styles.menuItemTextContainer}>
+                      <Text style={[
+                        styles.sideMenuItemText,
+                        activeTab === item.key && styles.activeSideMenuItemText
+                      ]}>
+                        {item.title}
+                      </Text>
+                      {activeTab === item.key && (
+                        <View style={styles.activeIndicator} />
+                      )}
+                    </View>
+                    <Ionicons 
+                      name="chevron-forward" 
+                      size={18} 
+                      color={activeTab === item.key ? '#000' : '#666'} 
+                    />
                   </TouchableOpacity>
                 ))}
               </ScrollView>
+              
+              <View style={styles.sideMenuFooter}>
+                <Text style={styles.footerText}>Version 1.0.0</Text>
+                <Text style={styles.footerCopyright}>© 2024 VN Gaming</Text>
+              </View>
             </Animated.View>
           </View>
         </Modal>
@@ -699,9 +723,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFD700',
   },
-  headerCenter: {
+  headerLeft: {
     flex: 1,
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 20,
@@ -761,56 +785,126 @@ const styles = StyleSheet.create({
   },
   sideMenuOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     flexDirection: 'row',
   },
   sideMenuBackdrop: {
     flex: 1,
   },
   sideMenu: {
-    width: SCREEN_WIDTH * 0.8,
+    width: SCREEN_WIDTH * 0.85,
     backgroundColor: '#1a1a1a',
     height: '100%',
-    borderRightWidth: 1,
-    borderRightColor: '#333',
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 5, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 15,
+    borderRightWidth: 2,
+    borderRightColor: '#FFD700',
   },
   sideMenuHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    padding: 25,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFD700',
+    backgroundColor: '#2a2a2a',
+  },
+  menuHeaderLeft: {
+    flex: 1,
   },
   sideMenuTitle: {
     color: '#FFD700',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  sideMenuSubtitle: {
+    color: '#ccc',
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  closeButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#333',
   },
   sideMenuContent: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   sideMenuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    paddingVertical: 18,
+    marginHorizontal: 10,
+    marginVertical: 2,
+    borderRadius: 12,
+    position: 'relative',
   },
   activeSideMenuItem: {
     backgroundColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  menuItemIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#333',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  activeMenuItemIconContainer: {
+    backgroundColor: '#000',
+  },
+  menuItemTextContainer: {
+    flex: 1,
+    position: 'relative',
   },
   sideMenuItemText: {
     color: '#FFD700',
     fontSize: 16,
-    marginLeft: 15,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   activeSideMenuItemText: {
     color: '#000',
     fontWeight: 'bold',
+  },
+  activeIndicator: {
+    position: 'absolute',
+    bottom: -2,
+    left: 0,
+    width: 30,
+    height: 2,
+    backgroundColor: '#000',
+    borderRadius: 1,
+  },
+  sideMenuFooter: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+    alignItems: 'center',
+    backgroundColor: '#2a2a2a',
+  },
+  footerText: {
+    color: '#666',
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  footerCopyright: {
+    color: '#FFD700',
+    fontSize: 12,
+    fontWeight: '500',
   },
   tabContent: {
     flex: 1,
