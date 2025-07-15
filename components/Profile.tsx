@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -55,6 +54,23 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
   const copyReferralCode = () => {
     // In a real app, you'd use clipboard API
     Alert.alert('Copied!', 'Referral code copied to clipboard');
+  };
+
+  const handleCompleteKYC = () => {
+    Alert.alert(
+      'Complete KYC Verification',
+      'Please provide the following documents:\n\n• PAN Card\n• Aadhaar Card\n• Bank Statement\n• Selfie with documents\n\nKYC verification usually takes 24-48 hours.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Start KYC', 
+          onPress: () => {
+            onCompleteKYC();
+            Alert.alert('KYC Initiated', 'Your KYC verification process has been started. You will be notified once completed.');
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -168,7 +184,7 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
         </View>
 
         {userData.kycStatus !== 'VERIFIED' && (
-          <TouchableOpacity style={styles.completeKycButton} onPress={onCompleteKYC}>
+          <TouchableOpacity style={styles.completeKycButton} onPress={handleCompleteKYC}>
             <Ionicons name="card" size={16} color="#000" />
             <Text style={styles.completeKycButtonText}>Complete KYC</Text>
           </TouchableOpacity>
