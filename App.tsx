@@ -147,8 +147,9 @@ export default function App() {
     setShowAmountModal(true);
   };
 
-  const handleBetPlace = async (amount: number) => {
+  const handleBetPlace = (amount: number) => {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+
     if (currentWallet >= amount) {
       setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
 
@@ -157,7 +158,9 @@ export default function App() {
         number: selectedNumber,
         amount: amount,
         type: currentBetType,
-        game: selectedGame.title
+        game: selectedGame?.title || 'Unknown Game',
+        timestamp: new Date(),
+        status: 'pending' as const
       };
 
       // Here you can make API call to place bet
