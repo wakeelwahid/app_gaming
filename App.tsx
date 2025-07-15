@@ -18,7 +18,7 @@ export default function App() {
   const [currentBetType, setCurrentBetType] = useState('numbers'); // 'numbers', 'andar', 'bahar'
   const [activeTab, setActiveTab] = useState('home');
   const [showSideMenu, setShowSideMenu] = useState(false);
-  const [slideAnim] = useState(new Animated.Value(-SCREEN_WIDTH));
+  const [slideAnim] = useState(new Animated.Value(SCREEN_WIDTH));
 
   const gameCards = [
     {
@@ -113,18 +113,23 @@ export default function App() {
     { icon: 'shield-checkmark', title: 'Privacy Policy', key: 'privacy' },
   ];
 
+  const authItems = [
+    { icon: 'log-in', title: 'Login', key: 'login', color: '#00FF88' },
+    { icon: 'person-add', title: 'Register', key: 'register', color: '#FFD700' },
+  ];
+
   const toggleSideMenu = () => {
     if (showSideMenu) {
       Animated.timing(slideAnim, {
-        toValue: -SCREEN_WIDTH,
-        duration: 300,
+        toValue: SCREEN_WIDTH,
+        duration: 350,
         useNativeDriver: true,
       }).start(() => setShowSideMenu(false));
     } else {
       setShowSideMenu(true);
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 300,
+        duration: 350,
         useNativeDriver: true,
       }).start();
     }
@@ -449,7 +454,7 @@ export default function App() {
         <Text style={styles.bottomMenuText}>Menu</Text>
       </TouchableOpacity>
 
-      {/* Side Menu */}
+      {/* Bottom Slide Menu */}
       {showSideMenu && (
         <Modal
           transparent={true}
@@ -457,71 +462,85 @@ export default function App() {
           visible={showSideMenu}
           onRequestClose={toggleSideMenu}
         >
-          <View style={styles.sideMenuOverlay}>
+          <View style={styles.bottomMenuOverlay}>
             <TouchableOpacity 
-              style={styles.sideMenuBackdrop} 
+              style={styles.bottomMenuBackdrop} 
               onPress={toggleSideMenu}
               activeOpacity={1}
             />
-            <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
-              <View style={styles.sideMenuHeader}>
-                <View style={styles.menuHeaderLeft}>
-                  <Text style={styles.sideMenuTitle}>👑 VN Gaming</Text>
-                  <Text style={styles.sideMenuSubtitle}>Main Menu</Text>
+            <Animated.View style={[styles.bottomMenu, { transform: [{ translateY: slideAnim }] }]}>
+              {/* Handle Bar */}
+              <View style={styles.handleBar} />
+              
+              {/* Menu Header */}
+              <View style={styles.bottomMenuHeader}>
+                <View style={styles.menuHeaderCenter}>
+                  <Text style={styles.bottomMenuTitle}>👑 VN Gaming</Text>
+                  <Text style={styles.bottomMenuSubtitle}>Main Menu</Text>
                 </View>
                 <TouchableOpacity style={styles.closeButton} onPress={toggleSideMenu}>
-                  <Ionicons name="close" size={26} color="#FFD700" />
+                  <Ionicons name="close" size={24} color="#FFD700" />
                 </TouchableOpacity>
               </View>
+
+              {/* Authentication Buttons */}
+              <View style={styles.authSection}>
+                <View style={styles.authButtonsContainer}>
+                  {authItems.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.authButton, { backgroundColor: item.color }]}
+                      onPress={() => handleMenuItemPress(item.key)}
+                    >
+                      <Ionicons name={item.icon} size={20} color="#000" />
+                      <Text style={styles.authButtonText}>{item.title}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
               
-              <ScrollView style={styles.sideMenuContent} showsVerticalScrollIndicator={false}>
-                {menuItems.map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[
-                      styles.sideMenuItem,
-                      activeTab === item.key && styles.activeSideMenuItem
-                    ]}
-                    onPress={() => handleMenuItemPress(item.key)}
-                  >
-                    <View style={[
-                      styles.menuItemIconContainer,
-                      activeTab === item.key && styles.activeMenuItemIconContainer
-                    ]}>
-                      <Ionicons 
-                        name={item.icon} 
-                        size={22} 
-                        color={activeTab === item.key ? '#000' : '#FFD700'} 
-                      />
-                    </View>
-                    <View style={styles.menuItemTextContainer}>
+              {/* Menu Items */}
+              <ScrollView style={styles.bottomMenuContent} showsVerticalScrollIndicator={false}>
+                <View style={styles.menuGrid}>
+                  {menuItems.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.bottomMenuItem,
+                        activeTab === item.key && styles.activeBottomMenuItem
+                      ]}
+                      onPress={() => handleMenuItemPress(item.key)}
+                    >
+                      <View style={[
+                        styles.bottomMenuItemIcon,
+                        activeTab === item.key && styles.activeBottomMenuItemIcon
+                      ]}>
+                        <Ionicons 
+                          name={item.icon} 
+                          size={24} 
+                          color={activeTab === item.key ? '#000' : '#FFD700'} 
+                        />
+                      </View>
                       <Text style={[
-                        styles.sideMenuItemText,
-                        activeTab === item.key && styles.activeSideMenuItemText
+                        styles.bottomMenuItemText,
+                        activeTab === item.key && styles.activeBottomMenuItemText
                       ]}>
                         {item.title}
                       </Text>
-                      {activeTab === item.key && (
-                        <View style={styles.activeIndicator} />
-                      )}
-                    </View>
-                    <Ionicons 
-                      name="chevron-forward" 
-                      size={18} 
-                      color={activeTab === item.key ? '#000' : '#666'} 
-                    />
-                  </TouchableOpacity>
-                ))}
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </ScrollView>
               
-              <View style={styles.sideMenuFooter}>
+              {/* Footer */}
+              <View style={styles.bottomMenuFooter}>
                 <Text style={styles.footerText}>Version 1.0.0</Text>
                 <Text style={styles.footerCopyright}>© 2024 VN Gaming</Text>
               </View>
             </Animated.View>
           </View>
         </Modal>
-      )}
+      )}</li>
 
       {/* Betting Modal */}
       <Modal
@@ -783,47 +802,60 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
   },
-  sideMenuOverlay: {
+  bottomMenuOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'flex-end',
   },
-  sideMenuBackdrop: {
+  bottomMenuBackdrop: {
     flex: 1,
   },
-  sideMenu: {
-    width: SCREEN_WIDTH * 0.85,
+  bottomMenu: {
     backgroundColor: '#1a1a1a',
-    height: '100%',
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    maxHeight: '85%',
+    minHeight: '70%',
     shadowColor: '#000',
-    shadowOffset: { width: 5, height: 0 },
+    shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 15,
-    borderRightWidth: 2,
-    borderRightColor: '#FFD700',
+    shadowRadius: 15,
+    elevation: 20,
+    borderTopWidth: 3,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: '#FFD700',
   },
-  sideMenuHeader: {
+  handleBar: {
+    width: 50,
+    height: 5,
+    backgroundColor: '#FFD700',
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginTop: 10,
+    marginBottom: 15,
+  },
+  bottomMenuHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 25,
+    paddingHorizontal: 25,
+    paddingVertical: 15,
     borderBottomWidth: 2,
     borderBottomColor: '#FFD700',
     backgroundColor: '#2a2a2a',
   },
-  menuHeaderLeft: {
+  menuHeaderCenter: {
     flex: 1,
+    alignItems: 'center',
   },
-  sideMenuTitle: {
+  bottomMenuTitle: {
     color: '#FFD700',
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 2,
   },
-  sideMenuSubtitle: {
+  bottomMenuSubtitle: {
     color: '#ccc',
     fontSize: 14,
     opacity: 0.8,
@@ -832,64 +864,93 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
     backgroundColor: '#333',
+    position: 'absolute',
+    right: 20,
   },
-  sideMenuContent: {
+  authSection: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    backgroundColor: '#2a2a2a',
+  },
+  authButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: 15,
+  },
+  authButton: {
     flex: 1,
-    paddingVertical: 15,
-  },
-  sideMenuItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
     paddingHorizontal: 20,
-    paddingVertical: 18,
-    marginHorizontal: 10,
-    marginVertical: 2,
-    borderRadius: 12,
-    position: 'relative',
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  activeSideMenuItem: {
+  authButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  bottomMenuContent: {
+    flex: 1,
+    paddingVertical: 20,
+  },
+  menuGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 15,
+    justifyContent: 'space-between',
+  },
+  bottomMenuItem: {
+    width: '48%',
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    borderRadius: 15,
+    backgroundColor: '#2a2a2a',
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  activeBottomMenuItem: {
     backgroundColor: '#FFD700',
+    borderColor: '#FFD700',
     shadowColor: '#FFD700',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
   },
-  menuItemIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  bottomMenuItemIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#333',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginBottom: 10,
   },
-  activeMenuItemIconContainer: {
+  activeBottomMenuItemIcon: {
     backgroundColor: '#000',
   },
-  menuItemTextContainer: {
-    flex: 1,
-    position: 'relative',
-  },
-  sideMenuItemText: {
+  bottomMenuItemText: {
     color: '#FFD700',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
+    textAlign: 'center',
   },
-  activeSideMenuItemText: {
+  activeBottomMenuItemText: {
     color: '#000',
     fontWeight: 'bold',
   },
-  activeIndicator: {
-    position: 'absolute',
-    bottom: -2,
-    left: 0,
-    width: 30,
-    height: 2,
-    backgroundColor: '#000',
-    borderRadius: 1,
-  },
-  sideMenuFooter: {
+  bottomMenuFooter: {
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: '#333',
