@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -395,100 +396,60 @@ const styles = StyleSheet.create({
   },
   selectedNumberText: {
     color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textShadowColor: '#FFD700',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  luckyNumberButton: {
-    backgroundColor: '#2E8B57',
-    borderColor: '#00FF88',
-    borderWidth: 2,
-    shadowColor: '#00FF88',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  luckyNumberText: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  specialNumberButton: {
-    backgroundColor: '#4A0E4E',
-    borderColor: '#9B59B6',
-    borderWidth: 2,
-    shadowColor: '#9B59B6',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  specialNumberText: {
-    color: '#E74C3C',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  luckyIcon: {
-    position: 'absolute',
-    top: -5,
-    left: -5,
-    zIndex: 1,
-  },
-  luckyIconText: {
-    fontSize: 12,
-  },
-  specialIcon: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    zIndex: 1,
-  },
-  specialIconText: {
-    fontSize: 10,
   },
   betAmountBadge: {
     position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: '#00FF88',
-    borderRadius: 12,
-    minWidth: 24,
-    height: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#000',
-    shadowColor: '#00FF88',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 10,
+    top: -5,
+    right: -5,
+    backgroundColor: '#E74C3C',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
   },
   betAmountBadgeText: {
-    color: '#000',
-    fontSize: 9,
+    color: '#fff',
+    fontSize: 8,
     fontWeight: 'bold',
-    textShadowColor: '#fff',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
+  },
+  andarBaharGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  andarBaharButton: {
+    width: '48%',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    position: 'relative',
+    borderWidth: 2,
+  },
+  andarButton: {
+    backgroundColor: '#1a4a1a',
+    borderColor: '#00FF88',
+  },
+  selectedAndarButton: {
+    backgroundColor: '#00FF88',
+  },
+  baharButton: {
+    backgroundColor: '#4a1a1a',
+    borderColor: '#E74C3C',
+  },
+  selectedBaharButton: {
+    backgroundColor: '#E74C3C',
+  },
+  andarBaharText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  selectedAndarText: {
+    color: '#000',
+  },
+  selectedBaharText: {
+    color: '#000',
   },
   betAmountBadgeSmall: {
     position: 'absolute',
