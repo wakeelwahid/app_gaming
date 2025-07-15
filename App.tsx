@@ -59,6 +59,96 @@ export default function App() {
       status: 'loss',
       timestamp: new Date(Date.now() - 172800000).toISOString(),
       winAmount: 0
+    },
+    {
+      id: 4,
+      number: '567',
+      amount: 300,
+      type: 'jodi',
+      game: 'Jaipur King',
+      status: 'win',
+      timestamp: new Date(Date.now() - 259200000).toISOString(),
+      winAmount: 900
+    },
+    {
+      id: 5,
+      number: '89',
+      amount: 250,
+      type: 'panna',
+      game: 'Faridabad',
+      status: 'pending',
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
+      winAmount: null
+    },
+    {
+      id: 6,
+      number: '34',
+      amount: 180,
+      type: 'single',
+      game: 'Ghaziabad',
+      status: 'loss',
+      timestamp: new Date(Date.now() - 7200000).toISOString(),
+      winAmount: 0
+    },
+    {
+      id: 7,
+      number: '456',
+      amount: 400,
+      type: 'andar',
+      game: 'Gali',
+      status: 'win',
+      timestamp: new Date(Date.now() - 432000000).toISOString(),
+      winAmount: 800
+    },
+    {
+      id: 8,
+      number: '12',
+      amount: 120,
+      type: 'bahar',
+      game: 'Disawer',
+      status: 'pending',
+      timestamp: new Date(Date.now() - 1800000).toISOString(),
+      winAmount: null
+    },
+    {
+      id: 9,
+      number: '678',
+      amount: 500,
+      type: 'jodi',
+      game: 'Diamond King',
+      status: 'win',
+      timestamp: new Date(Date.now() - 518400000).toISOString(),
+      winAmount: 1500
+    },
+    {
+      id: 10,
+      number: '23',
+      amount: 80,
+      type: 'single',
+      game: 'Madhur Day',
+      status: 'loss',
+      timestamp: new Date(Date.now() - 10800000).toISOString(),
+      winAmount: 0
+    },
+    {
+      id: 11,
+      number: '147',
+      amount: 350,
+      type: 'panna',
+      game: 'Time Bazar',
+      status: 'pending',
+      timestamp: new Date(Date.now() - 5400000).toISOString(),
+      winAmount: null
+    },
+    {
+      id: 12,
+      number: '69',
+      amount: 220,
+      type: 'andar',
+      game: 'Sridevi Day',
+      status: 'win',
+      timestamp: new Date(Date.now() - 604800000).toISOString(),
+      winAmount: 440
     }
   ]);
 
