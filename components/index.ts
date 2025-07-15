@@ -7,4 +7,5 @@ export { default as BettingModal } from './BettingModal';
 export { default as WalletOperations } from './WalletOperations';
 export { default as PaymentSuccess } from './PaymentSuccess';
 export { default as WithdrawSuccess } from './WithdrawSuccess';
+export { default as Transaction } from './Transaction';
 export { default as Profile } from './Profile';
