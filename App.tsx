@@ -28,8 +28,8 @@ export default function App() {
       openTime: '05:00 PM',
       closeTime: '04:50 PM',
       status: 'Open for Play',
-      color: '#4A90E2',
-      bgColor: '#1A2A3A'
+      color: '#FFD700',
+      bgColor: '#2A2A2A'
     },
     {
       id: 2,
@@ -102,7 +102,7 @@ export default function App() {
   ];
 
   const menuItems = [
-    { icon: 'home', title: 'Home', key: 'home', color: '#4A90E2', bgColor: '#1A2A3A' },
+    { icon: 'home', title: 'Home', key: 'home', color: '#FFD700', bgColor: '#2A2A00' },
     { icon: 'game-controller', title: 'Play Games', key: 'play', color: '#00FF88', bgColor: '#002A1A' },
     { icon: 'person', title: 'My Profile', key: 'profile', color: '#4A90E2', bgColor: '#001A2A' },
     { icon: 'wallet', title: 'My Wallet', key: 'wallet', color: '#9B59B6', bgColor: '#2A1A2A' },
@@ -116,7 +116,7 @@ export default function App() {
 
   const authItems = [
     { icon: 'log-in', title: 'Login', key: 'login', color: '#00FF88' },
-    { icon: 'person-add', title: 'Register', key: 'register', color: '#4A90E2' },
+    { icon: 'person-add', title: 'Register', key: 'register', color: '#FFD700' },
   ];
 
   const toggleSideMenu = () => {
@@ -491,7 +491,7 @@ export default function App() {
                   <Text style={styles.bottomMenuSubtitle}>Main Menu</Text>
                 </View>
                 <TouchableOpacity style={styles.closeButton} onPress={toggleSideMenu}>
-                  <Ionicons name="close" size={24} color="#4A90E2" />
+                  <Ionicons name="close" size={24} color="#FFD700" />
                 </TouchableOpacity>
               </View>
 
@@ -901,7 +901,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
   },
   headerRight:{
     flexDirection: 'row',
@@ -942,18 +942,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#FFD700',
     minWidth: 250,
   },
   promoText: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 14,
     fontWeight: 'bold',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
     marginBottom: 15,
     textAlign: 'center',
   },
@@ -978,7 +978,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   featureTitle: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 12,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
   tabTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
     marginBottom: 20,
   },
   walletCard: {
@@ -1106,7 +1106,7 @@ const styles = StyleSheet.create({
   winningsBalance: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
   },
   winningsLabel: {
     color: '#999',
@@ -1125,7 +1125,7 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   historyNumber: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -1156,7 +1156,7 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
     marginBottom: 10,
   },
   profilePhone: {
@@ -1165,7 +1165,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profileButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFD700',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -1185,7 +1185,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFD700',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 25,
@@ -1220,12 +1220,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#FFD700',
   },
   handleBar: {
     width: 40,
     height: 4,
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFD700',
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 15,
@@ -1245,7 +1245,7 @@ const styles = StyleSheet.create({
   bottomMenuTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
   },
   bottomMenuSubtitle: {
     fontSize: 12,
@@ -1350,7 +1350,7 @@ const styles = StyleSheet.create({
     maxHeight: '90%',
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#FFD700',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1363,7 +1363,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
     flex: 1,
   },
   modalContent: {
@@ -1385,8 +1385,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeTab: {
-    backgroundColor: '#4A90E2',
-    borderColor: '#4A90E2',
+    backgroundColor: '#FFD700',
+    borderColor: '#FFD700',
   },
   tabText: {
     color: '#999',
@@ -1406,7 +1406,7 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   summaryTitle: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -1416,7 +1416,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   selectedChip: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFD700',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
@@ -1472,8 +1472,8 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   selectedNumberButton: {
-    backgroundColor: '#4A90E2',
-    borderColor: '#4A90E2',
+    backgroundColor: '#FFD700',
+    borderColor: '#FFD700',
   },
   numberText: {
     color: '#fff',
@@ -1555,7 +1555,7 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#FFD700',
   },
   amountContent: {
     padding: 20,
@@ -1570,7 +1570,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   betPreviewText: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
@@ -1580,7 +1580,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   amountLabel: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -1618,7 +1618,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   customAmountButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFD700',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -1634,7 +1634,7 @@ const styles = StyleSheet.create({
     maxHeight: '90%',
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#FFD700',
   },
   authModalContent: {
     flex: 1,
@@ -1646,7 +1646,7 @@ const styles = StyleSheet.create({
   formTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#FFD700',
     textAlign: 'center',
     marginBottom: 25,
   },
@@ -1654,7 +1654,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   inputLabel: {
-    color: '#4A90E2',
+    color: '#FFD700',
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 5,
@@ -1670,7 +1670,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   submitButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFD700',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
