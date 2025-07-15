@@ -29,36 +29,197 @@ export default function App() {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
+  // Dummy bet history data
   const [betList, setBetList] = useState([
+    // Jaipur King bets
     {
-      id: 1,
-      number: '123',
+      id: '1',
+      game: 'Jaipur King',
+      number: '14',
       amount: 100,
       type: 'single',
-      game: 'Sridevi Day',
       status: 'pending',
-      timestamp: new Date().toISOString(),
-      winAmount: null
+      timestamp: Date.now() - 3600000,
+      sessionTime: '09:00 PM - 04:50 PM'
     },
     {
-      id: 2,
-      number: '45',
-      amount: 200,
+      id: '2',
+      game: 'Jaipur King',
+      number: '2',
+      amount: 100,
       type: 'andar',
-      game: 'Madhur Day',
-      status: 'win',
-      timestamp: new Date(Date.now() - 86400000).toISOString(),
-      winAmount: 400
+      status: 'pending',
+      timestamp: Date.now() - 3600000,
+      sessionTime: '09:00 PM - 04:50 PM'
     },
     {
-      id: 3,
-      number: '789',
-      amount: 150,
-      type: 'bahar',
-      game: 'Time Bazar',
+      id: '3',
+      game: 'Jaipur King',
+      number: '61',
+      amount: 100,
+      type: 'single',
+      status: 'pending',
+      timestamp: Date.now() - 3600000,
+      sessionTime: '09:00 PM - 04:50 PM'
+    },
+    // Faridabad bets
+    {
+      id: '4',
+      game: 'Faridabad',
+      number: '6',
+      amount: 100,
+      type: 'single',
+      status: 'win',
+      winAmount: 900,
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '5',
+      game: 'Faridabad',
+      number: '6',
+      amount: 100,
+      type: 'single',
+      status: 'win',
+      winAmount: 900,
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '6',
+      game: 'Faridabad',
+      number: '6',
+      amount: 100,
+      type: 'single',
+      status: 'win',
+      winAmount: 900,
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '7',
+      game: 'Faridabad',
+      number: '27',
+      amount: 100,
+      type: 'single',
       status: 'loss',
-      timestamp: new Date(Date.now() - 172800000).toISOString(),
-      winAmount: 0
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '8',
+      game: 'Faridabad',
+      number: '27',
+      amount: 100,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '9',
+      game: 'Faridabad',
+      number: '27',
+      amount: 100,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '10',
+      game: 'Faridabad',
+      number: '19',
+      amount: 500,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '11',
+      game: 'Faridabad',
+      number: '19',
+      amount: 500,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '12',
+      game: 'Faridabad',
+      number: '19',
+      amount: 500,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '13',
+      game: 'Faridabad',
+      number: '0',
+      amount: 100,
+      type: 'andar',
+      status: 'win',
+      winAmount: 180,
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '14',
+      game: 'Faridabad',
+      number: '0',
+      amount: 100,
+      type: 'andar',
+      status: 'win',
+      winAmount: 180,
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    // Ghaziabad bets
+    {
+      id: '15',
+      game: 'Ghaziabad',
+      number: '89',
+      amount: 200,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 86400000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    {
+      id: '16',
+      game: 'Ghaziabad',
+      number: '45',
+      amount: 150,
+      type: 'single',
+      status: 'win',
+      winAmount: 1350,
+      timestamp: Date.now() - 86400000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    // Gali bets
+    {
+      id: '17',
+      game: 'Gali',
+      number: '12',
+      amount: 300,
+      type: 'single',
+      status: 'pending',
+      timestamp: Date.now() - 1800000,
+      sessionTime: '04:00 AM - 10:30 PM'
+    },
+    {
+      id: '18',
+      game: 'Gali',
+      number: '3',
+      amount: 200,
+      type: 'bahar',
+      status: 'pending',
+      timestamp: Date.now() - 1800000,
+      sessionTime: '04:00 AM - 10:30 PM'
     }
   ]);
 
@@ -749,7 +910,7 @@ export default function App() {
                     />
                   </View>
 
-                  <View style={styles.inputContainer}>
+                  <View style={styles.inputContainer>
                     <Text style={styles.inputLabel}>Confirm Password *</Text>
                     <TextInput
                       style={styles.textInput}
