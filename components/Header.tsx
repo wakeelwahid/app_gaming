@@ -41,7 +41,10 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
               <Ionicons name="person" size={20} color="#fff" />
             </View>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>👑 DREAM11</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerTitle}>👑 DREAM11</Text>
+            <Text style={styles.tagline}>भारत का नंबर 1 गेमिंग प्लेटफॉर्म</Text>
+          </View>
         </View>
 
         <View style={styles.headerRight}>
@@ -128,10 +131,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  titleContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
   headerTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#4A90E2',
+  },
+  tagline: {
+    fontSize: 10,
+    color: '#FFD700',
+    fontWeight: '600',
+    marginTop: 2,
   },
   headerRight: {
     alignItems: 'flex-end',

@@ -154,7 +154,7 @@ export default function BettingModal({
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.modalContent}>
+          <View style={styles.modalContent}>
             <View style={styles.bettingTabs}>
               <TouchableOpacity 
                 style={[styles.tab, currentBetType === 'numbers' && styles.activeTab]}
@@ -181,6 +181,8 @@ export default function BettingModal({
                 </Text>
               </TouchableOpacity>
             </View>
+
+            <ScrollView style={styles.contentScrollView} showsVerticalScrollIndicator={false}>
 
             {betList.length > 0 && (
               <View style={styles.selectionSummary}>
@@ -211,15 +213,17 @@ export default function BettingModal({
             )}
 
             {currentBetType === 'numbers' && (
-              <>
-                <Text style={styles.sectionTitle}>🎯 Select Numbers (1-100)</Text>
-                <ScrollView style={styles.numbersScrollContainer} showsVerticalScrollIndicator={false}>
-                  <View style={styles.numbersGrid}>
-                    {renderNumbers()}
+                <>
+                  <Text style={styles.sectionTitle}>🎯 Select Numbers (1-100)</Text>
+                  <View style={styles.numbersContainer}>
+                    <ScrollView style={styles.numbersScrollContainer} showsVerticalScrollIndicator={false}>
+                      <View style={styles.numbersGrid}>
+                        {renderNumbers()}
+                      </View>
+                    </ScrollView>
                   </View>
-                </ScrollView>
-              </>
-            )}
+                </>
+              )}
 
             {currentBetType === 'andar' && (
               <>
@@ -239,47 +243,50 @@ export default function BettingModal({
               </>
             )}
 
+            
+
+            </ScrollView>
+
+            {/* Fixed Bottom Section */}
             {betList.length > 0 && (
-              <View style={styles.betAmountSection}>
-                <Text style={styles.betAmountTitle}>💰 Select Bet Amount:</Text>
-                <View style={styles.amountButtonsGrid}>
-                  {[10, 50, 100, 200, 500, 1000].map((amount) => (
-                    <TouchableOpacity
-                      key={amount}
-                      style={styles.amountButton}
-                      onPress={() => {
-                        // Update all selected numbers with this amount
-                        betList.forEach(bet => {
-                          onNumberSelect(bet.number, bet.type, amount);
-                        });
-                      }}
-                    >
-                      <Text style={styles.amountButtonText}>₹{amount}</Text>
-                    </TouchableOpacity>
-                  ))}
+              <View style={styles.fixedBottomSection}>
+                <View style={styles.betAmountSection}>
+                  <Text style={styles.betAmountTitle}>💰 Select Bet Amount:</Text>
+                  <View style={styles.amountButtonsGrid}>
+                    {[10, 50, 100, 200, 500, 1000].map((amount) => (
+                      <TouchableOpacity
+                        key={amount}
+                        style={styles.amountButton}
+                        onPress={() => {
+                          betList.forEach(bet => {
+                            onNumberSelect(bet.number, bet.type, amount);
+                          });
+                        }}
+                      >
+                        <Text style={styles.amountButtonText}>₹{amount}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
+
+                <TouchableOpacity 
+                  style={styles.placeBetButton}
+                  onPress={() => {
+                    betList.forEach(bet => {
+                      if (bet.amount > 0) {
+                        onNumberSelect(bet.number, bet.type, bet.amount);
+                      }
+                    });
+                    onClose();
+                  }}
+                >
+                  <Text style={styles.placeBetButtonText}>
+                    🎯 Place All Bets (₹{getTotalBetAmount()})
+                  </Text>
+                </TouchableOpacity>
               </View>
             )}
-
-            {betList.length > 0 && (
-              <TouchableOpacity 
-                style={styles.placeBetButton}
-                onPress={() => {
-                  // Place all bets at once
-                  betList.forEach(bet => {
-                    if (bet.amount > 0) {
-                      onNumberSelect(bet.number, bet.type, bet.amount);
-                    }
-                  });
-                  onClose(); // Close modal after placing bets
-                }}
-              >
-                <Text style={styles.placeBetButtonText}>
-                  🎯 Place All Bets (₹{getTotalBetAmount()})
-                </Text>
-              </TouchableOpacity>
-            )}
-          </ScrollView>
+          </View>
         </View>
       </View>
     </Modal>
@@ -316,7 +323,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modalContent: {
+    flex: 1,
     padding: 20,
+  },
+  contentScrollView: {
+    flex: 1,
+  },
+  numbersContainer: {
+    flex: 1,
+    maxHeight: 300,
   },
   bettingTabs: {
     flexDirection: 'row',
@@ -411,8 +426,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   numbersScrollContainer: {
-    maxHeight: 300,
-    marginBottom: 20,
+    flex: 1,
+  },
+  fixedBottomSection: {
+    backgroundColor: '#0a0a0a',
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+    padding: 15,
   },
   numbersGrid: {
     flexDirection: 'row',
