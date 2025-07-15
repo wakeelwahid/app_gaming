@@ -426,10 +426,6 @@ export default function App() {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuButton} onPress={toggleSideMenu}>
-          <Ionicons name="menu" size={24} color="#FFD700" />
-        </TouchableOpacity>
-
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>👑 VN Gaming</Text>
         </View>
