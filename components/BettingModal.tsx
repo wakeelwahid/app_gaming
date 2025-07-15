@@ -9,7 +9,7 @@ interface BettingModalProps {
   betList: any[];
   onClose: () => void;
   onBetTypeChange: (type: string) => void;
-  onNumberSelect: (number: any, type: string) => void;
+  onNumberSelect: (number: any, type: string, amount: number) => void;
   onRemoveBet: (betId: number) => void;
 }
 
