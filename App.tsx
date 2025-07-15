@@ -116,7 +116,7 @@ export default function App() {
 
   const authItems = [
     { icon: 'log-in', title: 'Login', key: 'login', color: '#00FF88' },
-    { icon: 'person-add', title: 'Register', key: 'register', color: '#FFD700' },
+    { icon: 'person-add', title: 'Register', key: 'register', color: '#D4AF37' },
   ];
 
   const toggleSideMenu = () => {
@@ -491,7 +491,7 @@ export default function App() {
                   <Text style={styles.bottomMenuSubtitle}>Main Menu</Text>
                 </View>
                 <TouchableOpacity style={styles.closeButton} onPress={toggleSideMenu}>
-                  <Ionicons name="close" size={24} color="#FFD700" />
+                  <Ionicons name="close" size={24} color="#D4AF37" />
                 </TouchableOpacity>
               </View>
 
@@ -901,7 +901,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#D4AF37',
   },
   headerRight: {
     flexDirection: 'row',
@@ -1185,7 +1185,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#FFD700',
+    backgroundColor: '#D4AF37',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 25,
@@ -1193,10 +1193,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    boxShadow: '0px 2px 3.84px rgba(0, 0, 0, 0.25)',
   },
   bottomMenuText: {
     color: '#000',
@@ -1220,12 +1217,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderColor: '#FFD700',
+    borderColor: '#D4AF37',
   },
   handleBar: {
     width: 40,
     height: 4,
-    backgroundColor: '#FFD700',
+    backgroundColor: '#D4AF37',
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 15,
@@ -1233,6 +1230,7 @@ const styles = StyleSheet.create({
   bottomMenuHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
@@ -1245,7 +1243,8 @@ const styles = StyleSheet.create({
   bottomMenuTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#D4AF37',
+    textAlign: 'center',
   },
   bottomMenuSubtitle: {
     fontSize: 12,
@@ -1287,11 +1286,12 @@ const styles = StyleSheet.create({
   menuGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingVertical: 10,
+    gap: 10,
   },
   bottomMenuItem: {
-    width: '48%',
+    width: '45%',
     aspectRatio: 1,
     borderRadius: 12,
     marginBottom: 10,
@@ -1301,7 +1301,7 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   activeBottomMenuItem: {
-    borderColor: '#FFD700',
+    borderColor: '#D4AF37',
   },
   bottomMenuItemIcon: {
     width: 50,
@@ -1313,7 +1313,7 @@ const styles = StyleSheet.create({
   },
   activeBottomMenuItemIcon: {
     borderWidth: 2,
-    borderColor: '#FFD700',
+    borderColor: '#D4AF37',
   },
   bottomMenuItemText: {
     fontSize: 11,
