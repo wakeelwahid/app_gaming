@@ -34,6 +34,24 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
     setIsEditing(false);
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Logout', 
+          style: 'destructive',
+          onPress: () => {
+            // Handle logout logic here
+            Alert.alert('Logged Out', 'You have been successfully logged out');
+          }
+        }
+      ]
+    );
+  };
+
   const copyReferralCode = () => {
     // In a real app, you'd use clipboard API
     Alert.alert('Copied!', 'Referral code copied to clipboard');
@@ -41,12 +59,33 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>👤 Personal Information</Text>
-
-      {/* Profile Avatar */}
-      <View style={styles.avatarContainer}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>X</Text>
+      {/* Header with Title and Action Buttons */}
+      <View style={styles.header}>
+        <Text style={styles.title}>👤 Personal Information</Text>
+        <View style={styles.topActions}>
+          {isEditing ? (
+            <View style={styles.editActions}>
+              <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                <Ionicons name="close" size={16} color="#fff" />
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <Ionicons name="checkmark" size={16} color="#000" />
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.topButtonsRow}>
+              <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
+                <Ionicons name="pencil" size={16} color="#4A90E2" />
+                <Text style={styles.editButtonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                <Ionicons name="log-out" size={16} color="#FF4444" />
+                <Text style={styles.logoutButtonText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
 
@@ -128,30 +167,12 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
           </View>
         </View>
 
-        <View style={styles.actionsRow}>
-          {isEditing ? (
-            <View style={styles.editActions}>
-              <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-              <Ionicons name="pencil" size={16} color="#4A90E2" />
-              <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
-          )}
-
-          {userData.kycStatus !== 'VERIFIED' && (
-            <TouchableOpacity style={styles.completeKycButton} onPress={onCompleteKYC}>
-              <Ionicons name="card" size={16} color="#000" />
-              <Text style={styles.completeKycButtonText}>Complete KYC</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        {userData.kycStatus !== 'VERIFIED' && (
+          <TouchableOpacity style={styles.completeKycButton} onPress={onCompleteKYC}>
+            <Ionicons name="card" size={16} color="#000" />
+            <Text style={styles.completeKycButtonText}>Complete KYC</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -163,31 +184,88 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0a0a',
     padding: 20,
   },
+  header: {
+    marginBottom: 30,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFD700',
-    marginBottom: 30,
+    marginBottom: 20,
     textAlign: 'center',
   },
-  avatarContainer: {
+  topActions: {
     alignItems: 'center',
-    marginBottom: 30,
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'linear-gradient(45deg, #FFD700, #FFA500)',
+  topButtonsRow: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: '#FFD700',
+    gap: 15,
   },
-  avatarText: {
-    fontSize: 32,
+  editActions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 15,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  editButtonText: {
+    color: '#4A90E2',
+    fontSize: 14,
     fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FF4444',
+  },
+  logoutButtonText: {
+    color: '#FF4444',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  saveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#00FF88',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  saveButtonText: {
     color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  cancelButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#333',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
   fieldsContainer: {
     marginBottom: 30,
@@ -270,59 +348,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  actionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  editActions: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1a1a1a',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
-  },
-  editButtonText: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 5,
-  },
-  saveButton: {
-    backgroundColor: '#00FF88',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  saveButtonText: {
-    color: '#000',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  cancelButton: {
-    backgroundColor: '#333',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  cancelButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
   completeKycButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#FF4444',
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 8,
   },
   completeKycButtonText: {
