@@ -1,21 +1,97 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface HeaderProps {
   wallet: string;
 }
 
 export default function Header({ wallet }: HeaderProps) {
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const profileMenuItems = [
+    { icon: 'person', title: 'Profile', key: 'profile' },
+    { icon: 'settings', title: 'Settings', key: 'settings' },
+    { icon: 'help-circle', title: 'Help & Support', key: 'help' },
+    { icon: 'information-circle', title: 'About', key: 'about' },
+    { icon: 'log-out', title: 'Logout', key: 'logout' },
+  ];
+
+  const handleMenuItemPress = (key: string) => {
+    setShowProfileMenu(false);
+    // Handle menu item actions here
+    console.log('Menu item pressed:', key);
+  };
+
   return (
-    <View style={styles.header}>
-      <View style={styles.headerLeft}>
-        <Text style={styles.headerTitle}>👑 DREAM11</Text>
+    <>
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity 
+            style={styles.profileButton}
+            onPress={() => setShowProfileMenu(true)}
+          >
+            <View style={styles.profileIcon}>
+              <Ionicons name="person" size={20} color="#fff" />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>👑 DREAM11</Text>
+        </View>
+
+        <View style={styles.headerRight}>
+          <View style={styles.walletContainer}>
+            <Ionicons name="wallet" size={20} color="#00FF88" />
+            <Text style={styles.walletAmount}>{wallet}</Text>
+          </View>
+        </View>
       </View>
 
-      <View style={styles.headerRight}>
-        <Text style={styles.walletAmount}>{wallet}</Text>
-      </View>
-    </View>
+      {/* Profile Menu Modal */}
+      <Modal
+        visible={showProfileMenu}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowProfileMenu(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowProfileMenu(false)}
+        >
+          <View style={styles.profileMenuContainer}>
+            <View style={styles.profileMenuHeader}>
+              <View style={styles.profileMenuIcon}>
+                <Ionicons name="person" size={24} color="#4A90E2" />
+              </View>
+              <Text style={styles.profileMenuTitle}>Menu</Text>
+            </View>
+            
+            {profileMenuItems.map((item) => (
+              <TouchableOpacity
+                key={item.key}
+                style={styles.profileMenuItem}
+                onPress={() => handleMenuItemPress(item.key)}
+              >
+                <Ionicons 
+                  name={item.icon as any} 
+                  size={20} 
+                  color={item.key === 'logout' ? '#FF4444' : '#4A90E2'} 
+                />
+                <Text 
+                  style={[
+                    styles.profileMenuItemText,
+                    item.key === 'logout' && styles.logoutText
+                  ]}
+                >
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </>
   );
 }
 
@@ -33,6 +109,19 @@ const styles = StyleSheet.create({
   },
   headerLeft: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileButton: {
+    marginRight: 12,
+  },
+  profileIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#4A90E2',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 18,
@@ -42,9 +131,83 @@ const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'flex-end',
   },
+  walletContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#00FF88',
+  },
   walletAmount: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#00FF88',
+    marginLeft: 6,
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  profileMenuContainer: {
+    backgroundColor: '#0a0a0a',
+    marginTop: 60,
+    marginLeft: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    minWidth: 200,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  profileMenuHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  profileMenuIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#1a1a1a',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  profileMenuTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+  },
+  profileMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  profileMenuItemText: {
+    fontSize: 14,
+    color: '#fff',
+    marginLeft: 12,
+    fontWeight: '500',
+  },
+  logoutText: {
+    color: '#FF4444',
   },
 });
