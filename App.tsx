@@ -524,7 +524,7 @@ export default function App() {
                   </TouchableOpacity>
                 </View>
               ) : (
-                <View style={styles.formContainer}>
+                <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
                   <Text style={styles.formTitle}>Create New Account</Text>
 
                   <View style={styles.inputContainer}>
@@ -594,7 +594,7 @@ export default function App() {
                       Already have an account? Login here
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </ScrollView>
               )}
             </View>
           </View>
@@ -720,6 +720,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     gap: 15,
+    marginBottom: 100, // Add margin to avoid menu button overlap
   },
   addCashButton: {
     flex: 1,
@@ -931,6 +932,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
+    paddingBottom: 20,
   },
   formTitle: {
     fontSize: 20,

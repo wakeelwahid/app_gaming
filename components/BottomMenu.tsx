@@ -140,11 +140,12 @@ export default function BottomMenu({
 const styles = StyleSheet.create({
   bottomMenuContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 30,
     left: 0,
     right: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 999,
   },
   bottomMenuButton: {
     backgroundColor: '#4A90E2',
