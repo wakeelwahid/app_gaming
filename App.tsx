@@ -32,32 +32,82 @@ export default function App() {
   const [betList, setBetList] = useState([
     {
       id: 1,
-      number: '123',
-      amount: 100,
+      number: '14',
+      amount: 10,
       type: 'single',
-      game: 'Sridevi Day',
+      game: 'JAIPUR KING',
       status: 'pending',
       timestamp: new Date().toISOString(),
       winAmount: null
     },
     {
       id: 2,
-      number: '45',
-      amount: 200,
+      number: '2',
+      amount: 10,
       type: 'andar',
-      game: 'Madhur Day',
-      status: 'win',
-      timestamp: new Date(Date.now() - 86400000).toISOString(),
-      winAmount: 400
+      game: 'JAIPUR KING',
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+      winAmount: null
     },
     {
       id: 3,
-      number: '789',
-      amount: 150,
+      number: '61',
+      amount: 10,
+      type: 'single',
+      game: 'JAIPUR KING',
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+      winAmount: null
+    },
+    {
+      id: 4,
+      number: '6',
+      amount: 10,
+      type: 'single',
+      game: 'FARIDABAD',
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+      winAmount: null
+    },
+    {
+      id: 5,
+      number: '6',
+      amount: 10,
+      type: 'single',
+      game: 'FARIDABAD',
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+      winAmount: null
+    },
+    {
+      id: 6,
+      number: '27',
+      amount: 10,
+      type: 'single',
+      game: 'FARIDABAD',
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+      winAmount: null
+    },
+    {
+      id: 7,
+      number: '0',
+      amount: 10,
+      type: 'andar',
+      game: 'FARIDABAD',
+      status: 'win',
+      timestamp: new Date().toISOString(),
+      winAmount: 20
+    },
+    {
+      id: 8,
+      number: '8',
+      amount: 50,
       type: 'bahar',
-      game: 'Time Bazar',
+      game: 'FARIDABAD',
       status: 'loss',
-      timestamp: new Date(Date.now() - 172800000).toISOString(),
+      timestamp: new Date().toISOString(),
       winAmount: 0
     }
   ]);
