@@ -31,7 +31,7 @@ export default function App() {
   const [customAmount, setCustomAmount] = useState('');
   // Dummy bet history data
   const [betList, setBetList] = useState([
-    // Jaipur King bets
+    // Jaipur King bets (Recent)
     {
       id: '1',
       game: 'Jaipur King',
@@ -62,75 +62,76 @@ export default function App() {
       timestamp: Date.now() - 3600000,
       sessionTime: '09:00 PM - 04:50 PM'
     },
-    // Faridabad bets
     {
       id: '4',
-      game: 'Faridabad',
-      number: '6',
-      amount: 100,
-      type: 'single',
-      status: 'win',
-      winAmount: 900,
-      timestamp: Date.now() - 7200000,
-      sessionTime: '10:00 PM - 06:40 PM'
+      game: 'Jaipur King',
+      number: '5',
+      amount: 50,
+      type: 'bahar',
+      status: 'pending',
+      timestamp: Date.now() - 3600000,
+      sessionTime: '09:00 PM - 04:50 PM'
     },
     {
       id: '5',
-      game: 'Faridabad',
-      number: '6',
-      amount: 100,
-      type: 'single',
-      status: 'win',
-      winAmount: 900,
-      timestamp: Date.now() - 7200000,
-      sessionTime: '10:00 PM - 06:40 PM'
+      game: 'Jaipur King',
+      number: '77',
+      amount: 200,
+      type: 'jodi',
+      status: 'pending',
+      timestamp: Date.now() - 3600000,
+      sessionTime: '09:00 PM - 04:50 PM'
     },
     {
       id: '6',
+      game: 'Jaipur King',
+      number: '9',
+      amount: 150,
+      type: 'single',
+      status: 'pending',
+      timestamp: Date.now() - 3600000,
+      sessionTime: '09:00 PM - 04:50 PM'
+    },
+    
+    // Faridabad bets (Mixed results)
+    {
+      id: '7',
       game: 'Faridabad',
       number: '6',
       amount: 100,
       type: 'single',
       status: 'win',
       winAmount: 900,
-      timestamp: Date.now() - 7200000,
-      sessionTime: '10:00 PM - 06:40 PM'
-    },
-    {
-      id: '7',
-      game: 'Faridabad',
-      number: '27',
-      amount: 100,
-      type: 'single',
-      status: 'loss',
       timestamp: Date.now() - 7200000,
       sessionTime: '10:00 PM - 06:40 PM'
     },
     {
       id: '8',
       game: 'Faridabad',
-      number: '27',
+      number: '8',
       amount: 100,
       type: 'single',
-      status: 'loss',
+      status: 'win',
+      winAmount: 900,
       timestamp: Date.now() - 7200000,
       sessionTime: '10:00 PM - 06:40 PM'
     },
     {
       id: '9',
       game: 'Faridabad',
-      number: '27',
+      number: '1',
       amount: 100,
-      type: 'single',
-      status: 'loss',
+      type: 'andar',
+      status: 'win',
+      winAmount: 180,
       timestamp: Date.now() - 7200000,
       sessionTime: '10:00 PM - 06:40 PM'
     },
     {
       id: '10',
       game: 'Faridabad',
-      number: '19',
-      amount: 500,
+      number: '27',
+      amount: 100,
       type: 'single',
       status: 'loss',
       timestamp: Date.now() - 7200000,
@@ -139,8 +140,8 @@ export default function App() {
     {
       id: '11',
       game: 'Faridabad',
-      number: '19',
-      amount: 500,
+      number: '33',
+      amount: 100,
       type: 'single',
       status: 'loss',
       timestamp: Date.now() - 7200000,
@@ -149,6 +150,16 @@ export default function App() {
     {
       id: '12',
       game: 'Faridabad',
+      number: '4',
+      amount: 100,
+      type: 'bahar',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '13',
+      game: 'Faridabad',
       number: '19',
       amount: 500,
       type: 'single',
@@ -157,19 +168,18 @@ export default function App() {
       sessionTime: '10:00 PM - 06:40 PM'
     },
     {
-      id: '13',
-      game: 'Faridabad',
-      number: '0',
-      amount: 100,
-      type: 'andar',
-      status: 'win',
-      winAmount: 180,
-      timestamp: Date.now() - 7200000,
-      sessionTime: '10:00 PM - 06:40 PM'
-    },
-    {
       id: '14',
       game: 'Faridabad',
+      number: '99',
+      amount: 300,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '15',
+      game: 'Faridabad',
       number: '0',
       amount: 100,
       type: 'andar',
@@ -178,9 +188,21 @@ export default function App() {
       timestamp: Date.now() - 7200000,
       sessionTime: '10:00 PM - 06:40 PM'
     },
-    // Ghaziabad bets
     {
-      id: '15',
+      id: '16',
+      game: 'Faridabad',
+      number: '7',
+      amount: 250,
+      type: 'single',
+      status: 'win',
+      winAmount: 2250,
+      timestamp: Date.now() - 7200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    
+    // Ghaziabad bets (Yesterday)
+    {
+      id: '17',
       game: 'Ghaziabad',
       number: '89',
       amount: 200,
@@ -190,7 +212,7 @@ export default function App() {
       sessionTime: '11:00 PM - 07:50 PM'
     },
     {
-      id: '16',
+      id: '18',
       game: 'Ghaziabad',
       number: '45',
       amount: 150,
@@ -200,9 +222,52 @@ export default function App() {
       timestamp: Date.now() - 86400000,
       sessionTime: '11:00 PM - 07:50 PM'
     },
-    // Gali bets
     {
-      id: '17',
+      id: '19',
+      game: 'Ghaziabad',
+      number: '3',
+      amount: 100,
+      type: 'single',
+      status: 'win',
+      winAmount: 900,
+      timestamp: Date.now() - 86400000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    {
+      id: '20',
+      game: 'Ghaziabad',
+      number: '7',
+      amount: 50,
+      type: 'bahar',
+      status: 'loss',
+      timestamp: Date.now() - 86400000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    {
+      id: '21',
+      game: 'Ghaziabad',
+      number: '56',
+      amount: 300,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 86400000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    {
+      id: '22',
+      game: 'Ghaziabad',
+      number: '2',
+      amount: 100,
+      type: 'andar',
+      status: 'win',
+      winAmount: 180,
+      timestamp: Date.now() - 86400000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    
+    // Gali bets (Current session)
+    {
+      id: '23',
       game: 'Gali',
       number: '12',
       amount: 300,
@@ -212,7 +277,7 @@ export default function App() {
       sessionTime: '04:00 AM - 10:30 PM'
     },
     {
-      id: '18',
+      id: '24',
       game: 'Gali',
       number: '3',
       amount: 200,
@@ -220,6 +285,289 @@ export default function App() {
       status: 'pending',
       timestamp: Date.now() - 1800000,
       sessionTime: '04:00 AM - 10:30 PM'
+    },
+    {
+      id: '25',
+      game: 'Gali',
+      number: '88',
+      amount: 150,
+      type: 'jodi',
+      status: 'pending',
+      timestamp: Date.now() - 1800000,
+      sessionTime: '04:00 AM - 10:30 PM'
+    },
+    {
+      id: '26',
+      game: 'Gali',
+      number: '5',
+      amount: 100,
+      type: 'single',
+      status: 'pending',
+      timestamp: Date.now() - 1800000,
+      sessionTime: '04:00 AM - 10:30 PM'
+    },
+    {
+      id: '27',
+      game: 'Gali',
+      number: '9',
+      amount: 100,
+      type: 'andar',
+      status: 'pending',
+      timestamp: Date.now() - 1800000,
+      sessionTime: '04:00 AM - 10:30 PM'
+    },
+    
+    // Disawer bets (Mixed results)
+    {
+      id: '28',
+      game: 'Disawer',
+      number: '23',
+      amount: 100,
+      type: 'single',
+      status: 'win',
+      winAmount: 900,
+      timestamp: Date.now() - 10800000,
+      sessionTime: '07:00 AM - 02:30 AM'
+    },
+    {
+      id: '29',
+      game: 'Disawer',
+      number: '67',
+      amount: 200,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 10800000,
+      sessionTime: '07:00 AM - 02:30 AM'
+    },
+    {
+      id: '30',
+      game: 'Disawer',
+      number: '4',
+      amount: 50,
+      type: 'bahar',
+      status: 'win',
+      winAmount: 90,
+      timestamp: Date.now() - 10800000,
+      sessionTime: '07:00 AM - 02:30 AM'
+    },
+    {
+      id: '31',
+      game: 'Disawer',
+      number: '1',
+      amount: 150,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 10800000,
+      sessionTime: '07:00 AM - 02:30 AM'
+    },
+    {
+      id: '32',
+      game: 'Disawer',
+      number: '8',
+      amount: 100,
+      type: 'andar',
+      status: 'win',
+      winAmount: 180,
+      timestamp: Date.now() - 10800000,
+      sessionTime: '07:00 AM - 02:30 AM'
+    },
+    
+    // Diamond King bets (Multiple sessions)
+    {
+      id: '33',
+      game: 'Diamond King',
+      number: '55',
+      amount: 500,
+      type: 'jodi',
+      status: 'win',
+      winAmount: 4500,
+      timestamp: Date.now() - 14400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    {
+      id: '34',
+      game: 'Diamond King',
+      number: '6',
+      amount: 200,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 14400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    {
+      id: '35',
+      game: 'Diamond King',
+      number: '11',
+      amount: 100,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 14400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    {
+      id: '36',
+      game: 'Diamond King',
+      number: '3',
+      amount: 50,
+      type: 'bahar',
+      status: 'win',
+      winAmount: 90,
+      timestamp: Date.now() - 14400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    {
+      id: '37',
+      game: 'Diamond King',
+      number: '9',
+      amount: 100,
+      type: 'single',
+      status: 'win',
+      winAmount: 900,
+      timestamp: Date.now() - 14400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    {
+      id: '38',
+      game: 'Diamond King',
+      number: '0',
+      amount: 75,
+      type: 'andar',
+      status: 'loss',
+      timestamp: Date.now() - 14400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    
+    // More Jaipur King bets (Previous sessions)
+    {
+      id: '39',
+      game: 'Jaipur King',
+      number: '44',
+      amount: 400,
+      type: 'jodi',
+      status: 'win',
+      winAmount: 3600,
+      timestamp: Date.now() - 172800000,
+      sessionTime: '09:00 PM - 04:50 PM'
+    },
+    {
+      id: '40',
+      game: 'Jaipur King',
+      number: '7',
+      amount: 250,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 172800000,
+      sessionTime: '09:00 PM - 04:50 PM'
+    },
+    {
+      id: '41',
+      game: 'Jaipur King',
+      number: '6',
+      amount: 100,
+      type: 'bahar',
+      status: 'win',
+      winAmount: 180,
+      timestamp: Date.now() - 172800000,
+      sessionTime: '09:00 PM - 04:50 PM'
+    },
+    {
+      id: '42',
+      game: 'Jaipur King',
+      number: '22',
+      amount: 300,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 172800000,
+      sessionTime: '09:00 PM - 04:50 PM'
+    },
+    
+    // More Faridabad bets (Different amounts)
+    {
+      id: '43',
+      game: 'Faridabad',
+      number: '13',
+      amount: 1000,
+      type: 'single',
+      status: 'win',
+      winAmount: 9000,
+      timestamp: Date.now() - 259200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '44',
+      game: 'Faridabad',
+      number: '78',
+      amount: 600,
+      type: 'jodi',
+      status: 'loss',
+      timestamp: Date.now() - 259200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    {
+      id: '45',
+      game: 'Faridabad',
+      number: '5',
+      amount: 200,
+      type: 'andar',
+      status: 'win',
+      winAmount: 360,
+      timestamp: Date.now() - 259200000,
+      sessionTime: '10:00 PM - 06:40 PM'
+    },
+    
+    // Additional mixed results for variety
+    {
+      id: '46',
+      game: 'Gali',
+      number: '90',
+      amount: 800,
+      type: 'jodi',
+      status: 'win',
+      winAmount: 7200,
+      timestamp: Date.now() - 345600000,
+      sessionTime: '04:00 AM - 10:30 PM'
+    },
+    {
+      id: '47',
+      game: 'Disawer',
+      number: '2',
+      amount: 150,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 432000000,
+      sessionTime: '07:00 AM - 02:30 AM'
+    },
+    {
+      id: '48',
+      game: 'Diamond King',
+      number: '77',
+      amount: 500,
+      type: 'jodi',
+      status: 'win',
+      winAmount: 4500,
+      timestamp: Date.now() - 518400000,
+      sessionTime: '06:00 AM - 10:10 PM'
+    },
+    {
+      id: '49',
+      game: 'Ghaziabad',
+      number: '4',
+      amount: 100,
+      type: 'single',
+      status: 'loss',
+      timestamp: Date.now() - 604800000,
+      sessionTime: '11:00 PM - 07:50 PM'
+    },
+    {
+      id: '50',
+      game: 'Jaipur King',
+      number: '9',
+      amount: 200,
+      type: 'bahar',
+      status: 'win',
+      winAmount: 360,
+      timestamp: Date.now() - 691200000,
+      sessionTime: '09:00 PM - 04:50 PM'
     }
   ]);
 
