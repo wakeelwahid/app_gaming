@@ -151,62 +151,63 @@ export default function App() {
     setShowBettingModal(true);
   };
 
-  const handleNumberSelect = (number: any, type: string, amount: number = 0) => {
-    if (amount === 0) {
-      // Just select the number without placing bet
-      const existingBet = betList.find(b => b.number === number && b.type === type);
-      if (existingBet) {
-        // Remove from selection
-        setBetList(betList.filter(b => b.id !== existingBet.id));
-      } else {
-        // Add to selection with default amount of 50
-        const newBet = {
-          id: Date.now(),
-          number,
-          amount: 50, // Default amount
-          type,
-          game: selectedGame?.title || '',
-          timestamp: new Date(),
-        };
-        setBetList([...betList, newBet]);
-      }
+  const handleNumberSelect = (number: any, type: string, amount: number) => {
+    // Add number to selected list with amount
+    const existingBetIndex = betList.findIndex(b => b.number === number && b.type === type);
+
+    if (existingBetIndex >= 0) {
+      // Update existing bet amount
+      const updatedBetList = [...betList];
+      updatedBetList[existingBetIndex].amount = amount;
+      setBetList(updatedBetList);
     } else {
-      // Update existing bet with new amount or place bet
-      const existingBetIndex = betList.findIndex(b => b.number === number && b.type === type);
-      
-      if (existingBetIndex >= 0) {
-        // Update existing bet amount
-        const updatedBetList = [...betList];
-        updatedBetList[existingBetIndex].amount = amount;
-        setBetList(updatedBetList);
-      } else {
-        // Place bet with specified amount
-        const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+      // Add new bet to list
+      const newBet = {
+        id: Date.now(),
+        number,
+        amount,
+        type,
+        game: selectedGame?.title || '',
+        timestamp: new Date(),
+      };
+      setBetList([...betList, newBet]);
+    }
+  };
 
-        if (currentWallet >= amount) {
-          // Update wallet
-          setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+  const handlePlaceBets = () => {
+    if (betList.length === 0) {
+      Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
+      return;
+    }
 
-          // Set success details
-          setLastBetDetails({
-            number,
-            amount,
-            type,
-            gameName: selectedGame?.title || '',
-          });
+    const totalAmount = betList.reduce((total, bet) => total + bet.amount, 0);
+    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
 
-          // Show success modal
-          setShowBetSuccess(true);
+    if (currentWallet >= totalAmount) {
+      // Update wallet
+      setWallet(`₹${(currentWallet - totalAmount).toFixed(2)}`);
 
-          // Close betting modal after a short delay
-          setTimeout(() => {
-            setShowBettingModal(false);
-          }, 1500);
+      // Set success details for last bet or total
+      setLastBetDetails({
+        number: betList.length > 1 ? `${betList.length} Numbers` : betList[0].number,
+        amount: totalAmount,
+        type: betList.length > 1 ? 'Multiple' : betList[0].type,
+        gameName: selectedGame?.title || '',
+      });
 
-        } else {
-          Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
-        }
-      }
+      // Clear bet list
+      setBetList([]);
+
+      // Show success modal
+      setShowBetSuccess(true);
+
+      // Close betting modal after a short delay
+      setTimeout(() => {
+        setShowBettingModal(false);
+      }, 1500);
+
+    } else {
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
     }
   };
 
@@ -952,6 +953,7 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     marginBottom: 10,
   },
+  ```text
   profilePhone: {
     color: '#999',
     fontSize: 16,

@@ -11,6 +11,7 @@ interface BettingModalProps {
   onBetTypeChange: (type: string) => void;
   onNumberSelect: (number: any, type: string, amount: number) => void;
   onRemoveBet: (betId: number) => void;
+  onPlaceBets: () => void;
 }
 
 export default function BettingModal({
@@ -21,7 +22,8 @@ export default function BettingModal({
   onClose,
   onBetTypeChange,
   onNumberSelect,
-  onRemoveBet
+  onRemoveBet,
+  onPlaceBets
 }: BettingModalProps) {
   const [showAmountPopup, setShowAmountPopup] = React.useState(false);
   const [selectedNumber, setSelectedNumber] = React.useState<any>(null);
@@ -262,9 +264,7 @@ export default function BettingModal({
               <View style={styles.fixedBottomSection}>
                 <TouchableOpacity 
                   style={styles.placeBetButton}
-                  onPress={() => {
-                    onClose();
-                  }}
+                  onPress={onPlaceBets}
                 >
                   <Text style={styles.placeBetButtonText}>
                     🎯 Place All Bets (₹{getTotalBetAmount()})
