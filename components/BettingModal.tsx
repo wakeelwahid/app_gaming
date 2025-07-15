@@ -43,7 +43,7 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(i, 'numbers');
+              onNumberSelect(i, 'numbers', 50); // Default amount ₹50
             }
           }}
         >
@@ -80,7 +80,7 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(numberKey, 'andar');
+              onNumberSelect(numberKey, 'andar', 50); // Default amount ₹50
             }
           }}
         >
@@ -117,7 +117,7 @@ export default function BettingModal({
             if (isSelected) {
               onRemoveBet(bet.id);
             } else {
-              onNumberSelect(numberKey, 'bahar');
+              onNumberSelect(numberKey, 'bahar', 50); // Default amount ₹50
             }
           }}
         >

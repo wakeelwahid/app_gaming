@@ -7,10 +7,12 @@ import Header from './components/Header';
 import HomeScreen from './components/HomeScreen';
 import BottomMenu from './components/BottomMenu';
 import BettingModal from './components/BettingModal';
+import BetSuccessModal from './components/BetSuccessModal';
 import WalletOperations from './components/WalletOperations';
 import PaymentSuccess from './components/PaymentSuccess';
 import WithdrawSuccess from './components/WithdrawSuccess';
 import Profile from './components/Profile';
+import BetHistory from './components/BetHistory';
 
 // Import API services
 import { userService } from './services/userService';
@@ -49,6 +51,14 @@ export default function App() {
     email: 'john@example.com',
     referralCode: 'REF12345',
     kycStatus: 'VERIFIED' as 'VERIFIED' | 'PENDING' | 'REJECTED'
+  });
+
+  const [showBetSuccess, setShowBetSuccess] = useState(false);
+  const [lastBetDetails, setLastBetDetails] = useState({
+    number: '',
+    amount: 0,
+    type: '',
+    gameName: '',
   });
 
   const gameCards = [
@@ -141,10 +151,45 @@ export default function App() {
     setShowBettingModal(true);
   };
 
-  const handleNumberSelect = (number: any, type = 'numbers') => {
-    setSelectedNumber(number);
-    setCurrentBetType(type);
-    setShowAmountModal(true);
+  const handleNumberSelect = (number: any, type: string, defaultAmount: number = 50) => {
+    // Auto place bet with default amount
+    const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+
+    if (currentWallet >= defaultAmount) {
+      const newBet = {
+        id: Date.now(),
+        number,
+        amount: defaultAmount,
+        type,
+        game: selectedGame?.title || '',
+        timestamp: new Date(),
+      };
+
+      // Update wallet
+      setWallet(`₹${(currentWallet - defaultAmount).toFixed(2)}`);
+
+      // Add to bet list
+      setBetList([...betList, newBet]);
+
+      // Set success details
+      setLastBetDetails({
+        number,
+        amount: defaultAmount,
+        type,
+        gameName: selectedGame?.title || '',
+      });
+
+      // Show success modal
+      setShowBetSuccess(true);
+
+      // Close betting modal after a short delay
+      setTimeout(() => {
+        setShowBettingModal(false);
+      }, 1500);
+
+    } else {
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
+    }
   };
 
   const handleBetPlace = (amount: number) => {
@@ -703,6 +748,17 @@ export default function App() {
         visible={showWithdrawSuccessModal}
         amount={withdrawAmount}
         onClose={handleWithdrawSuccessClose}
+      />
+      <BetHistory 
+        visible={activeTab === 'bets'} 
+        betHistory={betList}
+        onClose={() => setActiveTab('home')}
+      />
+
+      <BetSuccessModal
+        visible={showBetSuccess}
+        betDetails={lastBetDetails}
+        onClose={() => setShowBetSuccess(false)}
       />
     </SafeAreaView>
   );

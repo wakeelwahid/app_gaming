@@ -9,3 +9,4 @@ export { default as WithdrawSuccess } from './WithdrawSuccess';
 export { default as Transaction } from './Transaction';
 export { default as Profile } from './Profile';
 export { default as BetHistory } from './BetHistory';
+export { default as BetSuccessModal } from './BetSuccessModal';
