@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,6 +18,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [showSideMenu, setShowSideMenu] = useState(false);
   const [slideAnim] = useState(new Animated.Value(SCREEN_WIDTH));
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
 
   const gameCards = [
     {
@@ -425,6 +426,17 @@ export default function App() {
     }
   };
 
+  const handleLogin = () => {
+    // Implement your login logic here
+    Alert.alert('Login', 'Login functionality to be implemented');
+    setShowAuthModal(false);
+  };
+
+  const handleRegister = () => {
+    // Implement your registration logic here
+    Alert.alert('Register', 'Registration functionality to be implemented');
+    setShowAuthModal(false);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
@@ -471,7 +483,7 @@ export default function App() {
             <Animated.View style={[styles.bottomMenu, { transform: [{ translateY: slideAnim }] }]}>
               {/* Handle Bar */}
               <View style={styles.handleBar} />
-              
+
               {/* Menu Header */}
               <View style={styles.bottomMenuHeader}>
                 <View style={styles.menuHeaderCenter}>
@@ -490,7 +502,11 @@ export default function App() {
                     <TouchableOpacity
                       key={index}
                       style={[styles.authButton, { backgroundColor: item.color }]}
-                      onPress={() => handleMenuItemPress(item.key)}
+                      onPress={() => {
+                        setAuthMode(item.key);
+                        setShowAuthModal(true);
+                        toggleSideMenu();
+                      }}
                     >
                       <Ionicons name={item.icon} size={20} color="#000" />
                       <Text style={styles.authButtonText}>{item.title}</Text>
@@ -498,7 +514,7 @@ export default function App() {
                   ))}
                 </View>
               </View>
-              
+
               {/* Menu Items */}
               <ScrollView style={styles.bottomMenuContent} showsVerticalScrollIndicator={false}>
                 <View style={styles.menuGrid}>
@@ -534,7 +550,7 @@ export default function App() {
                   ))}
                 </View>
               </ScrollView>
-              
+
               {/* Footer */}
               <View style={styles.bottomMenuFooter}>
                 <Text style={styles.footerText}>Version 1.0.0</Text>
@@ -721,6 +737,139 @@ export default function App() {
           </View>
         </View>
       </Modal>
+
+      {/* Authentication Modal */}
+      <Modal
+        visible={showAuthModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowAuthModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.authModalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {authMode === 'login' ? '🔐 Login' : '📝 Register'}
+              </Text>
+              <TouchableOpacity onPress={() => setShowAuthModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.authModalContent}>
+              {authMode === 'login' ? (
+                // Login Form
+                <View style={styles.formContainer}>
+                  <Text style={styles.formTitle}>Login to Your Account</Text>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Mobile Number</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="+91 98765 43210"
+                      placeholderTextColor="#999"
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Password</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter your password"
+                      placeholderTextColor="#999"
+                      secureTextEntry={true}
+                    />
+                  </View>
+
+                  <TouchableOpacity style={styles.submitButton} onPress={() => handleLogin({})}>
+                    <Text style={styles.submitButtonText}>Login</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => setAuthMode('register')}>
+                    <Text style={styles.switchModeText}>
+                      Don't have an account? Register here
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                // Register Form
+                <View style={styles.formContainer}>
+                  <Text style={styles.formTitle}>Create New Account</Text>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Username *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter username"
+                      placeholderTextColor="#999"
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Mobile Number *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="+91 98765 43210"
+                      placeholderTextColor="#999"
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Email (Optional)</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter email address"
+                      placeholderTextColor="#999"
+                      keyboardType="email-address"
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Password *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Create password"
+                      placeholderTextColor="#999"
+                      secureTextEntry={true}
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Confirm Password *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Confirm password"
+                      placeholderTextColor="#999"
+                      secureTextEntry={true}
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Referral Code (Optional)</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter referral code"
+                      placeholderTextColor="#999"
+                    />
+                  </View>
+
+                  <TouchableOpacity style={styles.submitButton} onPress={() => handleRegister({})}>
+                    <Text style={styles.submitButtonText}>Register</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => setAuthMode('login')}>
+                    <Text style={styles.switchModeText}>
+                      Already have an account? Login here
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -759,798 +908,4 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   walletButton: {
-    backgroundColor: '#2a4a2a',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  walletLabel: {
-    color: '#fff',
-    fontSize: 12,
-  },
-  walletAmount: {
-    color: '#00FF88',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  content: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  bottomSpacing: {
-    height: 100,
-  },
-  bottomMenuButton: {
-    position: 'absolute',
-    bottom: 20,
-    alignSelf: 'center',
-    backgroundColor: '#FFD700',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  bottomMenuText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  bottomMenuOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'flex-end',
-  },
-  bottomMenuBackdrop: {
-    flex: 1,
-  },
-  bottomMenu: {
-    backgroundColor: '#0a0a0a',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    maxHeight: '90%',
-    minHeight: '75%',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: -8 },
-    shadowOpacity: 0.6,
-    shadowRadius: 20,
-    elevation: 25,
-    borderTopWidth: 4,
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
-    borderColor: '#FFD700',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  handleBar: {
-    width: 60,
-    height: 6,
-    backgroundColor: '#FFD700',
-    borderRadius: 3,
-    alignSelf: 'center',
-    marginTop: 12,
-    marginBottom: 18,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  bottomMenuHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-    paddingVertical: 20,
-    borderBottomWidth: 3,
-    borderBottomColor: '#FFD700',
-    backgroundColor: '#1a1a1a',
-    position: 'relative',
-  },
-  menuHeaderCenter: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  bottomMenuTitle: {
-    color: '#FFD700',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 2,
-  },
-  bottomMenuSubtitle: {
-    color: '#ccc',
-    fontSize: 14,
-    opacity: 0.8,
-  },
-  closeButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#333',
-    position: 'absolute',
-    right: 20,
-  },
-  authSection: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-    backgroundColor: '#2a2a2a',
-  },
-  authButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    gap: 15,
-  },
-  authButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  authButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  bottomMenuContent: {
-    flex: 1,
-    paddingVertical: 20,
-  },
-  menuGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 15,
-    justifyContent: 'space-between',
-  },
-  bottomMenuItem: {
-    width: '48%',
-    alignItems: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 12,
-    marginBottom: 18,
-    borderRadius: 20,
-    backgroundColor: '#2a2a2a',
-    borderWidth: 2,
-    borderColor: '#444',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  activeBottomMenuItem: {
-    backgroundColor: '#FFD700',
-    borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-    elevation: 10,
-    transform: [{ scale: 1.02 }],
-  },
-  bottomMenuItemIcon: {
-    width: 55,
-    height: 55,
-    borderRadius: 27.5,
-    backgroundColor: '#333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: '#555',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  activeBottomMenuItemIcon: {
-    backgroundColor: '#000',
-    borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.8,
-    shadowRadius: 6,
-    elevation: 8,
-  },
-  bottomMenuItemText: {
-    color: '#FFD700',
-    fontSize: 13,
-    fontWeight: '700',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  activeBottomMenuItemText: {
-    color: '#000',
-    fontWeight: '900',
-    fontSize: 14,
-    textShadowColor: 'transparent',
-  },
-  bottomMenuFooter: {
-    padding: 25,
-    borderTopWidth: 3,
-    borderTopColor: '#FFD700',
-    alignItems: 'center',
-    backgroundColor: '#1a1a1a',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 8,
-  },
-  footerText: {
-    color: '#888',
-    fontSize: 13,
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  footerCopyright: {
-    color: '#FFD700',
-    fontSize: 14,
-    fontWeight: '700',
-    textShadowColor: 'rgba(255, 215, 0, 0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  tabContent: {
-    flex: 1,
-    padding: 20,
-  },
-  tabTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  comingSoonText: {
-    color: '#666',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 50,
-  },
-  walletCard: {
-    backgroundColor: '#2a4a2a',
-    padding: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginBottom: 20,
-    borderWidth: 2,
-    borderColor: '#00FF88',
-  },
-  walletBalance: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#00FF88',
-    marginBottom: 10,
-  },
-  winningsCard: {
-    backgroundColor: '#4a4a2a',
-    padding: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FFD700',
-  },
-  winningsBalance: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 10,
-  },
-  winningsLabel: {
-    color: '#ccc',
-    fontSize: 16,
-  },
-  historyItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#2a2a2a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#444',
-  },
-  historyNumber: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  historyGame: {
-    color: '#ccc',
-    fontSize: 14,
-  },
-  historyAmount: {
-    color: '#00FF88',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  noHistory: {
-    color: '#666',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 50,
-  },
-  profileCard: {
-    backgroundColor: '#2a2a2a',
-    padding: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#444',
-  },
-  profileName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 10,
-  },
-  profilePhone: {
-    fontSize: 16,
-    color: '#ccc',
-    marginBottom: 20,
-  },
-  profileButton: {
-    backgroundColor: '#FFD700',
-    paddingHorizontal: 30,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  profileButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  promoScroll: {
-    paddingVertical: 10,
-  },
-  promoCard: {
-    backgroundColor: '#2a2a2a',
-    marginHorizontal: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  promoText: {
-    color: '#FFD700',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  sectionTitle: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 15,
-  },
-  featuresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    marginBottom: 20,
-  },
-  featureCard: {
-    width: '48%',
-    backgroundColor: '#1a3a3a',
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#00AA55',
-  },
-  featureIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  featureTitle: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  featureSubtitle: {
-    color: '#ccc',
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  timeContainer: {
-    alignItems: 'center',
-    paddingVertical: 15,
-  },
-  currentTime: {
-    backgroundColor: '#FFD700',
-    color: '#000',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  gamesContainer: {
-    paddingHorizontal: 15,
-    paddingBottom: 20,
-  },
-  gameRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  gameCard: {
-    width: '48%',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#444',
-  },
-  gameHeader: {
-    marginBottom: 10,
-  },
-  gameTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  gameDetails: {
-    marginBottom: 10,
-  },
-  gameTime: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-  },
-  timeLabel: {
-    color: '#ccc',
-    fontSize: 12,
-  },
-  timeValue: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  gameStatus: {
-    color: '#00FF88',
-    fontSize: 12,
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  playButton: {
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  playButtonText: {
-    color: '#000',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bettingModal: {
-    backgroundColor: '#1a1a1a',
-    width: '95%',
-    maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  modalTitle: {
-    color: '#FFD700',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  modalContent: {
-    padding: 20,
-  },
-  selectionSummary: {
-    backgroundColor: '#2a2a2a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  summaryTitle: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  selectedNumbersList: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  selectedChip: {
-    backgroundColor: '#FFD700',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    marginRight: 5,
-  },
-  andarChip: {
-    backgroundColor: '#00AA55',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    marginRight: 5,
-  },
-  baharChip: {
-    backgroundColor: '#E74C3C',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    marginRight: 5,
-  },
-  selectedChipText: {
-    color: '#000',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  selectedChipAmount: {
-    color: '#FF0000',
-    fontSize: 10,
-    fontWeight: 'bold',
-    marginTop: 2,
-  },
-  totalAmountDisplay: {
-    backgroundColor: '#FFD700',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  totalAmountText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  numbersGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  numberButton: {
-    width: '18%',
-    aspectRatio: 1,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#444',
-    position: 'relative',
-  },
-  selectedNumberButton: {
-    backgroundColor: '#FFD700',
-    borderColor: '#FFD700',
-  },
-  numberText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  selectedNumberText: {
-    color: '#000',
-  },
-  betAmountBadge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: '#00FF88',
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    minWidth: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  betAmountBadgeText: {
-    color: '#FF0000',
-    fontSize: 8,
-    fontWeight: 'bold',
-  },
-  betAmountBadgeSmall: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: '#00FF88',
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    minWidth: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  betAmountBadgeTextSmall: {
-    color: '#FF0000',
-    fontSize: 7,
-    fontWeight: 'bold',
-  },
-  andarBaharGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  andarBaharButton: {
-    width: '48%',
-    padding: 15,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-    borderWidth: 1,
-    position: 'relative',
-  },
-  andarButton: {
-    backgroundColor: '#2a4a2a',
-    borderColor: '#00AA55',
-  },
-  baharButton: {
-    backgroundColor: '#4a2a2a',
-    borderColor: '#E74C3C',
-  },
-  selectedAndarButton: {
-    backgroundColor: '#00FF88',
-    borderColor: '#00FF88',
-    borderWidth: 2,
-  },
-  selectedBaharButton: {
-    backgroundColor: '#FF4444',
-    borderColor: '#FF4444',
-    borderWidth: 2,
-  },
-  andarBaharText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  selectedAndarText: {
-    color: '#000',
-  },
-  selectedBaharText: {
-    color: '#fff',
-  },
-  amountModal: {
-    backgroundColor: '#1a1a1a',
-    width: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  amountContent: {
-    padding: 20,
-  },
-  betPreview: {
-    backgroundColor: '#2a2a4a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#9B59B6',
-    alignItems: 'center',
-  },
-  betPreviewText: {
-    color: '#FFD700',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  betPreviewGame: {
-    color: '#ccc',
-    fontSize: 14,
-  },
-  amountLabel: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  amountButtonsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 25,
-  },
-  amountButton: {
-    width: '30%',
-    padding: 15,
-    backgroundColor: '#FFD700',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  amountButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  customAmountInput: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 8,
-    padding: 15,
-    color: '#fff',
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#444',
-    marginBottom: 15,
-  },
-  customAmountButton: {
-    backgroundColor: '#00AA55',
-    padding: 15,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  customAmountButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  bettingTabs: {
-    flexDirection: 'row',
-    backgroundColor: '#2a2a2a',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#444',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  activeTab: {
-    backgroundColor: '#FFD700',
-  },
-  tabText: {
-    color: '#ccc',
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  activeTabText: {
-    color: '#000',
-    fontWeight: 'bold',
-  },
-});
+    backgroundColor: '#2a4a2a',Adding styles for authentication modal, form, input, and buttons in the StyleSheet.
