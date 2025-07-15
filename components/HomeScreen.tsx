@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import GameCard from './GameCard';
+import NumberAnimation from './NumberAnimation';
 
 interface HomeScreenProps {
   gameCards: any[];
@@ -11,7 +12,9 @@ interface HomeScreenProps {
 
 export default function HomeScreen({ gameCards, features, onPlayNow }: HomeScreenProps) {
   return (
-    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
+      <NumberAnimation />
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       {/* Promotional Banner */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
         <View style={styles.promoCard}>
@@ -52,10 +55,15 @@ export default function HomeScreen({ gameCards, features, onPlayNow }: HomeScree
       </View>
       <View style={styles.bottomSpacing} />
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
   scrollView: {
     flex: 1,
     paddingHorizontal: 15,
