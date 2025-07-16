@@ -674,7 +674,18 @@ export default function App() {
       // Update wallet
       setWallet(`₹${(currentWallet - totalAmount).toFixed(2)}`);
 
-      // Set success details for last bet or total
+      // Create bet records with proper status and timestamp
+      const newBets = betList.map(bet => ({
+        ...bet,
+        id: Date.now() + Math.random(), // Ensure unique ID
+        game: selectedGame?.title || 'Unknown Game',
+        status: 'pending' as const,
+        timestamp: Date.now(),
+        sessionTime: selectedGame?.timing || '09:00 PM - 04:50 PM',
+        date: new Date().toISOString().split('T')[0]
+      }));
+
+      // Set success details for display
       setLastBetDetails({
         number: betList.length > 1 ? `${betList.length} Numbers` : betList[0].number,
         amount: totalAmount,
@@ -682,19 +693,23 @@ export default function App() {
         gameName: selectedGame?.title || '',
       });
 
-      // Store the placed bets
-      setPlacedBets([...placedBets, ...betList]);
+      // Add to placed bets (these will show in MyBet component)
+      setPlacedBets(prevBets => [...prevBets, ...newBets]);
 
-      // Clear bet list
+      // Clear current bet selection
       setBetList([]);
 
-      // Show success modal
+      // Show success modal first
       setShowBetSuccess(true);
 
-      // Close betting modal after a short delay
+      // Close betting modal immediately
+      setShowBettingModal(false);
+
+      // Auto close success modal and navigate to MyBet after 3 seconds
       setTimeout(() => {
-        setShowBettingModal(false);
-      }, 1500);
+        setShowBetSuccess(false);
+        setActiveTab('mybets'); // Navigate to MyBet tab
+      }, 3000);
 
     } else {
       Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');

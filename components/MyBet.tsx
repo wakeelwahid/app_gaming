@@ -11,12 +11,12 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
   // Group user's placed bets by game and date
   const groupBetsByGameAndDate = (bets: any[]) => {
     const grouped = bets.reduce((acc, bet) => {
-      const key = `${bet.game}-${bet.date}`;
+      const key = `${bet.game}-${bet.date || new Date().toISOString().split('T')[0]}`;
       if (!acc[key]) {
         acc[key] = {
           game: bet.game,
-          date: bet.date,
-          sessionTime: bet.sessionTime,
+          date: bet.date || new Date().toISOString().split('T')[0],
+          sessionTime: bet.sessionTime || '09:00 PM - 04:50 PM',
           bets: []
         };
       }
@@ -26,10 +26,10 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
     return Object.values(grouped);
   };
 
-  const userBets = groupBetsByGameAndDate(placedBets);
+  const userBets = groupBetsByGameAndDate(placedBets || []);
   
-  // Dummy data for testing - grouped by game and date (fallback when no user bets)
-  const dummyBets = placedBets.length > 0 ? [] : [
+  // Dummy data for testing - will show below user bets
+  const dummyBets = [
     {
       game: 'Jaipur King',
       date: '2024-01-15',
@@ -143,10 +143,101 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.myContainer}>
-          {(userBets.length === 0 && dummyBets.length === 0) ? (
-            <Text style={styles.noBetsText}>No bets found.</Text>
-          ) : (
-            (userBets.length > 0 ? userBets : dummyBets).map((group, idx) => {
+          {/* Show user's recently placed bets first */}
+          {userBets.length > 0 && (
+            <View style={styles.userBetsSection}>
+              <Text style={styles.sectionTitle}>🎯 Your Recent Bets</Text>
+              {userBets.map((group, idx) => {
+                const stats = calculateGroupStats(group.bets);
+                return (
+                  <View key={`user-${idx}`} style={[styles.betCard, styles.userBetCard]}>
+                    {/* Same bet card content as below */}
+                    <View style={styles.gameHeader}>
+                      <View style={styles.gameInfo}>
+                        <Text style={styles.gameTitle}>{group.game}</Text>
+                        <Text style={styles.gameDate}>{group.date}</Text>
+                        <Text style={styles.sessionTime}>{group.sessionTime}</Text>
+                      </View>
+                      <View style={styles.gameStats}>
+                        <Text style={styles.totalBets}>{group.bets.length} Bets</Text>
+                        <Text style={styles.totalAmount}>₹{stats.totalAmount}</Text>
+                        {stats.totalWin > 0 && (
+                          <Text style={styles.totalWin}>Won: ₹{stats.totalWin}</Text>
+                        )}
+                      </View>
+                    </View>
+
+                    <View style={styles.statusSummary}>
+                      {stats.pendingCount > 0 && (
+                        <View style={styles.statusItem}>
+                          <Ionicons name="time" size={12} color="#FFD700" />
+                          <Text style={[styles.statusText, { color: '#FFD700' }]}>
+                            {stats.pendingCount} Pending
+                          </Text>
+                        </View>
+                      )}
+                      {stats.winCount > 0 && (
+                        <View style={styles.statusItem}>
+                          <Ionicons name="checkmark-circle" size={12} color="#00FF88" />
+                          <Text style={[styles.statusText, { color: '#00FF88' }]}>
+                            {stats.winCount} Won
+                          </Text>
+                        </View>
+                      )}
+                      {stats.lossCount > 0 && (
+                        <View style={styles.statusItem}>
+                          <Ionicons name="close-circle" size={12} color="#FF4444" />
+                          <Text style={[styles.statusText, { color: '#FF4444' }]}>
+                            {stats.lossCount} Lost
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    <ScrollView 
+                      horizontal 
+                      showsHorizontalScrollIndicator={false}
+                      style={styles.betsScrollContainer}
+                      contentContainerStyle={styles.betsScrollContent}
+                    >
+                      {group.bets.map((bet, betIdx) => (
+                        <View key={bet.id} style={styles.betItemCard}>
+                          <View style={styles.betNumberContainer}>
+                            <Text style={styles.betNumber}>{bet.number}</Text>
+                            <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
+                          </View>
+
+                          <View style={styles.betAmountContainer}>
+                            <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                            {bet.winAmount && (
+                              <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
+                            )}
+                          </View>
+
+                          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                            <Ionicons 
+                              name={getStatusIcon(bet.status)} 
+                              size={8} 
+                              color={getStatusColor(bet.status)} 
+                            />
+                            <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                              {bet.status.toUpperCase()}
+                            </Text>
+                          </View>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
+                );
+              })}
+            </View>
+          )}
+
+          {/* Show dummy/historical bets */}
+          {dummyBets.length > 0 && (
+            <View style={styles.historyBetsSection}>
+              <Text style={styles.sectionTitle}>📊 Bet History</Text>
+              {dummyBets.map((group, idx) => {
               const stats = calculateGroupStats(group.bets);
               return (
                 <View key={idx} style={styles.betCard}>
@@ -421,6 +512,24 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 9,
     fontWeight: 'bold',
+  },
+  userBetsSection: {
+    marginBottom: 20,
+  },
+  historyBetsSection: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  userBetCard: {
+    borderColor: '#FFD700',
+    borderWidth: 2,
+    backgroundColor: '#1a1a1a',
   },
 });
 

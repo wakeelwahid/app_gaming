@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -89,19 +88,19 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
               <Text style={styles.betDetailLabel}>Game:</Text>
               <Text style={styles.betDetailValue}>{betDetails.gameName}</Text>
             </View>
-            
+
             <View style={styles.betDetailRow}>
               <Text style={styles.betDetailLabel}>Type:</Text>
               <Text style={styles.betDetailValue}>
                 {getTypeEmoji(betDetails.type)} {getTypeTitle(betDetails.type)}
               </Text>
             </View>
-            
+
             <View style={styles.betDetailRow}>
               <Text style={styles.betDetailLabel}>Number:</Text>
               <Text style={styles.betDetailValueHighlight}>{betDetails.number}</Text>
             </View>
-            
+
             <View style={[styles.betDetailRow, styles.amountRow]}>
               <Text style={styles.betDetailLabel}>Amount:</Text>
               <Text style={styles.amountValue}>₹{betDetails.amount}</Text>
@@ -111,13 +110,16 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
           {/* Success Message */}
           <View style={styles.messageContainer}>
             <Text style={styles.messageText}>
-              ✨ Best of luck! आपका number जीतने की शुभकामनाएं!
+              ✨ Best of luck! आपका bet successfully place हो गया है।
+            </Text>
+            <Text style={styles.navigationText}>
+              🎯 आपके bets MyBet section में दिखेंगे...
             </Text>
           </View>
 
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>Continue Playing</Text>
+            <Text style={styles.closeButtonText}>View My Bets</Text>
             <Ionicons name="arrow-forward" size={20} color="#000" />
           </TouchableOpacity>
         </Animated.View>
@@ -219,10 +221,17 @@ const styles = StyleSheet.create({
     borderColor: '#4A90E2',
   },
   messageText: {
-    color: '#4A90E2',
+    color: '#999',
     fontSize: 14,
     textAlign: 'center',
-    fontWeight: '500',
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  navigationText: {
+    color: '#4A90E2',
+    fontSize: 12,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   closeButton: {
     backgroundColor: '#00FF88',
