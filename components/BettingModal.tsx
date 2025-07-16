@@ -29,14 +29,40 @@ export default function BettingModal({
   const [selectedNumber, setSelectedNumber] = React.useState<any>(null);
   const [selectedType, setSelectedType] = React.useState<string>('');
   const [customAmount, setCustomAmount] = React.useState<string>('');
+  const [tempBetList, setTempBetList] = React.useState<any[]>([]);
+
   const getTotalBetAmount = () => {
     return betList.reduce((total, bet) => total + bet.amount, 0);
+  };
+
+  const handleNumberSelect = (number: any, type: string, amount: number) => {
+    const newBet = {
+      id: Date.now(),
+      number,
+      amount,
+      type,
+      game: selectedGame?.title || '',
+    };
+
+    setTempBetList(prev => [...prev, newBet]);
+  };
+
+  const handleRemoveTempBet = (betId: number) => {
+    setTempBetList(prev => prev.filter(bet => bet.id !== betId));
+  };
+
+  const handlePlaceAllBets = () => {
+    tempBetList.forEach(bet => {
+      onNumberSelect(bet.number, bet.type, bet.amount);
+    });
+    setTempBetList([]);
+    onPlaceBets();
   };
 
   const renderNumbers = () => {
     const numbers = [];
     for (let i = 1; i <= 100; i++) {
-      const bet = betList.find(b => b.number === i && b.type === 'numbers');
+      const bet = tempBetList.find(b => b.number === i && b.type === 'numbers');
       const isSelected = !!bet;
       numbers.push(
         <TouchableOpacity
@@ -47,7 +73,7 @@ export default function BettingModal({
           ]}
           onPress={() => {
             if (isSelected) {
-              onRemoveBet(bet.id);
+              handleRemoveTempBet(bet.id);
             } else {
               setSelectedNumber(i);
               setSelectedType('numbers');
@@ -74,7 +100,7 @@ export default function BettingModal({
     const numbers = [];
     for (let i = 0; i <= 9; i++) {
       const numberKey = `Andar ${i}`;
-      const bet = betList.find(b => b.number === numberKey && b.type === 'andar');
+      const bet = tempBetList.find(b => b.number === numberKey && b.type === 'andar');
       const isSelected = !!bet;
       numbers.push(
         <TouchableOpacity
@@ -86,7 +112,7 @@ export default function BettingModal({
           ]}
           onPress={() => {
             if (isSelected) {
-              onRemoveBet(bet.id);
+              handleRemoveTempBet(bet.id);
             } else {
               setSelectedNumber(numberKey);
               setSelectedType('andar');
@@ -113,7 +139,7 @@ export default function BettingModal({
     const numbers = [];
     for (let i = 0; i <= 9; i++) {
       const numberKey = `Bahar ${i}`;
-      const bet = betList.find(b => b.number === numberKey && b.type === 'bahar');
+      const bet = tempBetList.find(b => b.number === numberKey && b.type === 'bahar');
       const isSelected = !!bet;
       numbers.push(
         <TouchableOpacity
@@ -125,7 +151,7 @@ export default function BettingModal({
           ]}
           onPress={() => {
             if (isSelected) {
-              onRemoveBet(bet.id);
+              handleRemoveTempBet(bet.id);
             } else {
               setSelectedNumber(numberKey);
               setSelectedType('bahar');
@@ -196,14 +222,14 @@ export default function BettingModal({
 
             <ScrollView style={styles.contentScrollView} showsVerticalScrollIndicator={false}>
 
-            {betList.length > 0 && (
+            {tempBetList.length > 0 && (
               <View style={styles.selectionSummary}>
                 <Text style={styles.summaryTitle}>
-                  Total Bets ({betList.length}):
+                  Total Bets ({tempBetList.length}):
                 </Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.selectedNumbersList}>
-                    {betList.map((bet, index) => {
+                    {tempBetList.map((bet, index) => {
                       const chipStyle = bet.type === 'andar' ? styles.andarChip : 
                                       bet.type === 'bahar' ? styles.baharChip : 
                                       styles.selectedChip;
@@ -255,16 +281,16 @@ export default function BettingModal({
               </>
             )}
 
-            
+
 
             </ScrollView>
 
             {/* Fixed Bottom Section - Only Place Bet Button */}
-            {betList.length > 0 && (
+            {tempBetList.length > 0 && (
               <View style={styles.fixedBottomSection}>
                 <TouchableOpacity 
                   style={styles.placeBetButton}
-                  onPress={onPlaceBets}
+                  onPress={handlePlaceAllBets}
                 >
                   <Text style={styles.placeBetButtonText}>
                     🎯 Place All Bets (₹{getTotalBetAmount()})
@@ -302,7 +328,7 @@ export default function BettingModal({
                     key={amount}
                     style={styles.quickAmountButton}
                     onPress={() => {
-                      onNumberSelect(selectedNumber, selectedType, amount);
+                      handleNumberSelect(selectedNumber, selectedType, amount);
                       setShowAmountPopup(false);
                     }}
                   >
@@ -326,7 +352,7 @@ export default function BettingModal({
                 onPress={() => {
                   const amount = parseInt(customAmount);
                   if (amount >= 10 && amount <= 5000) {
-                    onNumberSelect(selectedNumber, selectedType, amount);
+                    handleNumberSelect(selectedNumber, selectedType, amount);
                     setCustomAmount('');
                     setShowAmountPopup(false);
                   } else {
