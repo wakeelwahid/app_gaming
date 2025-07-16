@@ -643,19 +643,26 @@ export default function App() {
   };
 
   const handleNumberSelect = (number: any, type: string, amount: number) => {
-    const newBet = {
-      id: Date.now().toString(),
-      game: selectedGame?.title || 'Unknown Game',
-      gameName: selectedGame?.title || 'Unknown Game',
-      number: number.toString(),
-      amount: amount,
-      type: type,
-      status: 'pending' as const,
-      timestamp: Date.now(),
-      sessionTime: selectedGame?.timing || 'N/A'
-    };
-    
-    setBetList(prevBets => [...prevBets, newBet]);
+    // Add number to selected list with amount
+    const existingBetIndex = betList.findIndex(b => b.number === number && b.type === type);
+
+    if (existingBetIndex >= 0) {
+      // Update existing bet amount
+      const updatedBetList = [...betList];
+      updatedBetList[existingBetIndex].amount = amount;
+      setBetList(updatedBetList);
+    } else {
+      // Add new bet to list
+      const newBet = {
+        id: Date.now(),
+        number,
+        amount,
+        type,
+        game: selectedGame?.title || '',
+        timestamp: new Date(),
+      };
+      setBetList([...betList, newBet]);
+    }
   };
 
   const handlePlaceBets = () => {
@@ -679,12 +686,16 @@ export default function App() {
         gameName: selectedGame?.title || '',
       });
 
+      // Clear bet list
+      setBetList([]);
+
       // Show success modal
       setShowBetSuccess(true);
 
-      // Close betting modal and clear selections
-      setShowBettingModal(false);
-      setCurrentBetType('numbers');
+      // Close betting modal after a short delay
+      setTimeout(() => {
+        setShowBettingModal(false);
+      }, 1500);
 
     } else {
       Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
