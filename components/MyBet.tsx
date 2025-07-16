@@ -326,7 +326,6 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
             })
           )}
             </View>
-          )}
         </View>
       </ScrollView>
     </View>
