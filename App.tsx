@@ -705,11 +705,11 @@ export default function App() {
       // Close betting modal immediately
       setShowBettingModal(false);
 
-      // Auto close success modal and navigate to MyBet after 3 seconds
+      // Auto close success modal and navigate to MyBet after 2 seconds
       setTimeout(() => {
         setShowBetSuccess(false);
         setActiveTab('mybets'); // Navigate to MyBet tab
-      }, 3000);
+      }, 2000);
 
     } else {
       Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');

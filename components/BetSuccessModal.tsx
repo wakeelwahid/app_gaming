@@ -120,7 +120,7 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>View My Bets</Text>
-            <Ionicons name="arrow-forward" size={20} color="#000" />
+            <Ionicons name="arrow-forward" size={16} color="#0a0a0a" />
           </TouchableOpacity>
         </Animated.View>
       </View>
