@@ -818,7 +818,8 @@ export default function App() {
     setShowPaymentSuccessModal(false);
     setActiveTab('home');
     setUtrNumber('');
-    setDepositAmount('');    setSelectedPaymentMethod('');
+    setDepositAmount('');
+    setSelectedPaymentMethod('');
     setShowAddCashModal(false);
   };
 
@@ -1287,6 +1288,18 @@ const styles = StyleSheet.create({
     borderColor: '#4A90E2',
     width: '100%',
   },
+  balanceCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 10,
+  },
+  balanceCardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 8,
+  },
   totalBalanceTitle: {
     fontSize: 12,
     fontWeight: 'bold',
@@ -1322,6 +1335,18 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     letterSpacing: 0.5,
     marginBottom: 6,
+  },
+  balanceItemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 8,
+  },
+  balanceItemFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 6,
   },
   winningsAmount: {
     fontSize: 20,
@@ -1938,7 +1963,7 @@ const styles = StyleSheet.create({
   },
   successModalContainer: {
     backgroundColor: '#0a0a0a',
-    width: ''90%',
+    width: '90%',
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#00FF88',

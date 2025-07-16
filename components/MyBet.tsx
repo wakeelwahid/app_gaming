@@ -215,6 +215,17 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
                           )}
                         </View>
 
+                        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                          <Ionicons 
+                            name={getStatusIcon(bet.status)} 
+                            size={8} 
+                            color={getStatusColor(bet.status)} 
+                          />
+                          <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                            {bet.status.toUpperCase()}
+                          </Text>
+                        </View>
+
                         
                       </View>
                     ))}
