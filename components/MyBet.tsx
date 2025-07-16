@@ -179,28 +179,53 @@ const MyBet = () => {
                   >
                     {group.bets.map((bet, betIdx) => (
                       <View key={bet.id} style={styles.betItemCard}>
-                        <View style={styles.betNumberContainer}>
-                          <Text style={styles.betNumber}>{bet.number}</Text>
-                          <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
-                        </View>
+                        {(bet.type === 'andar' || bet.type === 'bahar') ? (
+                          // Andar/Bahar layout
+                          <>
+                            <View style={styles.betTypeContainer}>
+                              <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
+                            </View>
+                            
+                            <View style={styles.betAmountContainer}>
+                              <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                              {bet.winAmount && (
+                                <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
+                              )}
+                            </View>
 
-                        <View style={styles.betAmountContainer}>
-                          <Text style={styles.betAmount}>₹{bet.amount}</Text>
-                          {bet.winAmount && (
-                            <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
-                          )}
-                        </View>
+                            <View style={styles.andarBaharNumberContainer}>
+                              <Text style={styles.andarBaharNumber}>
+                                {bet.number.split(' ')[1] || bet.number}
+                              </Text>
+                            </View>
+                          </>
+                        ) : (
+                          // Regular number layout
+                          <>
+                            <View style={styles.betNumberContainer}>
+                              <Text style={styles.betNumber}>{bet.number}</Text>
+                              <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
+                            </View>
 
-                        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
-                          <Ionicons 
-                            name={getStatusIcon(bet.status)} 
-                            size={12} 
-                            color={getStatusColor(bet.status)} 
-                          />
-                          <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
-                            {bet.status.toUpperCase()}
-                          </Text>
-                        </View>
+                            <View style={styles.betAmountContainer}>
+                              <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                              {bet.winAmount && (
+                                <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
+                              )}
+                            </View>
+
+                            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                              <Ionicons 
+                                name={getStatusIcon(bet.status)} 
+                                size={12} 
+                                color={getStatusColor(bet.status)} 
+                              />
+                              <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                                {bet.status.toUpperCase()}
+                              </Text>
+                            </View>
+                          </>
+                        )}
                       </View>
                     ))}
                   </ScrollView>
@@ -367,9 +392,26 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     textAlign: 'center',
   },
+  betTypeContainer: {
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   betAmountContainer: {
     alignItems: 'center',
     marginBottom: 8,
+  },
+  andarBaharNumberContainer: {
+    alignItems: 'center',
+    backgroundColor: '#FFD700',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+  },
+  andarBaharNumber: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
   },
   betAmount: {
     fontSize: 14,
