@@ -170,39 +170,40 @@ const MyBet = () => {
                     )}
                   </View>
 
-                  {/* Individual Bets */}
-                  <View style={styles.betsContainer}>
+                  {/* Individual Bets - Horizontal Scrollable */}
+                  <ScrollView 
+                    horizontal 
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.betsScrollContainer}
+                    contentContainerStyle={styles.betsScrollContent}
+                  >
                     {group.bets.map((bet, betIdx) => (
-                      <View key={bet.id} style={styles.betItem}>
-                        <View style={styles.betLeft}>
-                          <View style={styles.betNumberContainer}>
-                            <Text style={styles.betNumber}>{bet.number}</Text>
-                            <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
-                          </View>
+                      <View key={bet.id} style={styles.betItemCard}>
+                        <View style={styles.betNumberContainer}>
+                          <Text style={styles.betNumber}>{bet.number}</Text>
+                          <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
                         </View>
 
-                        <View style={styles.betCenter}>
+                        <View style={styles.betAmountContainer}>
                           <Text style={styles.betAmount}>₹{bet.amount}</Text>
                           {bet.winAmount && (
-                            <Text style={styles.winAmount}>Won: ₹{bet.winAmount}</Text>
+                            <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
                           )}
                         </View>
 
-                        <View style={styles.betRight}>
-                          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
-                            <Ionicons 
-                              name={getStatusIcon(bet.status)} 
-                              size={14} 
-                              color={getStatusColor(bet.status)} 
-                            />
-                            <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
-                              {bet.status.toUpperCase()}
-                            </Text>
-                          </View>
+                        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                          <Ionicons 
+                            name={getStatusIcon(bet.status)} 
+                            size={12} 
+                            color={getStatusColor(bet.status)} 
+                          />
+                          <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                            {bet.status.toUpperCase()}
+                          </Text>
                         </View>
                       </View>
                     ))}
-                  </View>
+                  </ScrollView>
                 </View>
               );
             })
@@ -322,67 +323,77 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
   },
-  betsContainer: {
-    gap: 8,
+  betsScrollContainer: {
+    marginBottom: 10,
   },
-  betItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  betsScrollContent: {
+    paddingRight: 15,
+    gap: 10,
+  },
+  betItemCard: {
     backgroundColor: '#0f0f0f',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#2a2a2a',
-  },
-  betLeft: {
-    flex: 2,
+    minWidth: 120,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 3,
   },
   betNumberContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   betNumber: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFD700',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   betType: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#999',
     backgroundColor: '#333',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
     overflow: 'hidden',
+    textAlign: 'center',
   },
-  betCenter: {
-    flex: 2,
+  betAmountContainer: {
     alignItems: 'center',
+    marginBottom: 8,
   },
   betAmount: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
+    marginBottom: 2,
   },
   winAmount: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#00FF88',
-    marginTop: 2,
-  },
-  betRight: {
-    flex: 2,
-    alignItems: 'flex-end',
+    fontWeight: 'bold',
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 10,
+    gap: 3,
+    minWidth: 60,
+    justifyContent: 'center',
   },
   statusLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 'bold',
   },
 });
