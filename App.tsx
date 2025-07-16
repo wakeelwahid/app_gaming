@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 // Import components
 import Header from './components/Header';
 import HomeScreen from './components/HomeScreen';
+import Games from './components/Games';
 import BottomMenu from './components/BottomMenu';
 import BettingModal from './components/BettingModal';
 import BetSuccessModal from './components/BetSuccessModal';
@@ -19,6 +20,9 @@ import BetHistory from './components/BetHistory';
 import { userService } from './services/userService';
 import { walletService } from './services/walletService';
 import { gameService } from './services/gameService';
+
+// Import constants
+import { GAME_CARDS, FEATURES } from './constants/gameData';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -621,93 +625,21 @@ export default function App() {
     gameName: '',
   });
 
-  const gameCards = [
-    {
-      id: 1,
-      title: 'Jaipur King',
-      openTime: '05:00 PM',
-      closeTime: '04:50 PM',
-      status: 'Open for Play',
-      color: '#4A90E2',
-      bgColor: '#1A3A5A'
-    },
-    {
-      id: 2,
-      title: 'Faridabad',
-      openTime: '10:00 PM',
-      closeTime: '06:40 PM',
-      status: 'Open for Play',
-      color: '#00FF88',
-      bgColor: '#1A4A3A'
-    },
-    {
-      id: 3,
-      title: 'Ghaziabad',
-      openTime: '11:00 PM',
-      closeTime: '07:50 PM',
-      status: 'Open for Play',
-      color: '#4A90E2',
-      bgColor: '#1A3A5A'
-    },
-    {
-      id: 4,
-      title: 'Gali',
-      openTime: '04:00 AM',
-      closeTime: '10:30 PM',
-      status: 'Open for Play',
-      color: '#9B59B6',
-      bgColor: '#3A2A4A'
-    },
-    {
-      id: 5,
-      title: 'Disawer',
-      openTime: '07:00 AM',
-      closeTime: '02:30 AM',
-      status: 'Open for Play',
-      color: '#E74C3C',
-      bgColor: '#4A2A2A'
-    },
-    {
-      id: 6,
-      title: 'Diamond King',
-      openTime: '06:00 AM',
-      closeTime: '10:10 PM',
-      status: 'Multiple Sessions',
-      color: '#FF1493',
-      bgColor: '#4A2A3A'
-    }
-  ];
-
-  const features = [
-    {
-      icon: '₹',
-      title: '24x7 निकासी',
-      subtitle: 'कभी भी पैसा निकाल निकालें'
-    },
-    {
-      icon: '⏱',
-      title: '5 मिनट में भुगतान',
-      subtitle: 'तुरंत पेमेंट मिलती'
-    },
-    {
-      icon: '🎧',
-      title: '24x7 सपोर्ट',
-      subtitle: 'हमेशा आपकी सेवा में'
-    },
-    {
-      icon: '🛡',
-      title: '100% सुरक्षित',
-      subtitle: 'सुरक्षित और भरोसेमंद'
-    }
-  ];
+  const gameCards = GAME_CARDS;
+  const features = FEATURES;
 
   const handleMenuItemPress = (key: string) => {
     setActiveTab(key);
   };
 
   const handlePlayNow = (game: any) => {
-    // Show all games instead of opening betting modal for specific game
-    setActiveTab('games');
+    setSelectedGame(game);
+    setShowBettingModal(true);
+  };
+
+  const handleGameSelect = (game: any) => {
+    setSelectedGame(game);
+    setShowBettingModal(true);
   };
 
   const handleNumberSelect = (number: any, type: string, amount: number) => {
@@ -1023,14 +955,10 @@ export default function App() {
         );
       case 'games':
         return (
-          <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>🎮 All Games</Text>
-              {gameCards.map((game) => (
-                  <TouchableOpacity key={game.id} style={styles.gameCard}>
-                      <Text style={styles.gameTitle}>{game.title}</Text>
-                  </TouchableOpacity>
-              ))}
-          </View>
+          <Games 
+            gameCards={gameCards}
+            onGameSelect={handleGameSelect}
+          />
         );
       case 'profile':
         return (
