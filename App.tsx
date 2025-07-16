@@ -1,7 +1,3 @@
-The code has been modified to fix the game click functionality to show all games and remove the status from the MyBet component.
-```
-
-```replit_final_file
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -34,6 +30,7 @@ export default function App() {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
+
   // Dummy bet history data
   const [betList, setBetList] = useState([
     // Jaipur King bets (Recent)
@@ -1936,3 +1933,137 @@ const styles = StyleSheet.create({
     borderColor: '#FFD700',
     borderRadius: 10,
     paddingHorizontal: 15,
+    paddingVertical: 12,
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  paymentButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 55,
+  },
+  paymentButtonDisabled: {
+    backgroundColor: '#333',
+  },
+  paymentButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 18,
+    letterSpacing: 0.5,
+    flexWrap: 'wrap',
+  },
+  withdrawModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '95%',
+    maxHeight: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  withdrawContent: {
+    flex: 1,
+    padding: 20,
+  },
+  withdrawLabel: {
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  withdrawInput: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  withdrawButton: {
+    backgroundColor: '#4A90E2',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 55,
+  },
+  withdrawButtonDisabled: {
+    backgroundColor: '#333',
+  },
+  withdrawButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 18,
+    letterSpacing: 0.5,
+    flexWrap: 'wrap',
+  },
+  successModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '90%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#00FF88',
+    padding: 20,
+    alignItems: 'center',
+  },
+  successIcon: {
+    marginBottom: 20,
+  },
+  successTitle: {
+    color: '#00FF88',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  successAmount: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  successDetails: {
+    color: '#999',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  closeButton: {
+    backgroundColor: '#00FF88',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  gameCard: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#333',
+    width: '100%',
+  },
+  gameTitle: {
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
