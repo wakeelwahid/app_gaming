@@ -33,23 +33,7 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
     setIsEditing(false);
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Logout', 
-          style: 'destructive',
-          onPress: () => {
-            // Handle logout logic here
-            Alert.alert('Logged Out', 'You have been successfully logged out');
-          }
-        }
-      ]
-    );
-  };
+  
 
   const copyReferralCode = () => {
     // In a real app, you'd use clipboard API
@@ -96,10 +80,12 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
                 <Ionicons name="pencil" size={16} color="#4A90E2" />
                 <Text style={styles.editButtonText}>Edit</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                <Ionicons name="log-out" size={16} color="#FF4444" />
-                <Text style={styles.logoutButtonText}>Logout</Text>
-              </TouchableOpacity>
+              {userData.kycStatus !== 'VERIFIED' && (
+                <TouchableOpacity style={styles.kycButton} onPress={handleCompleteKYC}>
+                  <Ionicons name="card" size={16} color="#000" />
+                  <Text style={styles.kycButtonText}>Complete KYC</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
         </View>
@@ -239,18 +225,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 5,
   },
-  logoutButton: {
+  kycButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#FFD700',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#FF4444',
   },
-  logoutButtonText: {
-    color: '#FF4444',
+  kycButtonText: {
+    color: '#000',
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 5,
