@@ -3,9 +3,33 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const MyBet = () => {
-  // Dummy data for testing - grouped by game and date
-  const dummyBets = [
+interface MyBetProps {
+  placedBets?: any[];
+}
+
+const MyBet = ({ placedBets = [] }: MyBetProps) => {
+  // Group user's placed bets by game and date
+  const groupBetsByGameAndDate = (bets: any[]) => {
+    const grouped = bets.reduce((acc, bet) => {
+      const key = `${bet.game}-${bet.date}`;
+      if (!acc[key]) {
+        acc[key] = {
+          game: bet.game,
+          date: bet.date,
+          sessionTime: bet.sessionTime,
+          bets: []
+        };
+      }
+      acc[key].bets.push(bet);
+      return acc;
+    }, {});
+    return Object.values(grouped);
+  };
+
+  const userBets = groupBetsByGameAndDate(placedBets);
+  
+  // Dummy data for testing - grouped by game and date (fallback when no user bets)
+  const dummyBets = placedBets.length > 0 ? [] : [
     {
       game: 'Jaipur King',
       date: '2024-01-15',
@@ -119,10 +143,10 @@ const MyBet = () => {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.myContainer}>
-          {dummyBets.length === 0 ? (
+          {(userBets.length === 0 && dummyBets.length === 0) ? (
             <Text style={styles.noBetsText}>No bets found.</Text>
           ) : (
-            dummyBets.map((group, idx) => {
+            (userBets.length > 0 ? userBets : dummyBets).map((group, idx) => {
               const stats = calculateGroupStats(group.bets);
               return (
                 <View key={idx} style={styles.betCard}>

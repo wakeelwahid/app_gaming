@@ -617,13 +617,9 @@ export default function App() {
     kycStatus: 'VERIFIED' as 'VERIFIED' | 'PENDING' | 'REJECTED'
   });
 
-  const [showBetSuccess, setShowBetSuccess] = useState(false);
-  const [lastBetDetails, setLastBetDetails] = useState({
-    number: '',
-    amount: 0,
-    type: '',
-    gameName: '',
-  });
+  const [lastBetDetails, setLastBetDetails] = React.useState<any>(null);
+  const [showBetSuccess, setShowBetSuccess] = React.useState(false);
+  const [placedBets, setPlacedBets] = React.useState<any[]>([]);
 
   const gameCards = GAME_CARDS;
   const features = FEATURES;
@@ -685,6 +681,9 @@ export default function App() {
         type: betList.length > 1 ? 'Multiple' : betList[0].type,
         gameName: selectedGame?.title || '',
       });
+
+      // Store the placed bets
+      setPlacedBets([...placedBets, ...betList]);
 
       // Clear bet list
       setBetList([]);
@@ -918,7 +917,7 @@ export default function App() {
       case 'history':
       case 'bets':
 
-        return <MyBet />;
+        return <MyBet placedBets={placedBets} />;
       case 'transactions':
         return (
           <View style={styles.tabContent}>
@@ -1939,7 +1938,7 @@ const styles = StyleSheet.create({
   },
   successModalContainer: {
     backgroundColor: '#0a0a0a',
-    width: '90%',
+    width: ''90%',
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#00FF88',
