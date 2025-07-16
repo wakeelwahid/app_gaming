@@ -1,3 +1,7 @@
+The code has been modified to fix the game click functionality to show all games and remove the status from the MyBet component.
+```
+
+```replit_final_file
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -705,9 +709,8 @@ export default function App() {
   };
 
   const handlePlayNow = (game: any) => {
-    setSelectedGame(game);
-    setBetList([]);
-    setShowBettingModal(true);
+    // Show all games instead of opening betting modal for specific game
+    setActiveTab('games');
   };
 
   const handleNumberSelect = (number: any, type: string, amount: number) => {
@@ -985,7 +988,7 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-        
+
         return <MyBet />;
       case 'transactions':
         return (
@@ -1025,7 +1028,11 @@ export default function App() {
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>🎮 All Games</Text>
-            <Text style={styles.comingSoonText}>और भी games जल्द ही आएंगी</Text>
+              {gameCards.map((game) => (
+                  <TouchableOpacity key={game.id} style={styles.gameCard}>
+                      <Text style={styles.gameTitle}>{game.title}</Text>
+                  </TouchableOpacity>
+              ))}
           </View>
         );
       case 'profile':
@@ -1929,219 +1936,3 @@ const styles = StyleSheet.create({
     borderColor: '#FFD700',
     borderRadius: 10,
     paddingHorizontal: 15,
-    paddingVertical: 15,
-    color: '#fff',
-    fontSize: 16,
-    width: '100%',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  confirmPaymentButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  confirmPaymentButtonDisabled: {
-    backgroundColor: '#333',
-  },
-  confirmPaymentButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  utrHelp: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#333',
-    width: '100%',
-  },
-  utrHelpTitle: {
-    color: '#FFD700',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  utrHelpText: {
-    color: '#999',
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  // Withdraw Modal Styles
-  withdrawModalContainer: {
-    backgroundColor: '#0a0a0a',
-    width: '95%',
-    maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
-  },
-  withdrawContent: {
-    flex: 1,
-    padding: 20,
-  },
-  withdrawLabel: {
-    color: '#4A90E2',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  withdrawInput: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 1,
-    borderColor: '#4A90E2',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  withdrawRequestButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  withdrawButtonDisabled: {
-    backgroundColor: '#333',
-  },
-  withdrawRequestButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  withdrawInfo: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
-  },
-  withdrawInfoTitle: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  withdrawInfoText: {
-    color: '#999',
-    fontSize: 12,
-    marginBottom: 4,
-  },
-
-    // Payment Success Modal Styles
-    paymentSuccessModalContainer: {
-      backgroundColor: '#0a0a0a',
-      width: '90%',
-      borderRadius: 15,
-      padding: 20,
-      alignItems: 'center',
-    },
-    successContent: {
-      alignItems: 'center',
-    },
-    successIcon: {
-      backgroundColor: '#00FF88',
-      width: 60,
-      height: 60,
-      borderRadius: 30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    successIconText: {
-      fontSize: 30,
-      color: '#000',
-    },
-    successTitle: {
-      color: '#FFD700',
-      fontSize: 22,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-    successMessage: {
-      color: '#999',
-      fontSize: 16,
-      textAlign: 'center',
-      marginBottom: 20,
-      lineHeight: 22,
-    },
-    utrDisplayContainer: {
-      backgroundColor: '#1a1a1a',
-      padding: 15,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#333',
-      width: '100%',
-      marginBottom: 20,
-    },
-    utrDisplayLabel: {
-      color: '#4A90E2',
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    utrDisplayValue: {
-      color: '#fff',
-      fontSize: 16,
-      marginTop: 5,
-    },
-    timerContainer: {
-      marginBottom: 20,
-      alignItems: 'center',
-    },
-    timerMessage: {
-      color: '#00FF88',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    timerNote: {
-      color: '#999',
-      fontSize: 12,
-    },
-    countdownContainer: {
-      marginBottom: 20,
-    },
-    countdownText: {
-      color: '#FFD700',
-      fontSize: 16,
-    },
-    goHomeButton: {
-      backgroundColor: '#4A90E2',
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-      borderRadius: 10,
-    },
-    goHomeButtonText: {
-      color: '#000',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    balanceCardHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 10,
-    },
-    balanceCardFooter: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 5,
-    },
-    balanceItemHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 5,
-    },
-    balanceItemFooter: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 5,
-    },
-
-});
