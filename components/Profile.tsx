@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, ScrollView, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface ProfileProps {
@@ -17,6 +17,11 @@ interface ProfileProps {
 export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: ProfileProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState(userData);
+  const [showKYCForm, setShowKYCForm] = useState(false);
+    const [kycData, setKycData] = useState({
+    fullName: '',
+    aadhaarNumber: '',
+  });
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -57,24 +62,43 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
   };
 
   const handleCompleteKYC = () => {
+    setShowKYCForm(true);
+  };
+
+    const handleKYCSubmit = () => {
+    if (!kycData.fullName.trim()) {
+      Alert.alert('Error', 'Please enter your full name');
+      return;
+    }
+
+    if (kycData.aadhaarNumber.length !== 12) {
+      Alert.alert('Error', 'Please enter a valid 12-digit Aadhaar number');
+      return;
+    }
+
     Alert.alert(
-      'Complete KYC Verification',
-      'Please provide the following documents:\n\n• PAN Card\n• Aadhaar Card\n• Bank Statement\n• Selfie with documents\n\nKYC verification usually takes 24-48 hours.',
+      'Confirm KYC Submission',
+      'Are you sure you want to submit your KYC information?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Start KYC', 
+        {
+          text: 'Submit',
           onPress: () => {
+            // Here you would typically send the KYC data to your server
+            console.log('KYC Data:', kycData);
             onCompleteKYC();
-            Alert.alert('KYC Initiated', 'Your KYC verification process has been started. You will be notified once completed.');
-          }
-        }
+            setShowKYCForm(false); // Close the modal after submission
+            Alert.alert('KYC Submitted', 'Your KYC verification process has been started. You will be notified once completed.');
+            // Reset KYC Data
+            setKycData({ fullName: '', aadhaarNumber: '' });
+          },
+        },
       ]
     );
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* Header with Title and Action Buttons */}
       <View style={styles.header}>
         <Text style={styles.title}>👤 Personal Information</Text>
@@ -190,7 +214,92 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
           </TouchableOpacity>
         )}
       </View>
-    </View>
+
+      {/* KYC Verification Modal */}
+      <Modal
+        visible={showKYCForm}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowKYCForm(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.kycModal}>
+            <View style={styles.kycModalHeader}>
+              <Text style={styles.kycModalTitle}>🔐 Complete KYC Verification</Text>
+              <TouchableOpacity onPress={() => setShowKYCForm(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.kycModalContent}>
+              <Text style={styles.kycInstructions}>
+                📝 Please provide accurate information for KYC verification
+              </Text>
+
+              <View style={styles.kycFormContainer}>
+                <View style={styles.kycInputContainer}>
+                  <Text style={styles.kycInputLabel}>Full Name (As per Aadhaar)</Text>
+                  <TextInput
+                    style={styles.kycInput}
+                    placeholder="Enter your full name"
+                    placeholderTextColor="#999"
+                    value={kycData.fullName}
+                    onChangeText={(text) => setKycData({...kycData, fullName: text})}
+                  />
+                </View>
+
+                <View style={styles.kycInputContainer}>
+                  <Text style={styles.kycInputLabel}>Aadhaar Card Number</Text>
+                  <TextInput
+                    style={styles.kycInput}
+                    placeholder="Enter 12-digit Aadhaar number"
+                    placeholderTextColor="#999"
+                    value={kycData.aadhaarNumber}
+                    onChangeText={(text) => {
+                      // Only allow numbers and limit to 12 digits
+                      const numericText = text.replace(/[^0-9]/g, '').slice(0, 12);
+                      setKycData({...kycData, aadhaarNumber: numericText});
+                    }}
+                    keyboardType="numeric"
+                    maxLength={12}
+                  />
+                  <Text style={styles.aadhaarHelper}>
+                    {kycData.aadhaarNumber.length}/12 digits
+                  </Text>
+                </View>
+
+                <View style={styles.kycNotice}>
+                  <Text style={styles.kycNoticeTitle}>📋 Important Notes:</Text>
+                  <Text style={styles.kycNoticeText}>• Information should match your Aadhaar card</Text>
+                  <Text style={styles.kycNoticeText}>• KYC verification takes 24-48 hours</Text>
+                  <Text style={styles.kycNoticeText}>• Your data is secure and encrypted</Text>
+                  <Text style={styles.kycNoticeText}>• Required for withdrawals above ₹10,000</Text>
+                </View>
+
+                <TouchableOpacity 
+                  style={[
+                    styles.verifyButton,
+                    (!kycData.fullName.trim() || kycData.aadhaarNumber.length !== 12) && styles.verifyButtonDisabled
+                  ]} 
+                  onPress={handleKYCSubmit}
+                  disabled={!kycData.fullName.trim() || kycData.aadhaarNumber.length !== 12}
+                >
+                  <Ionicons name="shield-checkmark" size={20} color="#000" />
+                  <Text style={styles.verifyButtonText}>Verify & Submit KYC</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={styles.cancelKycButton} 
+                  onPress={() => setShowKYCForm(false)}
+                >
+                  <Text style={styles.cancelKycButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </ScrollView>
   );
 }
 
@@ -378,5 +487,113 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 5,
+  },
+    modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  kycModal: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 15,
+    width: '90%',
+    maxWidth: 400,
+    paddingBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  kycModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  kycModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFD700',
+  },
+  kycModalContent: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  kycInstructions: {
+    color: '#ddd',
+    fontSize: 15,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  kycFormContainer: {
+    gap: 15,
+  },
+  kycInputContainer: {
+    gap: 5,
+  },
+  kycInputLabel: {
+    color: '#999',
+    fontSize: 15,
+  },
+  kycInput: {
+    backgroundColor: '#333',
+    color: '#fff',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+  },
+  aadhaarHelper: {
+    color: '#777',
+    fontSize: 12,
+    alignSelf: 'flex-end',
+  },
+  kycNotice: {
+    backgroundColor: '#333',
+    borderRadius: 10,
+    padding: 15,
+    gap: 8,
+  },
+  kycNoticeTitle: {
+    color: '#eee',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  kycNoticeText: {
+    color: '#ccc',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  verifyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFD700',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  verifyButtonDisabled: {
+    backgroundColor: '#777',
+  },
+  verifyButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  cancelKycButton: {
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 5,
+  },
+  cancelKycButtonText: {
+    color: '#999',
+    fontSize: 15,
+    textAlign: 'center',
   },
 });
