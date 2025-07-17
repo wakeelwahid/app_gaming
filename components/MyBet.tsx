@@ -7,6 +7,8 @@ interface MyBetProps {
 }
 
 const MyBet = ({ placedBets = [] }: MyBetProps) => {
+  console.log('MyBet received placedBets:', placedBets);
+  
   // Group user's placed bets by game and date
   const groupBetsByGameAndDate = (bets: any[]) => {
     const grouped = bets.reduce((acc, bet) => {
@@ -26,6 +28,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
   };
 
   const userBets = groupBetsByGameAndDate(placedBets || []);
+  console.log('Grouped user bets:', userBets);
 
   // Dummy data for testing - will show below user bets
   const dummyBets = [

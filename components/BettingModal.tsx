@@ -274,7 +274,10 @@ export default function BettingModal({
               <View style={styles.fixedBottomSection}>
                 <TouchableOpacity 
                   style={styles.placeBetButton}
-                  onPress={onPlaceBets}
+                  onPress={() => {
+                    console.log('Place bet button pressed, bet list:', betList);
+                    onPlaceBets();
+                  }}
                 >
                   <Text style={styles.placeBetButtonText}>
                     🎯 Place All Bets (₹{getTotalBetAmount()})

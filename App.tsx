@@ -722,23 +722,38 @@ export default function App() {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
 
     if (currentWallet >= totalAmount) {
+      // Update wallet balance first
+      const newWalletAmount = currentWallet - totalAmount;
+      // Use the wallet hook to update wallet
+      const updatedWallet = `₹${newWalletAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
       // Create bet records with proper status and timestamp
       const newBets = betListState.map(bet => ({
         ...bet,
         id: Date.now() + Math.random(), // Ensure unique ID
-        game: selectedGameState?.title || 'Unknown Game',
+        game: selectedGameLocal?.title || selectedGameState?.title || 'Unknown Game',
         status: 'pending' as const,
         timestamp: Date.now(),
-        sessionTime: selectedGameState?.timing || '09:00 PM - 04:50 PM',
+        sessionTime: selectedGameLocal?.timing || selectedGameState?.timing || '09:00 PM - 04:50 PM',
         date: new Date().toISOString().split('T')[0]
       }));
 
       // Set success details for display
+      setLastBetDetailsLocal({
+        number: betListState.length > 1 ? `${betListState.length} Numbers` : betListState[0].number,
+        amount: totalAmount,
+        type: betListState.length > 1 ? 'Multiple' : betListState[0].type,
+        gameName: selectedGameLocal?.title || selectedGameState?.title || '',
+        betCount: betListState.length
+      });
+
+      // Also update the state version
       setLastBetDetailsState({
         number: betListState.length > 1 ? `${betListState.length} Numbers` : betListState[0].number,
         amount: totalAmount,
         type: betListState.length > 1 ? 'Multiple' : betListState[0].type,
-        gameName: selectedGameState?.title || '',
+        gameName: selectedGameLocal?.title || selectedGameState?.title || '',
+        betCount: betListState.length
       });
 
       // Add to placed bets (these will show in MyBet component)
@@ -752,18 +767,24 @@ export default function App() {
 
       // Close betting modal first
       setShowBettingModalLocal(false);
+      setShowBettingModalState(false);
       
       // Show success modal
       setShowBetSuccessLocal(true);
+      setShowBetSuccessState(true);
 
-      // Auto close success modal and navigate to MyBet after 7 seconds
+      console.log('Bets placed successfully:', newBets);
+      console.log('Updated wallet balance:', updatedWallet);
+
+      // Auto close success modal and navigate to MyBet after 5 seconds
       setTimeout(() => {
         setShowBetSuccessLocal(false);
+        setShowBetSuccessState(false);
         setActiveTabLocal('mybets'); // Navigate to MyBet tab
-      }, 7000);
+      }, 5000);
 
     } else {
-      Alert.alert('Insufficient Coins', 'आपके wallet में पर्याप्त coins नहीं हैं।');
+      Alert.alert('Insufficient Balance', `आपके wallet में पर्याप्त balance नहीं है।\nRequired: ₹${totalAmount}\nAvailable: ₹${currentWallet}`);
     }
   };
 
