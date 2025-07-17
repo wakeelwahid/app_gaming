@@ -30,6 +30,92 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
   const userBets = groupBetsByGameAndDate(placedBets || []);
   console.log('Grouped user bets:', userBets);
 
+  const renderGameCard = (group: any, index: number) => {
+    const stats = calculateGroupStats(group.bets);
+    return (
+      <View key={index} style={styles.betCard}>
+        {/* Game Header */}
+        <View style={styles.gameHeader}>
+          <View style={styles.gameInfo}>
+            <Text style={styles.gameTitle}>{group.game}</Text>
+            <Text style={styles.gameDate}>{group.date}</Text>
+            <Text style={styles.sessionTime}>{group.sessionTime}</Text>
+          </View>
+          <View style={styles.gameStats}>
+            <Text style={styles.totalBets}>{group.bets.length} Bets</Text>
+            <Text style={styles.totalAmount}>₹{stats.totalAmount}</Text>
+            {stats.totalWin > 0 && (
+              <Text style={styles.totalWin}>Won: ₹{stats.totalWin}</Text>
+            )}
+          </View>
+        </View>
+
+        {/* Game Status Summary */}
+        <View style={styles.statusSummary}>
+          {stats.pendingCount > 0 && (
+            <View style={styles.statusItem}>
+              <Ionicons name="time" size={12} color="#FFD700" />
+              <Text style={[styles.statusText, { color: '#FFD700' }]}>
+                {stats.pendingCount} Pending
+              </Text>
+            </View>
+          )}
+          {stats.winCount > 0 && (
+            <View style={styles.statusItem}>
+              <Ionicons name="checkmark-circle" size={12} color="#00FF88" />
+              <Text style={[styles.statusText, { color: '#00FF88' }]}>
+                {stats.winCount} Won
+              </Text>
+            </View>
+          )}
+          {stats.lossCount > 0 && (
+            <View style={styles.statusItem}>
+              <Ionicons name="close-circle" size={12} color="#FF4444" />
+              <Text style={[styles.statusText, { color: '#FF4444' }]}>
+                {stats.lossCount} Lost
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Individual Bets - Horizontal Scrollable */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.betsScrollContainer}
+          contentContainerStyle={styles.betsScrollContent}
+        >
+          {group.bets.map((bet: any, betIdx: number) => (
+            <View key={bet.id} style={styles.betItemCard}>
+              <View style={styles.betNumberContainer}>
+                <Text style={styles.betNumber}>{bet.number}</Text>
+                <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
+              </View>
+
+              <View style={styles.betAmountContainer}>
+                <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                {bet.winAmount && (
+                  <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
+                )}
+              </View>
+
+              <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                <Ionicons 
+                  name={getStatusIcon(bet.status)} 
+                  size={8} 
+                  color={getStatusColor(bet.status)} 
+                />
+                <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                  {bet.status.toUpperCase()}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
   // Dummy data for testing - will show below user bets
   const dummyBets = [
     {
@@ -165,90 +251,91 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
           </View>
         )}
 
-        {dummyBets.map((gameGroup, index) => (
+        {dummyBets.map((gameGroup, index) => {
+          const stats = calculateGroupStats(gameGroup.bets);
+          return (
             <View key={index} style={styles.betCard}>
-                  {/* Game Header */}
-                  <View style={styles.gameHeader}>
-                    <View style={styles.gameInfo}>
-                      <Text style={styles.gameTitle}>{group.game}</Text>
-                      <Text style={styles.gameDate}>{group.date}</Text>
-                      <Text style={styles.sessionTime}>{group.sessionTime}</Text>
+              {/* Game Header */}
+              <View style={styles.gameHeader}>
+                <View style={styles.gameInfo}>
+                  <Text style={styles.gameTitle}>{gameGroup.game}</Text>
+                  <Text style={styles.gameDate}>{gameGroup.date}</Text>
+                  <Text style={styles.sessionTime}>{gameGroup.sessionTime}</Text>
+                </View>
+                <View style={styles.gameStats}>
+                  <Text style={styles.totalBets}>{gameGroup.bets.length} Bets</Text>
+                  <Text style={styles.totalAmount}>₹{stats.totalAmount}</Text>
+                  {stats.totalWin > 0 && (
+                    <Text style={styles.totalWin}>Won: ₹{stats.totalWin}</Text>
+                  )}
+                </View>
+              </View>
+
+              {/* Game Status Summary */}
+              <View style={styles.statusSummary}>
+                {stats.pendingCount > 0 && (
+                  <View style={styles.statusItem}>
+                    <Ionicons name="time" size={12} color="#FFD700" />
+                    <Text style={[styles.statusText, { color: '#FFD700' }]}>
+                      {stats.pendingCount} Pending
+                    </Text>
+                  </View>
+                )}
+                {stats.winCount > 0 && (
+                  <View style={styles.statusItem}>
+                    <Ionicons name="checkmark-circle" size={12} color="#00FF88" />
+                    <Text style={[styles.statusText, { color: '#00FF88' }]}>
+                      {stats.winCount} Won
+                    </Text>
+                  </View>
+                )}
+                {stats.lossCount > 0 && (
+                  <View style={styles.statusItem}>
+                    <Ionicons name="close-circle" size={12} color="#FF4444" />
+                    <Text style={[styles.statusText, { color: '#FF4444' }]}>
+                      {stats.lossCount} Lost
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Individual Bets - Horizontal Scrollable */}
+              <ScrollView 
+                horizontal 
+                showsHorizontalScrollIndicator={false}
+                style={styles.betsScrollContainer}
+                contentContainerStyle={styles.betsScrollContent}
+              >
+                {gameGroup.bets.map((bet, betIdx) => (
+                  <View key={bet.id} style={styles.betItemCard}>
+                    <View style={styles.betNumberContainer}>
+                      <Text style={styles.betNumber}>{bet.number}</Text>
+                      <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
                     </View>
-                    <View style={styles.gameStats}>
-                      <Text style={styles.totalBets}>{group.bets.length} Bets</Text>
-                      <Text style={styles.totalAmount}>₹{stats.totalAmount}</Text>
-                      {stats.totalWin > 0 && (
-                        <Text style={styles.totalWin}>Won: ₹{stats.totalWin}</Text>
+
+                    <View style={styles.betAmountContainer}>
+                      <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                      {bet.winAmount && (
+                        <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
                       )}
                     </View>
+
+                    <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
+                      <Ionicons 
+                        name={getStatusIcon(bet.status)} 
+                        size={8} 
+                        color={getStatusColor(bet.status)} 
+                      />
+                      <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
+                        {bet.status.toUpperCase()}
+                      </Text>
+                    </View>
                   </View>
-
-                  {/* Game Status Summary */}
-                  <View style={styles.statusSummary}>
-                    {stats.pendingCount > 0 && (
-                      <View style={styles.statusItem}>
-                        <Ionicons name="time" size={12} color="#FFD700" />
-                        <Text style={[styles.statusText, { color: '#FFD700' }]}>
-                          {stats.pendingCount} Pending
-                        </Text>
-                      </View>
-                    )}
-                    {stats.winCount > 0 && (
-                      <View style={styles.statusItem}>
-                        <Ionicons name="checkmark-circle" size={12} color="#00FF88" />
-                        <Text style={[styles.statusText, { color: '#00FF88' }]}>
-                          {stats.winCount} Won
-                        </Text>
-                      </View>
-                    )}
-                    {stats.lossCount > 0 && (
-                      <View style={styles.statusItem}>
-                        <Ionicons name="close-circle" size={12} color="#FF4444" />
-                        <Text style={[styles.statusText, { color: '#FF4444' }]}>
-                          {stats.lossCount} Lost
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-
-                  {/* Individual Bets - Horizontal Scrollable */}
-                  <ScrollView 
-                    horizontal 
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.betsScrollContainer}
-                    contentContainerStyle={styles.betsScrollContent}
-                  >
-                    {group.bets.map((bet, betIdx) => (
-                      <View key={bet.id} style={styles.betItemCard}>
-                        <View style={styles.betNumberContainer}>
-                          <Text style={styles.betNumber}>{bet.number}</Text>
-                          <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
-                        </View>
-
-                        <View style={styles.betAmountContainer}>
-                          <Text style={styles.betAmount}>₹{bet.amount}</Text>
-                          {bet.winAmount && (
-                            <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
-                          )}
-                        </View>
-
-                        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
-                          <Ionicons 
-                            name={getStatusIcon(bet.status)} 
-                            size={8} 
-                            color={getStatusColor(bet.status)} 
-                          />
-                          <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
-                            {bet.status.toUpperCase()}
-                          </Text>
-                        </View>
-
-
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-        ))}
+                ))}
+              </ScrollView>
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -449,10 +536,21 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+  sectionHeader: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
   userBetCard: {
     borderColor: '#FFD700',
     borderWidth: 2,
     backgroundColor: '#1a1a1a',
+  },
+  gameCard: {
+    marginBottom: 15,
   },
 });
 
