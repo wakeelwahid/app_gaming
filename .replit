@@ -8,7 +8,7 @@ channel = "stable-24_05"
 run = ["sh", "-c", "npm run start"]
 
 [workflows]
-runButton = "Start Expo Web"
+runButton = "Start App"
 
 [[workflows.workflow]]
 name = "Start Expo App"
@@ -45,6 +45,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx expo start --web --port 8081 --tunnel"
+
+[[workflows.workflow]]
+name = "Start App"
+author = 45151926
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx expo start --web --port 8081 --host 0.0.0.0"
 
 [[ports]]
 localPort = 8081
