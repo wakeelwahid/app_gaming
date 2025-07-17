@@ -987,12 +987,7 @@ export default function App() {
 
         return <MyBet placedBets={placedBets} />;
       case 'transactions':
-        return (
-          <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>💸 Transactions</Text>
-            <Text style={styles.comingSoonText}>Transaction history जल्द ही आएगा</Text>
-          </View>
-        );
+        return <Transaction />;
       case 'refer':
         return (
           <View style={styles.tabContent}>
