@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -51,19 +52,6 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
             <Ionicons name="wallet" size={20} color="#00FF88" />
             <Text style={styles.walletAmount}>{wallet}</Text>
           </View>
-
-          <TouchableOpacity
-            style={styles.testButton}
-            onPress={() => {
-              // Test bet placement navigation
-              if (window.testBetPlacement) {
-                window.testBetPlacement();
-              }
-            }}
-          >
-            <Text style={styles.testButtonText}>Test</Text>
-          </TouchableOpacity>
-
         </View>
       </View>
 
@@ -86,7 +74,7 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
               </View>
               <Text style={styles.profileMenuTitle}>Menu</Text>
             </View>
-
+            
             {profileMenuItems.map((item) => (
               <TouchableOpacity
                 key={item.key}
@@ -176,18 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#00FF88',
     marginLeft: 6,
-  },
-    testButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#00FF88',
-    marginRight: 8,
-  },
-  testButtonText: {
-    color: '#000',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
   // Modal Styles
   modalOverlay: {

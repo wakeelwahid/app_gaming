@@ -628,9 +628,6 @@ export default function App() {
   useEffect(() => {
     // Check age verification on app start
     setShowAgeVerificationState(true);
-    
-    // Make test function globally accessible
-    (window as any).testBetPlacement = testBetPlacement;
   }, []);
 
   const handlePlayNow = (game: any) => {
@@ -646,28 +643,7 @@ export default function App() {
     setTimeout(() => {
       setShowBetSuccessState(false);
       setActiveTabLocal('mybets');
-    }, 2000);
-  };
-
-  // Test function for direct bet placement
-  const testBetPlacement = () => {
-    const testBetDetails = {
-      number: '42',
-      amount: 100,
-      type: 'single',
-      gameName: 'Test Game',
-      betCount: 1
-    };
-
-    console.log('Testing bet placement and navigation');
-    setLastBetDetailsState(testBetDetails);
-    setShowBetSuccessState(true);
-
-    setTimeout(() => {
-      console.log('Test: Auto navigating to mybets');
-      setShowBetSuccessState(false);
-      setActiveTabLocal('mybets');
-    }, 2000);
+    }, 3000);
   };
 
   const handleKYCPress = () => {
@@ -748,58 +724,51 @@ export default function App() {
     console.log('Total amount:', totalAmount, 'Current wallet:', currentWallet);
 
     if (currentWallet >= totalAmount) {
-      try {
-        // Deduct money from wallet
-        withdrawMoney(totalAmount);
-        
-        // Create bet records with proper status and timestamp
-        const newBets = betListState.map(bet => ({
-          ...bet,
-          id: Date.now() + Math.random(),
-          game: selectedGameLocal?.title || selectedGameState?.title || 'Unknown Game',
-          status: 'pending' as const,
-          timestamp: Date.now(),
-          sessionTime: selectedGameLocal?.timing || selectedGameState?.timing || '09:00 PM - 04:50 PM',
-          date: new Date().toISOString().split('T')[0]
-        }));
+      // Deduct money from wallet
+      withdrawMoney(totalAmount);
+      
+      // Create bet records with proper status and timestamp
+      const newBets = betListState.map(bet => ({
+        ...bet,
+        id: Date.now() + Math.random(),
+        game: selectedGameLocal?.title || selectedGameState?.title || 'Unknown Game',
+        status: 'pending' as const,
+        timestamp: Date.now(),
+        sessionTime: selectedGameLocal?.timing || selectedGameState?.timing || '09:00 PM - 04:50 PM',
+        date: new Date().toISOString().split('T')[0]
+      }));
 
-        // Set success details for display
-        const betDetails = {
-          number: betListState.length > 1 ? `${betListState.length} Numbers` : String(betListState[0].number),
-          amount: totalAmount,
-          type: betListState.length > 1 ? 'Multiple' : betListState[0].type,
-          gameName: selectedGameLocal?.title || selectedGameState?.title || '',
-          betCount: betListState.length
-        };
+      // Set success details for display
+      const betDetails = {
+        number: betListState.length > 1 ? `${betListState.length} Numbers` : String(betListState[0].number),
+        amount: totalAmount,
+        type: betListState.length > 1 ? 'Multiple' : betListState[0].type,
+        gameName: selectedGameLocal?.title || selectedGameState?.title || '',
+        betCount: betListState.length
+      };
 
-        // Add to placed bets and bet history
-        setPlacedBetsState(prevBets => [...prevBets, ...newBets]);
-        setBetHistoryState(prevHistory => [...prevHistory, ...newBets]);
-        setLastBetDetailsState(betDetails);
+      // Add to placed bets and bet history
+      setPlacedBetsState(prevBets => [...prevBets, ...newBets]);
+      setBetHistoryState(prevHistory => [...prevHistory, ...newBets]);
+      setLastBetDetailsState(betDetails);
 
-        // Clear current bet selection
-        setBetListState([]);
+      // Clear current bet selection
+      setBetListState([]);
 
-        // Close betting modal first
-        setShowBettingModalLocal(false);
-        setShowBettingModalState(false);
+      // Close betting modal and show success
+      setShowBettingModalLocal(false);
+      setShowBettingModalState(false);
+      setShowBetSuccessState(true);
 
-        console.log('Bet placed successfully, showing success modal');
-        
-        // Show success modal immediately
-        setShowBetSuccessState(true);
+      console.log('Success modal should be visible, will auto-navigate in 3 seconds');
 
-        // Auto navigate to MyBet after 3 seconds
-        setTimeout(() => {
-          console.log('Auto navigating to mybets');
-          setShowBetSuccessState(false);
-          setActiveTabLocal('mybets');
-        }, 3000);
+      // Auto navigate to MyBet after 3 seconds
+      setTimeout(() => {
+        console.log('Auto navigating to mybets');
+        setShowBetSuccessState(false);
+        setActiveTabLocal('mybets');
+      }, 3000);
 
-      } catch (error) {
-        console.error('Error placing bet:', error);
-        Alert.alert('Error', 'Bet placement failed. Please try again.');
-      }
     } else {
       Alert.alert('Insufficient Balance', `आपके wallet में पर्याप्त balance नहीं है।\nRequired: ₹${totalAmount}\nAvailable: ₹${currentWallet}`);
     }

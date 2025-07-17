@@ -16,12 +16,12 @@ interface BetSuccessModalProps {
 export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuccessModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.8));
-  const [countdown, setCountdown] = React.useState(2);
+  const [countdown, setCountdown] = React.useState(3);
 
   React.useEffect(() => {
     if (visible) {
       console.log('BetSuccessModal became visible');
-      setCountdown(2);
+      setCountdown(3);
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
