@@ -276,7 +276,12 @@ export default function BettingModal({
                   style={styles.placeBetButton}
                   onPress={() => {
                     console.log('Place bet button pressed, bet list:', betList);
-                    onPlaceBets();
+                    console.log('Total amount:', getTotalBetAmount());
+                    if (betList.length > 0) {
+                      onPlaceBets();
+                    } else {
+                      Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
+                    }
                   }}
                 >
                   <Text style={styles.placeBetButtonText}>

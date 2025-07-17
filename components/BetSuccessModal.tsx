@@ -20,25 +20,12 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
 
   React.useEffect(() => {
     if (visible) {
-      setCountdown(3);
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          tension: 100,
-          friction: 8,
-          useNativeDriver: true,
-        }),
-      ]).start();
-
-      // Start countdown timer
+      console.log('BetSuccessModal became visible');
+      setCountdown(7);
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
+            console.log('BetSuccessModal auto-closing');
             clearInterval(timer);
             onClose();
             return 0;
@@ -48,10 +35,6 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
       }, 1000);
 
       return () => clearInterval(timer);
-    } else {
-      fadeAnim.setValue(0);
-      scaleAnim.setValue(0.8);
-      setCountdown(3);
     }
   }, [visible, onClose]);
 

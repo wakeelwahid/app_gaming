@@ -713,6 +713,8 @@ export default function App() {
   };
 
   const handlePlaceBets = () => {
+    console.log('handlePlaceBets called with betList:', betListState);
+    
     if (betListState.length === 0) {
       Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
       return;
@@ -720,6 +722,8 @@ export default function App() {
 
     const totalAmount = betListState.reduce((total, bet) => total + bet.amount, 0);
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
+
+    console.log('Total amount:', totalAmount, 'Current wallet:', currentWallet);
 
     if (currentWallet >= totalAmount) {
       // Deduct money from wallet using the hook
@@ -736,26 +740,26 @@ export default function App() {
         date: new Date().toISOString().split('T')[0]
       }));
 
-      // Set success details for display
-      setLastBetDetailsLocal({
-        number: betListState.length > 1 ? `${betListState.length} Numbers` : betListState[0].number,
-        amount: totalAmount,
-        type: betListState.length > 1 ? 'Multiple' : betListState[0].type,
-        gameName: selectedGameLocal?.title || selectedGameState?.title || '',
-        betCount: betListState.length
-      });
+      console.log('New bets created:', newBets);
 
-      // Also update the state version
-      setLastBetDetailsState({
-        number: betListState.length > 1 ? `${betListState.length} Numbers` : betListState[0].number,
+      // Set success details for display
+      const betDetails = {
+        number: betListState.length > 1 ? `${betListState.length} Numbers` : String(betListState[0].number),
         amount: totalAmount,
         type: betListState.length > 1 ? 'Multiple' : betListState[0].type,
         gameName: selectedGameLocal?.title || selectedGameState?.title || '',
         betCount: betListState.length
-      });
+      };
+
+      setLastBetDetailsLocal(betDetails);
+      setLastBetDetailsState(betDetails);
 
       // Add to placed bets (these will show in MyBet component)
-      setPlacedBetsState(prevBets => [...prevBets, ...newBets]);
+      setPlacedBetsState(prevBets => {
+        const updated = [...prevBets, ...newBets];
+        console.log('Updated placed bets:', updated);
+        return updated;
+      });
 
       // Add to bet history for historical tracking
       setBetHistoryState(prevHistory => [...prevHistory, ...newBets]);
@@ -771,15 +775,17 @@ export default function App() {
       setShowBetSuccessLocal(true);
       setShowBetSuccessState(true);
 
-      console.log('Bets placed successfully:', newBets);
+      console.log('Success modal should be visible now');
       console.log('Wallet deducted:', totalAmount);
 
-      // Auto close success modal and navigate to MyBet after 3 seconds
+      // Auto close success modal and navigate to MyBet after 4 seconds
       setTimeout(() => {
+        console.log('Auto closing success modal and navigating to mybets');
         setShowBetSuccessLocal(false);
         setShowBetSuccessState(false);
-        setActiveTabLocal('mybets'); // Navigate to MyBet tab
-      }, 3000);
+        setActiveTabLocal('mybets');
+        setActiveTabState('mybets');
+      }, 4000);
 
     } else {
       Alert.alert('Insufficient Balance', `आपके wallet में पर्याप्त balance नहीं है।\nRequired: ₹${totalAmount}\nAvailable: ₹${currentWallet}`);
@@ -1591,8 +1597,11 @@ export default function App() {
         visible={showBetSuccessState}
         betDetails={lastBetDetailsState}
         onClose={() => {
+          console.log('BetSuccessModal manually closed');
+          setShowBetSuccessLocal(false);
           setShowBetSuccessState(false);
-          setActiveTabLocal('mybets'); // Navigate to MyBet tab when manually closed
+          setActiveTabLocal('mybets');
+          setActiveTabState('mybets');
         }}
       />
 
