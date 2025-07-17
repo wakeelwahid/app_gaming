@@ -229,7 +229,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
         <Text style={styles.betLogo}>My Challenges</Text>
       </View>
 
-      
+
 <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* User's Recent Bets */}
         {userBets.length > 0 && (
@@ -555,4 +555,3 @@ const styles = StyleSheet.create({
 });
 
 export default MyBet;
-```
