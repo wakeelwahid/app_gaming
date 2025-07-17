@@ -657,11 +657,6 @@ export default function App() {
     setShowAgeVerificationState(false);
   };
 
-  const handleAgeVerificationReject = () => {
-    // Handle age verification rejection
-    setShowAgeVerificationState(false);
-  };
-
   const handlePaymentMethodSelect = (method: string) => {
     setSelectedPaymentMethodState(method);
     setShowAddCashModalState(false);
