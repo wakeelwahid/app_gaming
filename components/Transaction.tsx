@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#2a2a2a',
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 2,
     borderBottomWidth: 2,
     borderBottomColor: '#FFD700',
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 2,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
