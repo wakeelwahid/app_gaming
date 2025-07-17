@@ -920,62 +920,73 @@ export default function App() {
         );
       case 'wallet':
         return (
-          <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>💰 Wallet</Text>
+          <View style={styles.walletContainer}>
+            {/* Main Balance Display */}
+            <View style={styles.mainBalanceCard}>
+              <Text style={styles.walletTitle}>💰 My Wallet</Text>
+              <Text style={styles.mainBalanceAmount}>{wallet}</Text>
+              <Text style={styles.balanceSubtitle}>Total Available Balance</Text>
+            </View>
 
-            {/* Action Buttons - Moved to Top */}
-            <View style={styles.walletActionsTop}>
+            {/* Quick Actions */}
+            <View style={styles.quickActionsRow}>
               <TouchableOpacity 
-                style={styles.addCashButton}
+                style={styles.actionButtonAdd}
                 onPress={() => setShowAddCashModal(true)}
               >
-                <Text style={styles.addCashButtonText}>ADD CASH</Text>
+                <Text style={styles.actionButtonIcon}>➕</Text>
+                <Text style={[styles.actionButtonText, {color: '#000'}]}>Add Money</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
-                style={styles.withdrawButton}
+                style={styles.actionButtonWithdraw}
                 onPress={() => setShowWithdrawModal(true)}
               >
-                <Text style={styles.withdrawButtonText}>WITHDRAW</Text>
+                <Text style={styles.actionButtonIcon}>💳</Text>
+                <Text style={[styles.actionButtonText, {color: '#4A90E2'}]}>Withdraw</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Enhanced Total Balance Card */}
-            <View style={styles.totalBalanceCard}>
-              <View style={styles.balanceCardHeader}>
-                <Ionicons name="wallet" size={24} color="#4A90E2" />
-                <Text style={styles.totalBalanceTitle}>TOTAL BALANCE</Text>
+            {/* Balance Breakdown - Simplified */}
+            <View style={styles.balanceBreakdownSimple}>
+              <View style={styles.breakdownItem}>
+                <View style={styles.breakdownLeft}>
+                  <Text style={styles.breakdownIcon}>🏆</Text>
+                  <View>
+                    <Text style={styles.breakdownTitle}>Winnings</Text>
+                    <Text style={styles.breakdownSubtitle}>Withdrawable</Text>
+                  </View>
+                </View>
+                <Text style={styles.breakdownAmount}>₹1,250</Text>
               </View>
-              <Text style={styles.totalBalanceAmount}>{wallet}</Text>
-              <View style={styles.balanceCardFooter}>
-                <Ionicons name="checkmark-circle" size={16} color="#00FF88" />
-                <Text style={styles.totalBalanceSubtitle}>Available for withdrawal & games</Text>
+
+              <View style={styles.breakdownItem}>
+                <View style={styles.breakdownLeft}>
+                  <Text style={styles.breakdownIcon}>🎁</Text>
+                  <View>
+                    <Text style={styles.breakdownTitle}>Bonus</Text>
+                    <Text style={styles.breakdownSubtitle}>Game only</Text>
+                  </View>
+                </View>
+                <Text style={styles.breakdownAmountBonus}>₹500</Text>
               </View>
             </View>
 
-            {/* Enhanced Balance Breakdown */}
-            <View style={styles.balanceBreakdown}>
-              <View style={styles.balanceItem}>
-                <View style={styles.balanceItemHeader}>
-                  <Ionicons name="trophy" size={20} color="#00FF88" />
-                  <Text style={styles.balanceItemTitle}>WINNINGS AMOUNT</Text>
+            {/* Quick Stats */}
+            <View style={styles.quickStatsCard}>
+              <Text style={styles.quickStatsTitle}>📊 Quick Stats</Text>
+              <View style={styles.statsGrid}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>15</Text>
+                  <Text style={styles.statLabel}>Total Bets</Text>
                 </View>
-                <Text style={styles.winningsAmount}>₹1,250.00</Text>
-                <View style={styles.balanceItemFooter}>
-                  <Ionicons name="cash" size={14} color="#00FF88" />
-                  <Text style={styles.balanceItemSubtitle}>Withdrawable • No TDS deducted</Text>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>8</Text>
+                  <Text style={styles.statLabel}>Wins</Text>
                 </View>
-              </View>
-
-              <View style={styles.balanceItem}>
-                <View style={styles.balanceItemHeader}>
-                  <Ionicons name="gift" size={20} color="#FFD700" />
-                  <Text style={styles.balanceItemTitle}>BONUS AMOUNT</Text>
-                </View>
-                <Text style={styles.bonusAmount}>₹500.00</Text>
-                <View style={styles.balanceItemFooter}>
-                  <Ionicons name="game-controller" size={14} color="#FFD700" />
-                  <Text style={styles.balanceItemSubtitle}>Can be used to join contests only</Text>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>₹2.8K</Text>
+                  <Text style={styles.statLabel}>Total Won</Text>
                 </View>
               </View>
             </View>
@@ -1559,6 +1570,143 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4A90E2',
     marginBottom: 20,
+  },
+  walletContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  mainBalanceCard: {
+    backgroundColor: '#1a1a1a',
+    padding: 25,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+  },
+  walletTitle: {
+    color: '#4A90E2',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  mainBalanceAmount: {
+    color: '#00FF88',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  balanceSubtitle: {
+    color: '#999',
+    fontSize: 14,
+  },
+  quickActionsRow: {
+    flexDirection: 'row',
+    gap: 15,
+    marginBottom: 20,
+  },
+  actionButtonAdd: {
+    flex: 1,
+    backgroundColor: '#00FF88',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  actionButtonWithdraw: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  actionButtonIcon: {
+    fontSize: 18,
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  balanceBreakdownSimple: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  breakdownItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  breakdownLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  breakdownIcon: {
+    fontSize: 20,
+  },
+  breakdownTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  breakdownSubtitle: {
+    color: '#999',
+    fontSize: 12,
+  },
+  breakdownAmount: {
+    color: '#00FF88',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  breakdownAmountBonus: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  quickStatsCard: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  quickStatsTitle: {
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statValue: {
+    color: '#00FF88',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  statLabel: {
+    color: '#999',
+    fontSize: 12,
   },
   totalBalanceCard: {
     backgroundColor: '#1a1a1a',

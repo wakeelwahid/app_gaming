@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import GameCard from './GameCard';
 
 interface HomeScreenProps {
@@ -36,9 +36,18 @@ export default function HomeScreen({ gameCards, features, onPlayNow }: HomeScree
         ))}
       </View>
 
-      {/* Current Time */}
-      <View style={styles.timeContainer}>
-        <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
+      {/* Current Time and KYC Section */}
+      <View style={styles.timeKycContainer}>
+        <View style={styles.timeSection}>
+          <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
+        </View>
+        <TouchableOpacity style={styles.kycButton} onPress={() => {
+          // This will be handled by parent component
+          Alert.alert('Complete KYC', 'Complete your KYC verification to enable withdrawals and increase security of your account.');
+        }}>
+          <Text style={styles.kycButtonIcon}>🔐</Text>
+          <Text style={styles.kycButtonText}>Complete KYC</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Game Cards */}
@@ -115,18 +124,40 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'center',
   },
-  timeContainer: {
+  timeKycContainer: {
     backgroundColor: '#1a1a1a',
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#333',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  timeSection: {
+    flex: 1,
   },
   currentTime: {
     color: '#00FF88',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  kycButton: {
+    backgroundColor: '#FF4444',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  kycButtonIcon: {
+    fontSize: 14,
+  },
+  kycButtonText: {
+    color: '#fff',
+    fontSize: 12,
     fontWeight: 'bold',
   },
   gamesContainer: {
