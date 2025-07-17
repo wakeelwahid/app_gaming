@@ -15,6 +15,7 @@ import PaymentSuccess from './components/PaymentSuccess';
 import WithdrawSuccess from './components/WithdrawSuccess';
 import Profile from './components/Profile';
 import BetHistory from './components/BetHistory';
+import AgeVerificationModal from './components/AgeVerificationModal';
 
 // Import API services
 import { userService } from './services/userService';
@@ -594,9 +595,22 @@ export default function App() {
     }
   };
 
-  // Call fetchBetHistory on component mount
+  // Call fetchBetHistory on component mount and check age verification
   useEffect(() => {
     fetchBetHistory();
+    
+    // Check if user has already verified age (you can store this in AsyncStorage)
+    const checkAgeVerification = async () => {
+      // For now, we'll show it every time. In production, you'd check AsyncStorage
+      // const verified = await AsyncStorage.getItem('ageVerified');
+      // if (!verified) {
+        setShowAgeVerification(true);
+      // } else {
+      //   setIsAgeVerified(true);
+      // }
+    };
+    
+    checkAgeVerification();
   }, []);
   const [currentBetType, setCurrentBetType] = useState('numbers');
   const [activeTab, setActiveTab] = useState('home');
@@ -624,6 +638,10 @@ export default function App() {
   const [lastBetDetails, setLastBetDetails] = React.useState<any>(null);
   const [showBetSuccess, setShowBetSuccess] = React.useState(false);
   const [placedBets, setPlacedBets] = React.useState<any[]>([]);
+  
+  // Age verification states
+  const [showAgeVerification, setShowAgeVerification] = React.useState(false);
+  const [isAgeVerified, setIsAgeVerified] = React.useState(false);
 
   const gameCards = GAME_CARDS;
   const features = FEATURES;
@@ -714,11 +732,11 @@ export default function App() {
       // Close betting modal immediately
       setShowBettingModal(false);
 
-      // Auto close success modal and navigate to MyBet after 2 seconds
+      // Auto close success modal and navigate to MyBet after 7 seconds
       setTimeout(() => {
         setShowBetSuccess(false);
         setActiveTab('mybets'); // Navigate to MyBet tab
-      }, 2000);
+      }, 7000);
 
     } else {
       Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
@@ -865,6 +883,30 @@ export default function App() {
     Alert.alert('KYC Verification', 'KYC verification process will be implemented soon');
   };
 
+  const handleAgeVerificationAccept = async () => {
+    setIsAgeVerified(true);
+    setShowAgeVerification(false);
+    
+    // Store verification in AsyncStorage (implement in production)
+    // await AsyncStorage.setItem('ageVerified', 'true');
+  };
+
+  const handleAgeVerificationReject = () => {
+    Alert.alert(
+      'Access Denied',
+      'आप इस app का उपयोग नहीं कर सकते। यह केवल 18+ उम्र के लोगों के लिए है।',
+      [
+        {
+          text: 'Exit App',
+          onPress: () => {
+            // In a real app, you might want to close the app
+            // For web, you could redirect to a different page
+          }
+        }
+      ]
+    );
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
@@ -1008,7 +1050,7 @@ export default function App() {
       <Header wallet={wallet} onMenuItemPress={handleMenuItemPress} />
 
       {/* Content */}
-      <View style={styles.content}>
+      <View style={[styles.content, !isAgeVerified && styles.blurredContent]}>
         {renderContent()}
       </View>
 
@@ -1017,6 +1059,13 @@ export default function App() {
         activeTab={activeTab}
         onMenuItemPress={handleMenuItemPress}
       />
+      
+      {/* Age Verification Overlay */}
+      {!isAgeVerified && !showAgeVerification && (
+        <View style={styles.verificationOverlay}>
+          <Text style={styles.overlayText}>Age verification required</Text>
+        </View>
+      )}
 
       {/* Betting Modal Component */}
       <BettingModal
@@ -1278,6 +1327,13 @@ export default function App() {
         visible={showBetSuccess}
         betDetails={lastBetDetails}
         onClose={() => setShowBetSuccess(false)}
+      />
+
+      {/* Age Verification Modal */}
+      <AgeVerificationModal
+        visible={showAgeVerification}
+        onAccept={handleAgeVerificationAccept}
+        onReject={handleAgeVerificationReject}
       />
     </SafeAreaView>
   );
@@ -2041,5 +2097,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  blurredContent: {
+    opacity: 0.3,
+  },
+  verificationOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  overlayText: {
+    color: '#FF6B6B',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

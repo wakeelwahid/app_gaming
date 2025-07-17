@@ -16,9 +16,11 @@ interface BetSuccessModalProps {
 export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuccessModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.8));
+  const [countdown, setCountdown] = React.useState(7);
 
   React.useEffect(() => {
     if (visible) {
+      setCountdown(7);
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -32,11 +34,26 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
           useNativeDriver: true,
         }),
       ]).start();
+
+      // Start countdown timer
+      const timer = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            onClose();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
     } else {
       fadeAnim.setValue(0);
       scaleAnim.setValue(0.8);
+      setCountdown(7);
     }
-  }, [visible]);
+  }, [visible, onClose]);
 
   if (!betDetails) return null;
 
@@ -114,6 +131,9 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
             </Text>
             <Text style={styles.navigationText}>
               🎯 आपके bets MyBet section में दिखेंगे...
+            </Text>
+            <Text style={styles.countdownText}>
+              Auto-closing in {countdown} seconds...
             </Text>
           </View>
 
@@ -254,5 +274,12 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  countdownText: {
+    color: '#4A90E2',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 10,
+    fontStyle: 'italic',
   },
 });
