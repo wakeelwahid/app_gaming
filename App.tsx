@@ -873,8 +873,7 @@ export default function App() {
       setUserData(profileData);
       Alert.alert('Success', 'Profile updated successfully!');
       // } else {
-      //   Alert.alert('Error',```text
- result.error || 'Failed to update profile');
+      //   Alert.alert('Error', result.error || 'Failed to update profile');
       // }
     } catch (error) {
       Alert.alert('Error', 'Failed to update profile');
