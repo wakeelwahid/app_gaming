@@ -7,9 +7,10 @@ interface HomeScreenProps {
   gameCards: any[];
   features: any[];
   onPlayNow: (game: any) => void;
+  onKYCPress: () => void;
 }
 
-export default function HomeScreen({ gameCards, features, onPlayNow }: HomeScreenProps) {
+export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress }: HomeScreenProps) {
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       {/* Promotional Banner */}
@@ -41,10 +42,7 @@ export default function HomeScreen({ gameCards, features, onPlayNow }: HomeScree
         <View style={styles.timeSection}>
           <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
         </View>
-        <TouchableOpacity style={styles.kycButton} onPress={() => {
-          // This will be handled by parent component
-          Alert.alert('Complete KYC', 'Complete your KYC verification to enable withdrawals and increase security of your account.');
-        }}>
+        <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
           <Text style={styles.kycButtonIcon}>🔐</Text>
           <Text style={styles.kycButtonText}>Complete KYC</Text>
         </TouchableOpacity>

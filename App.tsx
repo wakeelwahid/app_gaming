@@ -643,6 +643,7 @@ export default function App() {
   // Age verification states
   const [showAgeVerification, setShowAgeVerification] = React.useState(false);
   const [isAgeVerified, setIsAgeVerified] = React.useState(false);
+  const [showKYCPage, setShowKYCPage] = React.useState(false);
 
   const gameCards = GAME_CARDS;
   const features = FEATURES;
@@ -884,6 +885,10 @@ export default function App() {
     Alert.alert('KYC Verification', 'KYC verification process will be implemented soon');
   };
 
+  const handleKYCPress = () => {
+    setShowKYCPage(true);
+  };
+
   const handleAgeVerificationAccept = async () => {
     setIsAgeVerified(true);
     setShowAgeVerification(false);
@@ -916,6 +921,7 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
+            onKYCPress={handleKYCPress}
           />
         );
       case 'wallet':
@@ -1541,6 +1547,33 @@ export default function App() {
         betDetails={lastBetDetails}
         onClose={() => setShowBetSuccess(false)}
       />
+
+      {/* KYC Page Modal */}
+      <Modal
+        visible={showKYCPage}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setShowKYCPage(false)}
+      >
+        <SafeAreaView style={styles.container}>
+          <View style={styles.kycPageHeader}>
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={() => setShowKYCPage(false)}
+            >
+              <Ionicons name="arrow-back" size={24} color="#4A90E2" />
+              <Text style={styles.backButtonText}>Back</Text>
+            </TouchableOpacity>
+            <Text style={styles.kycPageTitle}>🔐 Complete KYC</Text>
+          </View>
+          
+          <Profile 
+            userData={userData}
+            onUpdateProfile={handleUpdateProfile}
+            onCompleteKYC={handleCompleteKYC}
+          />
+        </SafeAreaView>
+      </Modal>
 
       {/* Age Verification Modal */}
       <AgeVerificationModal
@@ -2367,5 +2400,42 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     marginLeft: 10,
+  },
+  
+  // KYC Page Styles
+  kycPageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#1a1a1a',
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    position: 'relative',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2a2a2a',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  backButtonText: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  kycPageTitle: {
+    color: '#FFD700',
+    fontSize: 20,
+    fontWeight: 'bold',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    zIndex: -1,
   },
 });
