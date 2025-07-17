@@ -173,8 +173,10 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
 
   const renderTableRow = ({ item }: { item: Transaction }) => (
     <View style={styles.tableRow}>
-      <Text style={styles.tableCell}>{item.date}</Text>
-      <Text style={styles.tableCell}>{item.time}</Text>
+      <View style={styles.tableCell}>
+        <Text style={styles.dateTimeText}>{item.date}</Text>
+        <Text style={styles.timeText}>{item.time}</Text>
+      </View>
       <Text style={[styles.tableCell, { flexDirection: 'row', alignItems: 'center' }]}>
         {getTypeIcon(item.type)} {item.type}
       </Text>
@@ -220,8 +222,7 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
             <View style={styles.table}>
               {/* Table Header */}
               <View style={styles.tableHeader}>
-                <Text style={styles.headerCell}>📅 Date</Text>
-                <Text style={styles.headerCell}>⏰ Time</Text>
+                <Text style={styles.headerCell}>📅 Date & Time</Text>
                 <Text style={styles.headerCell}>📝 Type</Text>
                 <Text style={styles.headerCell}>💰 Amount</Text>
                 <Text style={styles.headerCell}>🔢 UTR Number</Text>
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   table: {
-    minWidth: 800, // Ensures horizontal scroll on mobile
+    minWidth: 700, // Reduced width since we have one less column
   },
   tableHeader: {
     flexDirection: 'row',
@@ -444,5 +445,17 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 12,
     fontWeight: '500',
+  },
+  dateTimeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  timeText: {
+    color: '#999',
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 2,
   },
 });
