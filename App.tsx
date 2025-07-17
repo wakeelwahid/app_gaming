@@ -873,7 +873,8 @@ export default function App() {
       setUserData(profileData);
       Alert.alert('Success', 'Profile updated successfully!');
       // } else {
-      //   Alert.alert('Error', result.error || 'Failed to update profile');
+      //   Alert.alert('Error',```text
+ result.error || 'Failed to update profile');
       // }
     } catch (error) {
       Alert.alert('Error', 'Failed to update profile');
@@ -991,13 +992,69 @@ export default function App() {
       case 'refer':
         return (
           <View style={styles.tabContent}>
-            <Text style={styles.tabTitle}>🎁 Refer & Earn</Text>
+            {/* Refer & Earn Component */}
             <View style={styles.referContainer}>
-              <Text style={styles.referTitle}>अपने दोस्तों को invite करें</Text>
-              <Text style={styles.referCode}>Referral Code: {userData.referralCode}</Text>
-              <TouchableOpacity style={styles.shareButton}>
-                <Text style={styles.shareButtonText}>Share Code</Text>
-              </TouchableOpacity>
+              <View style={styles.referHeaderCard}>
+                <Text style={styles.referMainTitle}>Invite Your Friends & Earn</Text>
+                <Text style={styles.referSubtitle}>Get ₹500 for every friend who joins using your code!</Text>
+              </View>
+
+              <View style={styles.referCodeCard}>
+                <Text style={styles.referCodeLabel}>Your Referral Code</Text>
+                <View style={styles.codeContainer}>
+                  <Text style={styles.referralCode}>{userData.referralCode}</Text>
+                  <TouchableOpacity style={styles.copyButton}>
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity style={styles.shareButton}>
+                  <Ionicons name="share-social" size={24} color="#fff" />
+                  <Text style={styles.shareButtonText}>Share Code</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.howItWorksCard}>
+                <Text style={styles.howItWorksTitle}>How It Works</Text>
+                <View style={styles.stepContainer}>
+                  <View style={styles.step}>
+                    <Text style={styles.stepNumber}>1</Text>
+                    <Text style={styles.stepText}>Share your referral code with friends.</Text>
+                  </View>
+                  <View style={styles.step}>
+                    <Text style={styles.stepNumber}>2</Text>
+                    <Text style={styles.stepText}>Your friend signs up using your code.</Text>
+                  </View>
+                  <View style={styles.step}>
+                    <Text style={styles.stepNumber}>3</Text>
+                    <Text style={styles.stepText}>You both get ₹500 when they make their first deposit!</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.referStatsCard}>
+                <Text style={styles.statsTitle}>Your Referral Stats</Text>
+                <View style={styles.statsContainer}>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>12</Text>
+                    <Text style={styles.statLabel}>Friends Invited</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>5</Text>
+                    <Text style={styles.statLabel}>Friends Joined</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>₹2500</Text>
+                    <Text style={styles.statLabel}>Total Earnings</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.termsCard}>
+                <Text style={styles.termsTitle}>Terms & Conditions</Text>
+                <Text style={styles.termText}>• Referrals must be new users.</Text>
+                <Text style={styles.termText}>• Rewards are credited upon first deposit.</Text>
+                <Text style={styles.termText}>• Terms are subject to change.</Text>
+              </View>
             </View>
           </View>
         );
@@ -1727,12 +1784,9 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   referContainer: {
-    backgroundColor: '#1a1a1a',
     padding: 20,
     borderRadius: 15,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#333',
     width: '100%',
   },
   referTitle: {
@@ -1748,389 +1802,170 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
   },
-  shareButton: {
-    backgroundColor: '#4A90E2',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
   shareButtonText: {
-    color: '#000',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  // Add Cash Modal Styles
-  addCashModalContainer: {
-    backgroundColor: '#0a0a0a',
-    width: '95%',
-    maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  addCashContent: {
-    flex: 1,
-    padding: 20,
-  },
-  depositLabel: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  depositInput: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 1,
-    borderColor: '#FFD700',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
     color: '#fff',
     fontSize: 16,
-    marginBottom: 20,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
-  quickAmountsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  quickAmountButton: {
-    width: '30%',
+
+  // Enhanced Refer & Earn Styles
+  referHeaderCard: {
     backgroundColor: '#1a1a1a',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#00FF88',
-  },
-  quickAmountText: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  depositSummary: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  summaryLabel: {
-    color: '#999',
-    fontSize: 14,
-  },
-  summaryValue: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  summaryValueGreen: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  summaryLabelTotal: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  summaryValueTotal: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  summaryDivider: {
-    height: 1,
-    backgroundColor: '#333',
-    marginVertical: 8,
-  },
-  paymentMethodLabel: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  paymentMethods: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  paymentMethod: {
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  paymentMethodText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  depositInfo: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
-  },
-  depositInfoTitle: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  depositInfoText: {
-    color: '#999',
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  depositButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 20,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 55,
-  },
-  depositButtonDisabled: {
-    backgroundColor: '#333',
-  },
-  depositButtonText: {
-    color: '#000',
-    fontSize: 15,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    lineHeight: 18,
-    letterSpacing: 0.5,
-    flexWrap: 'wrap',
-  },
-  // Payment QR Modal Styles
-  paymentQRModalContainer: {
-    backgroundColor: '#0a0a0a',
-    width: '95%',
-    maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  paymentQRContent: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-  },
-  qrCodeContainer: {
-    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 15,
-    marginBottom: 20,
-    borderWidth: 3,
+    marginBottom: 15,
+    borderWidth: 1,
     borderColor: '#FFD700',
+    alignItems: 'center',
   },
-  qrCodePlaceholder: {
-    width: 200,
-    height: 200,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-  },
-  qrSquare: {
-    width: '48%',
-    height: '48%',
-    backgroundColor: '#ccc',
-    margin: '1%',
-    borderRadius: 5,
-  },
-  scanInstructions: {
-    color: '#FFD700',
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 30,
-    lineHeight: 22,
-  },
-  highlightText: {
-    color: '#00FF88',
-    fontWeight: 'bold',
-  },
-  utrLabel: {
+  referMainTitle: {
     color: '#FFD700',
     fontSize: 18,
     fontWeight: 'bold',
-    alignSelf: 'flex-start',
-    marginBottom: 10,
-  },
-  utrInput: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 2,
-    borderColor: '#FFD700',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  paymentButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 55,
-  },
-  paymentButtonDisabled: {
-    backgroundColor: '#333',
-  },
-  paymentButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
     textAlign: 'center',
-    lineHeight: 18,
-    letterSpacing: 0.5,
-    flexWrap: 'wrap',
+    marginBottom: 8,
   },
-  withdrawModalContainer: {
-    backgroundColor: '#0a0a0a',
-    width: '95%',
-    maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
+  referSubtitle: {
+    color: '#00FF88',
+    fontSize: 14,
+    textAlign: 'center',
   },
-  withdrawContent: {
-    flex: 1,
-    padding: 20,
-  },
-  withdrawLabel: {
-    color: '#4A90E2',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  withdrawInput: {
+  referCodeCard: {
     backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#333',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+  },
+  referCodeLabel: {
     color: '#fff',
     fontSize: 16,
-    marginBottom: 20,
-  },
-  withdrawButton: {
-    backgroundColor: '#4A90E2',
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 55,
-  },
-  withdrawButtonDisabled: {
-    backgroundColor: '#333',
-  },
-  withdrawButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    lineHeight: 18,
-    letterSpacing: 0.5,
-    flexWrap: 'wrap',
-  },
-  successModalContainer: {
-    backgroundColor: '#0a0a0a',
-    width: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#00FF88',
-    padding: 20,
-    alignItems: 'center',
-  },
-  successIcon: {
-    marginBottom: 20,
-  },
-  successTitle: {
-    color: '#00FF88',
-    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
   },
-  successAmount: {
-    color: '#fff',
+  codeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  referralCode: {
+    color: '#FFD700',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    letterSpacing: 2,
+    marginRight: 10,
   },
-  successDetails: {
-    color: '#999',
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 30,
+  copyButton: {
+    padding: 8,
+    backgroundColor: '#333',
+    borderRadius: 8,
   },
-  closeButton: {
-    backgroundColor: '#00FF88',
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-  },
-  closeButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  gameCard: {
-    backgroundColor: '#1a1a1a',
+  shareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#4A90E2',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+  },
+  howItWorksCard: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#333',
-    width: '100%',
   },
-  gameTitle: {
-    color: '#4A90E2',
+  howItWorksTitle: {
+    color: '#FFD700',
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 15,
     textAlign: 'center',
   },
-  blurredContent: {
-    opacity: 0.3,
+  stepContainer: {
+    gap: 12,
   },
-  verificationOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
+  step: {
+    flexDirection: 'row',
     alignItems: 'center',
-    zIndex: 999,
   },
-  overlayText: {
-    color: '#FF6B6B',
+  stepNumber: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    backgroundColor: '#2a2a2a',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    textAlign: 'center',
+    lineHeight: 30,
+    marginRight: 15,
+  },
+  stepText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+  },
+  referStatsCard: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  statsTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    color: '#00FF88',
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  statLabel: {
+    color: '#999',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  termsCard: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  termsTitle: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  termText: {
+    color: '#999',
+    fontSize: 12,
+    marginBottom: 5,
+    paddingLeft: 10,
   },
 });
