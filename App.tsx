@@ -722,9 +722,6 @@ export default function App() {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
 
     if (currentWallet >= totalAmount) {
-      // Update wallet
-      //setWallet(`₹${(currentWallet - totalAmount).toFixed(2)}`);
-
       // Create bet records with proper status and timestamp
       const newBets = betListState.map(bet => ({
         ...bet,
@@ -753,11 +750,11 @@ export default function App() {
       // Clear current bet selection immediately
       setBetListState([]);
 
-      // Show success modal first
-      setShowBetSuccessLocal(true);
-
-      // Close betting modal immediately
+      // Close betting modal first
       setShowBettingModalLocal(false);
+      
+      // Show success modal
+      setShowBetSuccessLocal(true);
 
       // Auto close success modal and navigate to MyBet after 7 seconds
       setTimeout(() => {
@@ -1574,7 +1571,10 @@ export default function App() {
       <BetSuccessModal
         visible={showBetSuccessState}
         betDetails={lastBetDetailsState}
-        onClose={() => setShowBetSuccessState(false)}
+        onClose={() => {
+          setShowBetSuccessState(false);
+          setActiveTabLocal('mybets'); // Navigate to MyBet tab when manually closed
+        }}
       />
 
       {/* Age Verification Modal */}

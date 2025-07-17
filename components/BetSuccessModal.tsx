@@ -138,7 +138,10 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
           </View>
 
           {/* Close Button */}
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity style={styles.closeButton} onPress={() => {
+            onClose();
+            // This will be handled by the parent component to navigate to mybets
+          }}>
             <Text style={styles.closeButtonText}>View My Bets</Text>
             <Ionicons name="arrow-forward" size={16} color="#0a0a0a" />
           </TouchableOpacity>
