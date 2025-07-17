@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Transaction {
@@ -171,47 +171,20 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
     }
   };
 
-  const renderTransactionItem = ({ item }: { item: Transaction }) => (
-    <View style={styles.transactionCard}>
-      {/* Date & Time Row */}
-      <View style={styles.cardRow}>
-        <View style={styles.cardField}>
-          <Text style={styles.fieldLabel}>📅 Date & Time</Text>
-          <Text style={styles.fieldValue}>{item.date} • {item.time}</Text>
-        </View>
-      </View>
-
-      {/* Amount & Type Row */}
-      <View style={styles.cardRow}>
-        <View style={styles.cardField}>
-          <Text style={styles.fieldLabel}>💰 Amount</Text>
-          <Text style={styles.amountValue}>{item.amount}</Text>
-        </View>
-        <View style={styles.cardField}>
-          <Text style={styles.fieldLabel}>📝 Type</Text>
-          <Text style={styles.fieldValue}>
-            {getTypeIcon(item.type)} {item.type}
+  const renderTableRow = ({ item }: { item: Transaction }) => (
+    <View style={styles.tableRow}>
+      <Text style={styles.tableCell}>{item.date}</Text>
+      <Text style={styles.tableCell}>{item.time}</Text>
+      <Text style={[styles.tableCell, { flexDirection: 'row', alignItems: 'center' }]}>
+        {getTypeIcon(item.type)} {item.type}
+      </Text>
+      <Text style={[styles.tableCell, styles.amountCell]}>{item.amount}</Text>
+      <Text style={[styles.tableCell, styles.utrCell]}>{item.utrNumber}</Text>
+      <View style={styles.tableCell}>
+        <View style={[styles.statusBadge, { backgroundColor: `${getStatusColor(item.status)}20` }]}>
+          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+            {item.status}
           </Text>
-        </View>
-      </View>
-
-      {/* UTR Number Row */}
-      <View style={styles.cardRow}>
-        <View style={styles.cardField}>
-          <Text style={styles.fieldLabel}>🔢 UTR Number</Text>
-          <Text style={styles.utrValue}>{item.utrNumber}</Text>
-        </View>
-      </View>
-
-      {/* Status Row */}
-      <View style={styles.cardRow}>
-        <View style={styles.cardField}>
-          <Text style={styles.fieldLabel}>📊 Status</Text>
-          <View style={[styles.statusBadge, { backgroundColor: `${getStatusColor(item.status)}20` }]}>
-            <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
-              {item.status}
-            </Text>
-          </View>
         </View>
       </View>
     </View>
@@ -240,16 +213,31 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
         </TouchableOpacity>
       </View>
 
-      {/* Transaction List */}
-      <View style={styles.transactionList}>
+      {/* Table Container */}
+      <View style={styles.tableContainer}>
         {filteredTransactions.length > 0 ? (
-          <FlatList
-            data={filteredTransactions}
-            renderItem={renderTransactionItem}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContainer}
-          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.table}>
+              {/* Table Header */}
+              <View style={styles.tableHeader}>
+                <Text style={styles.headerCell}>📅 Date</Text>
+                <Text style={styles.headerCell}>⏰ Time</Text>
+                <Text style={styles.headerCell}>📝 Type</Text>
+                <Text style={styles.headerCell}>💰 Amount</Text>
+                <Text style={styles.headerCell}>🔢 UTR Number</Text>
+                <Text style={styles.headerCell}>📊 Status</Text>
+              </View>
+
+              {/* Table Body */}
+              <FlatList
+                data={filteredTransactions}
+                renderItem={renderTableRow}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                style={styles.tableBody}
+              />
+            </View>
+          </ScrollView>
         ) : (
           <View style={styles.noTransactionsContainer}>
             <Ionicons name="receipt-outline" size={64} color="#444" />
@@ -336,61 +324,75 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  transactionList: {
+  tableContainer: {
     flex: 1,
     marginBottom: 20,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  transactionCard: {
     backgroundColor: '#1a1a1a',
     borderRadius: 15,
-    padding: 20,
-    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#333',
+    overflow: 'hidden',
   },
-  cardRow: {
+  table: {
+    minWidth: 800, // Ensures horizontal scroll on mobile
+  },
+  tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
+    backgroundColor: '#2a2a2a',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFD700',
   },
-  cardField: {
+  headerCell: {
     flex: 1,
-    marginRight: 10,
-  },
-  fieldLabel: {
-    color: '#999',
+    color: '#FFD700',
     fontSize: 12,
-    fontWeight: '500',
-    marginBottom: 5,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingHorizontal: 8,
+    minWidth: 120,
   },
-  fieldValue: {
+  tableBody: {
+    flex: 1,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    backgroundColor: '#1a1a1a',
+  },
+  tableCell: {
+    flex: 1,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 12,
+    textAlign: 'center',
+    paddingHorizontal: 8,
+    minWidth: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  amountValue: {
+  amountCell: {
     color: '#00FF88',
-    fontSize: 16,
     fontWeight: 'bold',
   },
-  utrValue: {
+  utrCell: {
     color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: '600',
     fontFamily: 'monospace',
+    fontSize: 11,
   },
   statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignSelf: 'center',
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   noTransactionsContainer: {
     flex: 1,
