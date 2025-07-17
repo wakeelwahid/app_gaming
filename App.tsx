@@ -602,30 +602,30 @@ export default function App() {
   const gameCards = GAME_CARDS;
   const features = FEATURES;
 
-  // UI state
-  const [activeTab, setActiveTabLocal] = useState('home');
-  const [showBettingModal, setShowBettingModalLocal] = useState(false);
-  const [showBetSuccess, setShowBetSuccessLocal] = useState(false);
-  const [showKYCPage, setShowKYCPageLocal] = useState(false);
-  const [showAgeVerification, setShowAgeVerificationLocal] = useState(false);
-  const [isAgeVerified, setIsAgeVerifiedLocal] = useState(false);
+  // UI state - using State suffix to avoid conflicts
+  const [activeTabLocal, setActiveTabLocal] = useState('home');
+  const [showBettingModalLocal, setShowBettingModalLocal] = useState(false);
+  const [showBetSuccessLocal, setShowBetSuccessLocal] = useState(false);
+  const [showKYCPageLocal, setShowKYCPageLocal] = useState(false);
+  const [showAgeVerificationLocal, setShowAgeVerificationLocal] = useState(false);
+  const [isAgeVerifiedLocal, setIsAgeVerifiedLocal] = useState(false);
 
   // Game state
-  const [selectedGame, setSelectedGameLocal] = useState(null);
-  const [lastBetDetails, setLastBetDetailsLocal] = useState<any>(null);
+  const [selectedGameLocal, setSelectedGameLocal] = useState(null);
+  const [lastBetDetailsLocal, setLastBetDetailsLocal] = useState<any>(null);
 
   // Modal states
-  const [showAddCashModal, setShowAddCashModalLocal] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModalLocal] = useState(false);
-  const [showPaymentModal, setShowPaymentModalLocal] = useState(false);
-  const [showPaymentSuccessModal, setShowPaymentSuccessModalLocal] = useState(false);
-  const [showWithdrawSuccessModal, setShowWithdrawSuccessModalLocal] = useState(false);
+  const [showAddCashModalLocal, setShowAddCashModalLocal] = useState(false);
+  const [showWithdrawModalLocal, setShowWithdrawModalLocal] = useState(false);
+  const [showPaymentModalLocal, setShowPaymentModalLocal] = useState(false);
+  const [showPaymentSuccessModalLocal, setShowPaymentSuccessModalLocal] = useState(false);
+  const [showWithdrawSuccessModalLocal, setShowWithdrawSuccessModalLocal] = useState(false);
 
   // Form states
-  const [depositAmount, setDepositAmountLocal] = useState('');
-  const [withdrawAmount, setWithdrawAmountLocal] = useState('');
-  const [selectedPaymentMethod, setSelectedPaymentMethodLocal] = useState('');
-  const [utrNumber, setUtrNumberLocal] = useState('');
+  const [depositAmountLocal, setDepositAmountLocal] = useState('');
+  const [withdrawAmountLocal, setWithdrawAmountLocal] = useState('');
+  const [selectedPaymentMethodLocal, setSelectedPaymentMethodLocal] = useState('');
+  const [utrNumberLocal, setUtrNumberLocal] = useState('');
 
   useEffect(() => {
     // Check age verification on app start
@@ -684,9 +684,9 @@ export default function App() {
   };
 
   const handleGameSelect = (game: any) => {
-    setSelectedGameState(game);
+    setSelectedGameLocal(game);
     setBetListState([]); // Clear any previous selections
-    setShowBettingModalState(true);
+    setShowBettingModalLocal(true);
   };
 
   const handleNumberSelect = (number: any, type: string, amount: number) => {
@@ -754,14 +754,14 @@ export default function App() {
       setBetListState([]);
 
       // Show success modal first
-      setShowBetSuccessState(true);
+      setShowBetSuccessLocal(true);
 
       // Close betting modal immediately
-      setShowBettingModalState(false);
+      setShowBettingModalLocal(false);
 
       // Auto close success modal and navigate to MyBet after 7 seconds
       setTimeout(() => {
-        setShowBetSuccessState(false);
+        setShowBetSuccessLocal(false);
         setActiveTabLocal('mybets'); // Navigate to MyBet tab
       }, 7000);
 
