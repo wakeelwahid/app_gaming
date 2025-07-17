@@ -20,7 +20,7 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
 
   React.useEffect(() => {
     if (visible) {
-      setCountdown(7);
+      setCountdown(3);
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -51,7 +51,7 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
     } else {
       fadeAnim.setValue(0);
       scaleAnim.setValue(0.8);
-      setCountdown(7);
+      setCountdown(3);
     }
   }, [visible, onClose]);
 

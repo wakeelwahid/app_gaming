@@ -722,10 +722,8 @@ export default function App() {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
 
     if (currentWallet >= totalAmount) {
-      // Update wallet balance first
-      const newWalletAmount = currentWallet - totalAmount;
-      // Use the wallet hook to update wallet
-      const updatedWallet = `₹${newWalletAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      // Deduct money from wallet using the hook
+      withdrawMoney(totalAmount);
       
       // Create bet records with proper status and timestamp
       const newBets = betListState.map(bet => ({
@@ -774,14 +772,14 @@ export default function App() {
       setShowBetSuccessState(true);
 
       console.log('Bets placed successfully:', newBets);
-      console.log('Updated wallet balance:', updatedWallet);
+      console.log('Wallet deducted:', totalAmount);
 
-      // Auto close success modal and navigate to MyBet after 5 seconds
+      // Auto close success modal and navigate to MyBet after 3 seconds
       setTimeout(() => {
         setShowBetSuccessLocal(false);
         setShowBetSuccessState(false);
         setActiveTabLocal('mybets'); // Navigate to MyBet tab
-      }, 5000);
+      }, 3000);
 
     } else {
       Alert.alert('Insufficient Balance', `आपके wallet में पर्याप्त balance नहीं है।\nRequired: ₹${totalAmount}\nAvailable: ₹${currentWallet}`);

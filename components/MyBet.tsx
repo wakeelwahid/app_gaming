@@ -8,7 +8,7 @@ interface MyBetProps {
 
 const MyBet = ({ placedBets = [] }: MyBetProps) => {
   console.log('MyBet received placedBets:', placedBets);
-  
+
   // Group user's placed bets by game and date
   const groupBetsByGameAndDate = (bets: any[]) => {
     const grouped = bets.reduce((acc, bet) => {
@@ -143,106 +143,30 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
         <Text style={styles.betLogo}>My Challenges</Text>
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.myContainer}>
-          {/* Show user's recently placed bets first */}
-          {userBets.length > 0 && (
-            <View style={styles.userBetsSection}>
-              <Text style={styles.sectionTitle}>🎯 Your Recent Bets</Text>
-              {userBets.map((group, idx) => {
-                const stats = calculateGroupStats(group.bets);
-                return (
-                  <View key={`user-${idx}`} style={[styles.betCard, styles.userBetCard]}>
-                    {/* Same bet card content as below */}
-                    <View style={styles.gameHeader}>
-                      <View style={styles.gameInfo}>
-                        <Text style={styles.gameTitle}>{group.game}</Text>
-                        <Text style={styles.gameDate}>{group.date}</Text>
-                        <Text style={styles.sessionTime}>{group.sessionTime}</Text>
-                      </View>
-                      <View style={styles.gameStats}>
-                        <Text style={styles.totalBets}>{group.bets.length} Bets</Text>
-                        <Text style={styles.totalAmount}>₹{stats.totalAmount}</Text>
-                        {stats.totalWin > 0 && (
-                          <Text style={styles.totalWin}>Won: ₹{stats.totalWin}</Text>
-                        )}
-                      </View>
-                    </View>
+      
+<ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* User's Recent Bets */}
+        {userBets.length > 0 && (
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>🎯 Your Recent Bets</Text>
+          </View>
+        )}
 
-                    <View style={styles.statusSummary}>
-                      {stats.pendingCount > 0 && (
-                        <View style={styles.statusItem}>
-                          <Ionicons name="time" size={12} color="#FFD700" />
-                          <Text style={[styles.statusText, { color: '#FFD700' }]}>
-                            {stats.pendingCount} Pending
-                          </Text>
-                        </View>
-                      )}
-                      {stats.winCount > 0 && (
-                        <View style={styles.statusItem}>
-                          <Ionicons name="checkmark-circle" size={12} color="#00FF88" />
-                          <Text style={[styles.statusText, { color: '#00FF88' }]}>
-                            {stats.winCount} Won
-                          </Text>
-                        </View>
-                      )}
-                      {stats.lossCount > 0 && (
-                        <View style={styles.statusItem}>
-                          <Ionicons name="close-circle" size={12} color="#FF4444" />
-                          <Text style={[styles.statusText, { color: '#FF4444' }]}>
-                            {stats.lossCount} Lost
-                          </Text>
-                        </View>
-                      )}
-                    </View>
+        {userBets.map((gameGroup, index) => (
+          <View key={`user-${index}`} style={styles.gameCard}>
+            {renderGameCard(gameGroup, index)}
+          </View>
+        ))}
 
-                    <ScrollView 
-                      horizontal 
-                      showsHorizontalScrollIndicator={false}
-                      style={styles.betsScrollContainer}
-                      contentContainerStyle={styles.betsScrollContent}
-                    >
-                      {group.bets.map((bet, betIdx) => (
-                        <View key={bet.id} style={styles.betItemCard}>
-                          <View style={styles.betNumberContainer}>
-                            <Text style={styles.betNumber}>{bet.number}</Text>
-                            <Text style={styles.betType}>{getBetTypeDisplay(bet.type)}</Text>
-                          </View>
+        {/* Demo/Dummy Bets */}
+        {dummyBets.length > 0 && (
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>📊 Demo History</Text>
+          </View>
+        )}
 
-                          <View style={styles.betAmountContainer}>
-                            <Text style={styles.betAmount}>₹{bet.amount}</Text>
-                            {bet.winAmount && (
-                              <Text style={styles.winAmount}>₹{bet.winAmount}</Text>
-                            )}
-                          </View>
-
-                          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) + '20' }]}>
-                            <Ionicons 
-                              name={getStatusIcon(bet.status)} 
-                              size={8} 
-                              color={getStatusColor(bet.status)} 
-                            />
-                            <Text style={[styles.statusLabel, { color: getStatusColor(bet.status) }]}>
-                              {bet.status.toUpperCase()}
-                            </Text>
-                          </View>
-                        </View>
-                      ))}
-                    </ScrollView>
-                  </View>
-                );
-              })}
-            </View>
-          )}
-
-          {/* Show dummy/historical bets */}
-          {dummyBets.length > 0 && (
-            <View style={styles.historyBetsSection}>
-              <Text style={styles.sectionTitle}>📊 Bet History</Text>
-              {dummyBets.map((group, idx) => {
-              const stats = calculateGroupStats(group.bets);
-              return (
-                <View key={idx} style={styles.betCard}>
+        {dummyBets.map((gameGroup, index) => (
+            <View key={index} style={styles.betCard}>
                   {/* Game Header */}
                   <View style={styles.gameHeader}>
                     <View style={styles.gameInfo}>
@@ -324,11 +248,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
                     ))}
                   </ScrollView>
                 </View>
-              );
-            })}
-            </View>
-          )}
-        </View>
+        ))}
       </ScrollView>
     </View>
   );
@@ -537,3 +457,4 @@ const styles = StyleSheet.create({
 });
 
 export default MyBet;
+```
