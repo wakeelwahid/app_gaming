@@ -21,6 +21,24 @@ interface TransactionProps {
 const dummyTransactions: Transaction[] = [
   {
     id: '1',
+    date: '16/01/2024',
+    time: '02:15 PM',
+    amount: '₹1500',
+    utrNumber: '789012345678',
+    status: 'Success',
+    type: 'Deposit'
+  },
+  {
+    id: '2',
+    date: '16/01/2024',
+    time: '01:30 PM',
+    amount: '₹800',
+    utrNumber: '890123456789',
+    status: 'Success',
+    type: 'Withdrawal'
+  },
+  {
+    id: '3',
     date: '15/01/2024',
     time: '10:30 AM',
     amount: '₹500',
@@ -29,7 +47,7 @@ const dummyTransactions: Transaction[] = [
     type: 'Deposit'
   },
   {
-    id: '2',
+    id: '4',
     date: '15/01/2024',
     time: '11:45 AM',
     amount: '₹1000',
@@ -38,30 +56,75 @@ const dummyTransactions: Transaction[] = [
     type: 'Withdrawal'
   },
   {
-    id: '3',
+    id: '5',
+    date: '15/01/2024',
+    time: '12:20 PM',
+    amount: '₹2500',
+    utrNumber: '345678901234',
+    status: 'Success',
+    type: 'Deposit'
+  },
+  {
+    id: '6',
     date: '14/01/2024',
     time: '03:20 PM',
     amount: '₹250',
-    utrNumber: '345678901234',
+    utrNumber: '456789012345',
     status: 'Rejected',
     type: 'Deposit'
   },
   {
-    id: '4',
+    id: '7',
     date: '14/01/2024',
     time: '05:15 PM',
     amount: '₹750',
-    utrNumber: '456789012345',
+    utrNumber: '567890123456',
     status: 'Success',
     type: 'Bet Win'
   },
   {
-    id: '5',
+    id: '8',
+    date: '14/01/2024',
+    time: '06:30 PM',
+    amount: '₹1200',
+    utrNumber: '678901234567',
+    status: 'Pending',
+    type: 'Withdrawal'
+  },
+  {
+    id: '9',
     date: '13/01/2024',
     time: '09:30 AM',
     amount: '₹2000',
-    utrNumber: '567890123456',
-    status: 'Pending',
+    utrNumber: '789012345678',
+    status: 'Success',
+    type: 'Deposit'
+  },
+  {
+    id: '10',
+    date: '13/01/2024',
+    time: '11:45 AM',
+    amount: '₹500',
+    utrNumber: '890123456789',
+    status: 'Rejected',
+    type: 'Withdrawal'
+  },
+  {
+    id: '11',
+    date: '12/01/2024',
+    time: '04:20 PM',
+    amount: '₹3000',
+    utrNumber: '901234567890',
+    status: 'Success',
+    type: 'Deposit'
+  },
+  {
+    id: '12',
+    date: '12/01/2024',
+    time: '07:15 PM',
+    amount: '₹1500',
+    utrNumber: '012345678901',
+    status: 'Success',
     type: 'Withdrawal'
   }
 ];
@@ -100,6 +163,16 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
     }
   };
 
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'Deposit': return '💰';
+      case 'Withdrawal': return '💳';
+      case 'Bet Win': return '🏆';
+      case 'Bet Loss': return '🎯';
+      default: return '📝';
+    }
+  };
+
   const renderTransactionItem = ({ item }: { item: Transaction }) => (
     <View style={styles.transactionCard}>
       {/* Date & Time Row */}
@@ -118,7 +191,9 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
         </View>
         <View style={styles.cardField}>
           <Text style={styles.fieldLabel}>📝 Type</Text>
-          <Text style={styles.fieldValue}>{item.type}</Text>
+          <Text style={styles.fieldValue}>
+            {getTypeIcon(item.type)} {item.type}
+          </Text>
         </View>
       </View>
 
