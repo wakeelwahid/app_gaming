@@ -36,7 +36,11 @@ export default function App() {
   const [customAmount, setCustomAmount] = useState('');
 
   // Dummy bet history data
-  const [betList, setBetList] = useState([
+  // Current bet selection for betting modal (cleared after each bet)
+  const [betList, setBetList] = useState([]);
+
+  // Dummy bet history data - these are placed bets
+  const [betHistory, setBetHistory] = useState([
     // Jaipur King bets (Recent)
     {
       id: '1',
@@ -583,7 +587,7 @@ export default function App() {
       // If you have real API, uncomment below:
       // const response = await apiService.getBetHistory();
       // if (response.success) {
-      //   setBetList(response.data);
+      //   setBetHistory(response.data);
       // }
     } catch (error) {
       console.error('Error fetching bet history:', error);
@@ -630,11 +634,13 @@ export default function App() {
 
   const handlePlayNow = (game: any) => {
     setSelectedGame(game);
+    setBetList([]); // Clear any previous selections
     setShowBettingModal(true);
   };
 
   const handleGameSelect = (game: any) => {
     setSelectedGame(game);
+    setBetList([]); // Clear any previous selections
     setShowBettingModal(true);
   };
 
@@ -695,8 +701,11 @@ export default function App() {
 
       // Add to placed bets (these will show in MyBet component)
       setPlacedBets(prevBets => [...prevBets, ...newBets]);
+      
+      // Add to bet history for historical tracking
+      setBetHistory(prevHistory => [...prevHistory, ...newBets]);
 
-      // Clear current bet selection
+      // Clear current bet selection immediately
       setBetList([]);
 
       // Show success modal first
@@ -1260,7 +1269,7 @@ export default function App() {
       {activeTab === 'bets' && (
         <BetHistory 
           visible={true} 
-          betHistory={betList || []}
+          betHistory={betHistory || []}
           onClose={() => setActiveTab('home')}
         />
       )}

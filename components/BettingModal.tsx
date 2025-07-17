@@ -29,6 +29,16 @@ export default function BettingModal({
   const [selectedNumber, setSelectedNumber] = React.useState<any>(null);
   const [selectedType, setSelectedType] = React.useState<string>('');
   const [customAmount, setCustomAmount] = React.useState<string>('');
+
+  // Clear states when modal opens/closes
+  React.useEffect(() => {
+    if (!visible) {
+      setShowAmountPopup(false);
+      setSelectedNumber(null);
+      setSelectedType('');
+      setCustomAmount('');
+    }
+  }, [visible]);
   const getTotalBetAmount = () => {
     return betList.reduce((total, bet) => total + bet.amount, 0);
   };
