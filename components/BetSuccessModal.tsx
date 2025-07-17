@@ -96,7 +96,7 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
           </View>
 
           {/* Success Title */}
-          <Text style={styles.successTitle}>🎉 Challenge Started Successfully!</Text>
+          <Text style={styles.successTitle}>🎉 Bet Successfully Placed!</Text>
           <Text style={styles.successSubtitle}>आपका bet सफलतापूर्वक लगा दिया गया है</Text>
 
           {/* Bet Details Card */}

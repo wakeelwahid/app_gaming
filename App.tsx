@@ -771,7 +771,7 @@ export default function App() {
       }, 7000);
 
     } else {
-      Alert.alert('Insufficient Coins', 'आपके wallet में पर्याप्त coins नहीं हैं।');
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
     }
   };
 
@@ -803,7 +803,7 @@ export default function App() {
       setShowAmountModalState(false);
       Alert.alert('Bet Placed!', `आपका ₹${amount} का bet ${selectedNumberState} पर लगा दिया गया है।`);
     } else {
-      Alert.alert('Insufficient Coins', 'आपके wallet में पर्याप्त coins नहीं हैं।');
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
     }
   };
 
@@ -854,7 +854,7 @@ export default function App() {
       setShowWithdrawModalState(false);
       setShowWithdrawSuccessModalState(true);
     } else {
-      Alert.alert('Insufficient Coins', 'आपके wallet में पर्याप्त coins नहीं हैं।');
+      Alert.alert('Insufficient Balance', 'आपके wallet में पर्याप्त balance नहीं है।');
     }
   };
 

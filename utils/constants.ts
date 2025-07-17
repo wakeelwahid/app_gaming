@@ -2,9 +2,9 @@
 // App Configuration Constants
 export const APP_CONFIG = {
   API_URL: process.env.EXPO_PUBLIC_API_URL || 'https://api.example.com',
-  MIN_CHALLENGE_AMOUNT: 10,
-  MAX_CHALLENGE_AMOUNT: 50000,
-  REDEEM_MIN_AMOUNT: 100,
+  MIN_BET_AMOUNT: 10,
+  MAX_BET_AMOUNT: 50000,
+  WITHDRAWAL_MIN_AMOUNT: 100,
   GST_RATE: 0.28,
   CASHBACK_THRESHOLD: 2000,
   CASHBACK_RATE: 0.05,
@@ -22,8 +22,8 @@ export const GAME_TYPES = {
   CLOSE: 'close'
 };
 
-// Challenge Status
-export const CHALLENGE_STATUS = {
+// Bet Status
+export const BET_STATUS = {
   PENDING: 'pending',
   WIN: 'win',
   LOSS: 'loss',
@@ -48,10 +48,10 @@ export const KYC_STATUS = {
 
 // Transaction Types
 export const TRANSACTION_TYPES = {
-  ADD_COINS: 'add_coins',
-  REDEEM: 'redeem',
-  CHALLENGE_PLAYED: 'challenge_played',
-  REWARD_WON: 'reward_won',
+  DEPOSIT: 'deposit',
+  WITHDRAWAL: 'withdrawal',
+  BET_PLACED: 'bet_placed',
+  BET_WON: 'bet_won',
   REFUND: 'refund'
 };
 

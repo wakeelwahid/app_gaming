@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
@@ -48,7 +49,7 @@ export default function WithdrawSuccess({
             </View>
 
             {/* Success Message */}
-            <Text style={styles.successTitle}>Redeem Request Submitted!</Text>
+            <Text style={styles.successTitle}>Withdrawal Request Submitted!</Text>
             <Text style={styles.successMessage}>
               आपका ₹{amount} का withdrawal request successfully submit हो गया है।
             </Text>
