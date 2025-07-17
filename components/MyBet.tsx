@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,7 +26,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
   };
 
   const userBets = groupBetsByGameAndDate(placedBets || []);
-  
+
   // Dummy data for testing - will show below user bets
   const dummyBets = [
     {
@@ -138,7 +137,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.betHeader}>
-        <Text style={styles.betLogo}>My Bets</Text>
+        <Text style={styles.betLogo}>My Challenges</Text>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -317,7 +316,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
                           </Text>
                         </View>
 
-                        
+
                       </View>
                     ))}
                   </ScrollView>

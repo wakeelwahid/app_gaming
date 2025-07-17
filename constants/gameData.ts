@@ -1,4 +1,3 @@
-
 export const GAME_CARDS = [
   {
     id: 1,

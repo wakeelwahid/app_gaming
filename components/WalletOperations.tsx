@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -69,7 +68,7 @@ export default function WalletOperations({
         <View style={styles.modalOverlay}>
           <View style={styles.addCashModalContainer}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💰 Add Money via UPI</Text>
+              <Text style={styles.modalTitle}>💰 Add Coins via UPI</Text>
               <TouchableOpacity onPress={onCloseAddCash}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
@@ -232,7 +231,7 @@ export default function WalletOperations({
         <View style={styles.modalOverlay}>
           <View style={styles.withdrawModalContainer}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💳 Withdraw Chips to Your Account</Text>
+              <Text style={styles.modalTitle}>💳 Redeem Coins to Your Account</Text>
               <TouchableOpacity onPress={onCloseWithdraw}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
