@@ -16,6 +16,7 @@ import WithdrawSuccess from './components/WithdrawSuccess';
 import Profile from './components/Profile';
 import BetHistory from './components/BetHistory';
 import AgeVerificationModal from './components/AgeVerificationModal';
+import Transaction from './components/Transaction';
 
 // Import API services
 import { userService } from './services/userService';
@@ -598,7 +599,7 @@ export default function App() {
   // Call fetchBetHistory on component mount and check age verification
   useEffect(() => {
     fetchBetHistory();
-    
+
     // Check if user has already verified age (you can store this in AsyncStorage)
     const checkAgeVerification = async () => {
       // For now, we'll show it every time. In production, you'd check AsyncStorage
@@ -609,7 +610,7 @@ export default function App() {
       //   setIsAgeVerified(true);
       // }
     };
-    
+
     checkAgeVerification();
   }, []);
   const [currentBetType, setCurrentBetType] = useState('numbers');
@@ -638,7 +639,7 @@ export default function App() {
   const [lastBetDetails, setLastBetDetails] = React.useState<any>(null);
   const [showBetSuccess, setShowBetSuccess] = React.useState(false);
   const [placedBets, setPlacedBets] = React.useState<any[]>([]);
-  
+
   // Age verification states
   const [showAgeVerification, setShowAgeVerification] = React.useState(false);
   const [isAgeVerified, setIsAgeVerified] = React.useState(false);
@@ -719,7 +720,7 @@ export default function App() {
 
       // Add to placed bets (these will show in MyBet component)
       setPlacedBets(prevBets => [...prevBets, ...newBets]);
-      
+
       // Add to bet history for historical tracking
       setBetHistory(prevHistory => [...prevHistory, ...newBets]);
 
@@ -886,7 +887,7 @@ export default function App() {
   const handleAgeVerificationAccept = async () => {
     setIsAgeVerified(true);
     setShowAgeVerification(false);
-    
+
     // Store verification in AsyncStorage (implement in production)
     // await AsyncStorage.setItem('ageVerified', 'true');
   };
@@ -1044,10 +1045,30 @@ export default function App() {
     }
   };
 
+  const handleHeaderMenuItemPress = (key: string) => {
+    console.log('Header menu item pressed:', key);
+    if (key === 'transactions') {
+      setActiveTab('transactions');
+    } else if (key === 'history') {
+      setActiveTab('history');
+    } else if (key === 'refer') {
+      setActiveTab('refer');
+    } else if (key === 'terms') {
+      setActiveTab('terms');
+    } else if (key === 'privacy') {
+      setActiveTab('privacy');
+    } else if (key === 'help') {
+      setActiveTab('help');
+    } else if (key === 'logout') {
+      // Handle logout logic
+      console.log('Logout clicked');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header Component */}
-      <Header wallet={wallet} onMenuItemPress={handleMenuItemPress} />
+      <Header wallet={wallet} onMenuItemPress={handleHeaderMenuItemPress} />
 
       {/* Content */}
       <View style={[styles.content, !isAgeVerified && styles.blurredContent]}>
@@ -1059,7 +1080,7 @@ export default function App() {
         activeTab={activeTab}
         onMenuItemPress={handleMenuItemPress}
       />
-      
+
       {/* Age Verification Overlay */}
       {!isAgeVerified && !showAgeVerification && (
         <View style={styles.verificationOverlay}>
