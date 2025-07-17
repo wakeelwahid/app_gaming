@@ -10,7 +10,7 @@ interface Transaction {
   amount: string;
   utrNumber: string;
   status: 'Approved' | 'Pending' | 'Rejected';
-  type: 'Deposit' | 'Withdraw';
+  type: 'Add Coins' | 'Redeem';
 }
 
 interface TransactionProps {
