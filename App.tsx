@@ -1061,14 +1061,59 @@ export default function App() {
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>📋 Terms & Conditions</Text>
-            <Text style={styles.comingSoonText}>Terms & Conditions जल्द ही उपलब्ध होंगे</Text>
+            <View style={styles.policyContainer}>
+              <Text style={styles.policySection}>🔞 Age Requirement</Text>
+              <Text style={styles.policyText}>• You must be 18+ years old to use this app</Text>
+              <Text style={styles.policyText}>• Age verification may be required</Text>
+              
+              <Text style={styles.policySection}>💰 Betting Rules</Text>
+              <Text style={styles.policyText}>• Minimum bet amount is ₹10</Text>
+              <Text style={styles.policyText}>• Maximum daily bet limit applies</Text>
+              <Text style={styles.policyText}>• All bets are final once placed</Text>
+              <Text style={styles.policyText}>• Results are declared as per official timing</Text>
+              
+              <Text style={styles.policySection}>💳 Payment Terms</Text>
+              <Text style={styles.policyText}>• Deposits are processed instantly</Text>
+              <Text style={styles.policyText}>• Withdrawals take 5-30 minutes</Text>
+              <Text style={styles.policyText}>• GST charges apply on deposits</Text>
+              <Text style={styles.policyText}>• TDS deducted as per government rules</Text>
+              
+              <Text style={styles.policySection}>⚠️ Responsible Gaming</Text>
+              <Text style={styles.policyText}>• Set betting limits for yourself</Text>
+              <Text style={styles.policyText}>• Never bet more than you can afford</Text>
+              <Text style={styles.policyText}>• Seek help if gambling becomes a problem</Text>
+              
+              <Text style={styles.policySection}>🚫 Prohibited Activities</Text>
+              <Text style={styles.policyText}>• Creating multiple accounts</Text>
+              <Text style={styles.policyText}>• Using automated betting systems</Text>
+              <Text style={styles.policyText}>• Attempting to manipulate results</Text>
+            </View>
           </View>
         );
       case 'privacy':
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>🛡️ Privacy Policy</Text>
-            <Text style={styles.comingSoonText}>Privacy Policy जल्द ही उपलब्ध होगी</Text>
+            <View style={styles.policyContainer}>
+              <Text style={styles.policySection}>📋 Information We Collect</Text>
+              <Text style={styles.policyText}>• Personal information (name, phone, email)</Text>
+              <Text style={styles.policyText}>• Transaction history and betting records</Text>
+              <Text style={styles.policyText}>• Device information and app usage data</Text>
+              
+              <Text style={styles.policySection}>🔒 How We Use Your Information</Text>
+              <Text style={styles.policyText}>• To provide gaming services</Text>
+              <Text style={styles.policyText}>• To process deposits and withdrawals</Text>
+              <Text style={styles.policyText}>• To ensure account security</Text>
+              <Text style={styles.policyText}>• To comply with legal requirements</Text>
+              
+              <Text style={styles.policySection}>🛡️ Data Protection</Text>
+              <Text style={styles.policyText}>• We use industry-standard encryption</Text>
+              <Text style={styles.policyText}>• Your data is stored securely</Text>
+              <Text style={styles.policyText}>• We never share personal data with third parties</Text>
+              
+              <Text style={styles.policySection}>📞 Contact Us</Text>
+              <Text style={styles.policyText}>For privacy concerns, contact our support team.</Text>
+            </View>
           </View>
         );
       case 'games':
@@ -1085,6 +1130,91 @@ export default function App() {
             onUpdateProfile={handleUpdateProfile}
             onCompleteKYC={handleCompleteKYC}
           />
+        );
+      case 'help':
+        return (
+          <View style={styles.tabContent}>
+            <Text style={styles.tabTitle}>🆘 Help & Support</Text>
+            <View style={styles.helpContainer}>
+              <Text style={styles.helpWelcome}>हमारी सपोर्ट टीम 24x7 आपकी सेवा में है!</Text>
+              
+              {/* Contact Methods */}
+              <View style={styles.contactSection}>
+                <Text style={styles.contactTitle}>📱 Contact Us</Text>
+                
+                <TouchableOpacity style={styles.contactButton} onPress={() => {
+                  // Open WhatsApp
+                  Alert.alert('WhatsApp Support', 'WhatsApp पर संपर्क करने के लिए +91 98765 43210 पर मैसेज करें।');
+                }}>
+                  <Ionicons name="logo-whatsapp" size={24} color="#25D366" />
+                  <View style={styles.contactInfo}>
+                    <Text style={styles.contactMethod}>WhatsApp Support</Text>
+                    <Text style={styles.contactDetails}>+91 98765 43210</Text>
+                    <Text style={styles.contactTiming}>24x7 Available</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.contactButton} onPress={() => {
+                  // Open Telegram
+                  Alert.alert('Telegram Support', 'Telegram पर @SattaKingSupport से संपर्क करें।');
+                }}>
+                  <Ionicons name="paper-plane" size={24} color="#0088CC" />
+                  <View style={styles.contactInfo}>
+                    <Text style={styles.contactMethod}>Telegram Support</Text>
+                    <Text style={styles.contactDetails}>@SattaKingSupport</Text>
+                    <Text style={styles.contactTiming}>Instant Response</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              {/* FAQ Section */}
+              <View style={styles.faqSection}>
+                <Text style={styles.faqTitle}>❓ Frequently Asked Questions</Text>
+                
+                <View style={styles.faqItem}>
+                  <Text style={styles.faqQuestion}>Q: How to deposit money?</Text>
+                  <Text style={styles.faqAnswer}>A: Go to Wallet → Add Cash → Select UPI method → Enter amount → Pay through UPI app</Text>
+                </View>
+
+                <View style={styles.faqItem}>
+                  <Text style={styles.faqQuestion}>Q: How long does withdrawal take?</Text>
+                  <Text style={styles.faqAnswer}>A: Withdrawals are processed within 5-30 minutes to your bank account.</Text>
+                </View>
+
+                <View style={styles.faqItem}>
+                  <Text style={styles.faqQuestion}>Q: What is minimum bet amount?</Text>
+                  <Text style={styles.faqAnswer}>A: Minimum bet amount is ₹10 for all games.</Text>
+                </View>
+
+                <View style={styles.faqItem}>
+                  <Text style={styles.faqQuestion}>Q: When are results declared?</Text>
+                  <Text style={styles.faqAnswer}>A: Results are declared as per official timing shown on each game card.</Text>
+                </View>
+
+                <View style={styles.faqItem}>
+                  <Text style={styles.faqQuestion}>Q: Is my money safe?</Text>
+                  <Text style={styles.faqAnswer}>A: Yes, all transactions are secured with bank-level encryption.</Text>
+                </View>
+              </View>
+
+              {/* Quick Actions */}
+              <View style={styles.quickActions}>
+                <Text style={styles.quickActionsTitle}>⚡ Quick Actions</Text>
+                <TouchableOpacity style={styles.quickActionButton} onPress={() => setActiveTab('transactions')}>
+                  <Ionicons name="receipt" size={20} color="#4A90E2" />
+                  <Text style={styles.quickActionText}>Check Transaction History</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.quickActionButton} onPress={() => setActiveTab('mybets')}>
+                  <Ionicons name="list" size={20} color="#4A90E2" />
+                  <Text style={styles.quickActionText}>View My Bets</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.quickActionButton} onPress={() => setActiveTab('wallet')}>
+                  <Ionicons name="wallet" size={20} color="#4A90E2" />
+                  <Text style={styles.quickActionText}>Check Wallet Balance</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         );
       default:
         return (
@@ -1966,5 +2096,128 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 5,
     paddingLeft: 10,
+  },
+
+  // Policy & Terms Styles
+  policyContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  policySection: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  policyText: {
+    color: '#fff',
+    fontSize: 14,
+    marginBottom: 8,
+    lineHeight: 20,
+    paddingLeft: 10,
+  },
+
+  // Help & Support Styles
+  helpContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  helpWelcome: {
+    color: '#00FF88',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  contactSection: {
+    marginBottom: 25,
+  },
+  contactTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  contactButton: {
+    flexDirection: 'row',
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#333',
+    alignItems: 'center',
+  },
+  contactInfo: {
+    marginLeft: 15,
+    flex: 1,
+  },
+  contactMethod: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  contactDetails: {
+    color: '#4A90E2',
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  contactTiming: {
+    color: '#00FF88',
+    fontSize: 12,
+  },
+  faqSection: {
+    marginBottom: 25,
+  },
+  faqTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  faqItem: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  faqQuestion: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  faqAnswer: {
+    color: '#fff',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  quickActions: {
+    marginBottom: 20,
+  },
+  quickActionsTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  quickActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  quickActionText: {
+    color: '#fff',
+    fontSize: 14,
+    marginLeft: 10,
   },
 });
