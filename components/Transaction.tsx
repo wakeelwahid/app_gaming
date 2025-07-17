@@ -131,7 +131,7 @@ const dummyTransactions: Transaction[] = [
 
 export default function Transaction({ transactions = dummyTransactions }: TransactionProps) {
   const [searchText, setSearchText] = useState('');
-  const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+  const [filteredTransactions, setFilteredTransactions] = useState(dummyTransactions);
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -221,7 +221,7 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
     <View style={styles.container}>
       {/* Header */}
       <Text style={styles.headerTitle}>💳 Transaction History</Text>
-      <Text style={styles.headerSubtitle}>आपके सभी transactions यहाँ दिखेंगे</Text>
+      <Text style={styles.headerSubtitle}>Testing data - बाद में APIs से real data आएगा</Text>
 
       {/* Search Section */}
       <View style={styles.searchSection}>
