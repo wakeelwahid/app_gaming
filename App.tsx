@@ -602,17 +602,15 @@ export default function App() {
   const gameCards = GAME_CARDS;
   const features = FEATURES;
 
-  // UI state - using State suffix to avoid conflicts
+  // UI state - consolidated to avoid conflicts
   const [activeTabLocal, setActiveTabLocal] = useState('home');
   const [showBettingModalLocal, setShowBettingModalLocal] = useState(false);
-  const [showBetSuccessLocal, setShowBetSuccessLocal] = useState(false);
   const [showKYCPageLocal, setShowKYCPageLocal] = useState(false);
   const [showAgeVerificationLocal, setShowAgeVerificationLocal] = useState(false);
   const [isAgeVerifiedLocal, setIsAgeVerifiedLocal] = useState(false);
 
   // Game state
   const [selectedGameLocal, setSelectedGameLocal] = useState(null);
-  const [lastBetDetailsLocal, setLastBetDetailsLocal] = useState<any>(null);
 
   // Modal states
   const [showAddCashModalLocal, setShowAddCashModalLocal] = useState(false);
@@ -726,21 +724,19 @@ export default function App() {
     console.log('Total amount:', totalAmount, 'Current wallet:', currentWallet);
 
     if (currentWallet >= totalAmount) {
-      // Deduct money from wallet using the hook
+      // Deduct money from wallet
       withdrawMoney(totalAmount);
       
       // Create bet records with proper status and timestamp
       const newBets = betListState.map(bet => ({
         ...bet,
-        id: Date.now() + Math.random(), // Ensure unique ID
+        id: Date.now() + Math.random(),
         game: selectedGameLocal?.title || selectedGameState?.title || 'Unknown Game',
         status: 'pending' as const,
         timestamp: Date.now(),
         sessionTime: selectedGameLocal?.timing || selectedGameState?.timing || '09:00 PM - 04:50 PM',
         date: new Date().toISOString().split('T')[0]
       }));
-
-      console.log('New bets created:', newBets);
 
       // Set success details for display
       const betDetails = {
@@ -751,41 +747,27 @@ export default function App() {
         betCount: betListState.length
       };
 
-      setLastBetDetailsLocal(betDetails);
+      // Add to placed bets and bet history
+      setPlacedBetsState(prevBets => [...prevBets, ...newBets]);
+      setBetHistoryState(prevHistory => [...prevHistory, ...newBets]);
       setLastBetDetailsState(betDetails);
 
-      // Add to placed bets (these will show in MyBet component)
-      setPlacedBetsState(prevBets => {
-        const updated = [...prevBets, ...newBets];
-        console.log('Updated placed bets:', updated);
-        return updated;
-      });
-
-      // Add to bet history for historical tracking
-      setBetHistoryState(prevHistory => [...prevHistory, ...newBets]);
-
-      // Clear current bet selection immediately
+      // Clear current bet selection
       setBetListState([]);
 
-      // Close betting modal first
+      // Close betting modal and show success
       setShowBettingModalLocal(false);
       setShowBettingModalState(false);
-      
-      // Show success modal
-      setShowBetSuccessLocal(true);
       setShowBetSuccessState(true);
 
-      console.log('Success modal should be visible now');
-      console.log('Wallet deducted:', totalAmount);
+      console.log('Success modal should be visible, will auto-navigate in 3 seconds');
 
-      // Auto close success modal and navigate to MyBet after 4 seconds
+      // Auto navigate to MyBet after 3 seconds
       setTimeout(() => {
-        console.log('Auto closing success modal and navigating to mybets');
-        setShowBetSuccessLocal(false);
+        console.log('Auto navigating to mybets');
         setShowBetSuccessState(false);
         setActiveTabLocal('mybets');
-        setActiveTabState('mybets');
-      }, 4000);
+      }, 3000);
 
     } else {
       Alert.alert('Insufficient Balance', `आपके wallet में पर्याप्त balance नहीं है।\nRequired: ₹${totalAmount}\nAvailable: ₹${currentWallet}`);
@@ -1598,10 +1580,8 @@ export default function App() {
         betDetails={lastBetDetailsState}
         onClose={() => {
           console.log('BetSuccessModal manually closed');
-          setShowBetSuccessLocal(false);
           setShowBetSuccessState(false);
           setActiveTabLocal('mybets');
-          setActiveTabState('mybets');
         }}
       />
 
