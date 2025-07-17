@@ -223,22 +223,18 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
         onRequestClose={() => setShowKYCForm(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.kycModal}>
+          <View style={styles.kycModalSimple}>
             <View style={styles.kycModalHeader}>
-              <Text style={styles.kycModalTitle}>🔐 Complete KYC Verification</Text>
+              <Text style={styles.kycModalTitle}>🔐 Complete KYC</Text>
               <TouchableOpacity onPress={() => setShowKYCForm(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.kycModalContent}>
-              <Text style={styles.kycInstructions}>
-                📝 Please provide accurate information for KYC verification
-              </Text>
-
-              <View style={styles.kycFormContainer}>
+              <View style={styles.kycFormSimple}>
                 <View style={styles.kycInputContainer}>
-                  <Text style={styles.kycInputLabel}>Full Name (As per Aadhaar)</Text>
+                  <Text style={styles.kycInputLabel}>Full Name</Text>
                   <TextInput
                     style={styles.kycInput}
                     placeholder="Enter your full name"
@@ -249,14 +245,13 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
                 </View>
 
                 <View style={styles.kycInputContainer}>
-                  <Text style={styles.kycInputLabel}>Aadhaar Card Number</Text>
+                  <Text style={styles.kycInputLabel}>Aadhaar Number</Text>
                   <TextInput
                     style={styles.kycInput}
                     placeholder="Enter 12-digit Aadhaar number"
                     placeholderTextColor="#999"
                     value={kycData.aadhaarNumber}
                     onChangeText={(text) => {
-                      // Only allow numbers and limit to 12 digits
                       const numericText = text.replace(/[^0-9]/g, '').slice(0, 12);
                       setKycData({...kycData, aadhaarNumber: numericText});
                     }}
@@ -268,31 +263,15 @@ export default function Profile({ userData, onUpdateProfile, onCompleteKYC }: Pr
                   </Text>
                 </View>
 
-                <View style={styles.kycNotice}>
-                  <Text style={styles.kycNoticeTitle}>📋 Important Notes:</Text>
-                  <Text style={styles.kycNoticeText}>• Information should match your Aadhaar card</Text>
-                  <Text style={styles.kycNoticeText}>• KYC verification takes 24-48 hours</Text>
-                  <Text style={styles.kycNoticeText}>• Your data is secure and encrypted</Text>
-                  <Text style={styles.kycNoticeText}>• Required for withdrawals above ₹10,000</Text>
-                </View>
-
                 <TouchableOpacity 
                   style={[
-                    styles.verifyButton,
+                    styles.verifyButtonSimple,
                     (!kycData.fullName.trim() || kycData.aadhaarNumber.length !== 12) && styles.verifyButtonDisabled
                   ]} 
                   onPress={handleKYCSubmit}
                   disabled={!kycData.fullName.trim() || kycData.aadhaarNumber.length !== 12}
                 >
-                  <Ionicons name="shield-checkmark" size={20} color="#000" />
-                  <Text style={styles.verifyButtonText}>Verify & Submit KYC</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                  style={styles.cancelKycButton} 
-                  onPress={() => setShowKYCForm(false)}
-                >
-                  <Text style={styles.cancelKycButtonText}>Cancel</Text>
+                  <Text style={styles.verifyButtonText}>Verify</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -506,6 +485,15 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  kycModalSimple: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 15,
+    width: '85%',
+    maxWidth: 350,
+    paddingBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
   kycModalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -531,6 +519,10 @@ const styles = StyleSheet.create({
   },
   kycFormContainer: {
     gap: 15,
+  },
+  kycFormSimple: {
+    gap: 20,
+    padding: 5,
   },
   kycInputContainer: {
     gap: 5,
@@ -576,6 +568,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 10,
+  },
+  verifyButtonSimple: {
+    backgroundColor: '#00FF88',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
   },
   verifyButtonDisabled: {
     backgroundColor: '#777',
