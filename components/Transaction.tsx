@@ -9,64 +9,64 @@ interface Transaction {
   time: string;
   amount: string;
   utrNumber: string;
-  status: 'Success' | 'Pending' | 'Rejected';
-  type: string;
+  status: 'Approved' | 'Pending' | 'Rejected';
+  type: 'Deposit' | 'Withdraw';
 }
 
 interface TransactionProps {
   transactions?: Transaction[];
 }
 
-// Dummy transaction data
+// Dummy transaction data with updated structure
 const dummyTransactions: Transaction[] = [
   {
     id: '1',
-    date: '16/01/2024',
+    date: '16/01/2025',
     time: '02:15 PM',
     amount: '₹1500',
     utrNumber: '789012345678',
-    status: 'Success',
+    status: 'Pending',
     type: 'Deposit'
   },
   {
     id: '2',
-    date: '16/01/2024',
+    date: '16/01/2025',
     time: '01:30 PM',
     amount: '₹800',
     utrNumber: '890123456789',
-    status: 'Success',
-    type: 'Withdrawal'
+    status: 'Approved',
+    type: 'Withdraw'
   },
   {
     id: '3',
-    date: '15/01/2024',
+    date: '15/01/2025',
     time: '10:30 AM',
     amount: '₹500',
     utrNumber: '123456789012',
-    status: 'Success',
+    status: 'Approved',
     type: 'Deposit'
   },
   {
     id: '4',
-    date: '15/01/2024',
+    date: '15/01/2025',
     time: '11:45 AM',
     amount: '₹1000',
     utrNumber: '234567890123',
     status: 'Pending',
-    type: 'Withdrawal'
+    type: 'Withdraw'
   },
   {
     id: '5',
-    date: '15/01/2024',
+    date: '15/01/2025',
     time: '12:20 PM',
     amount: '₹2500',
     utrNumber: '345678901234',
-    status: 'Success',
+    status: 'Approved',
     type: 'Deposit'
   },
   {
     id: '6',
-    date: '14/01/2024',
+    date: '14/01/2025',
     time: '03:20 PM',
     amount: '₹250',
     utrNumber: '456789012345',
@@ -75,57 +75,57 @@ const dummyTransactions: Transaction[] = [
   },
   {
     id: '7',
-    date: '14/01/2024',
+    date: '14/01/2025',
     time: '05:15 PM',
     amount: '₹750',
     utrNumber: '567890123456',
-    status: 'Success',
-    type: 'Bet Win'
+    status: 'Pending',
+    type: 'Withdraw'
   },
   {
     id: '8',
-    date: '14/01/2024',
+    date: '14/01/2025',
     time: '06:30 PM',
     amount: '₹1200',
     utrNumber: '678901234567',
     status: 'Pending',
-    type: 'Withdrawal'
+    type: 'Withdraw'
   },
   {
     id: '9',
-    date: '13/01/2024',
+    date: '13/01/2025',
     time: '09:30 AM',
     amount: '₹2000',
     utrNumber: '789012345678',
-    status: 'Success',
+    status: 'Approved',
     type: 'Deposit'
   },
   {
     id: '10',
-    date: '13/01/2024',
+    date: '13/01/2025',
     time: '11:45 AM',
     amount: '₹500',
     utrNumber: '890123456789',
     status: 'Rejected',
-    type: 'Withdrawal'
+    type: 'Withdraw'
   },
   {
     id: '11',
-    date: '12/01/2024',
+    date: '12/01/2025',
     time: '04:20 PM',
     amount: '₹3000',
     utrNumber: '901234567890',
-    status: 'Success',
+    status: 'Pending',
     type: 'Deposit'
   },
   {
     id: '12',
-    date: '12/01/2024',
+    date: '12/01/2025',
     time: '07:15 PM',
     amount: '₹1500',
     utrNumber: '012345678901',
-    status: 'Success',
-    type: 'Withdrawal'
+    status: 'Approved',
+    type: 'Withdraw'
   }
 ];
 
@@ -156,7 +156,7 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Success': return '#00FF88';
+      case 'Approved': return '#00FF88';
       case 'Pending': return '#FFD700';
       case 'Rejected': return '#FF4444';
       default: return '#999';
@@ -166,9 +166,7 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'Deposit': return '💰';
-      case 'Withdrawal': return '💳';
-      case 'Bet Win': return '🏆';
-      case 'Bet Loss': return '🎯';
+      case 'Withdraw': return '💳';
       default: return '📝';
     }
   };
@@ -266,8 +264,8 @@ export default function Transaction({ transactions = dummyTransactions }: Transa
         <Text style={styles.summaryTitle}>📈 Quick Stats</Text>
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>{filteredTransactions.filter(t => t.status === 'Success').length}</Text>
-            <Text style={styles.statLabel}>Success</Text>
+            <Text style={styles.statValue}>{filteredTransactions.filter(t => t.status === 'Approved').length}</Text>
+            <Text style={styles.statLabel}>Approved</Text>
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{filteredTransactions.filter(t => t.status === 'Pending').length}</Text>
