@@ -17,6 +17,7 @@ import Profile from './components/Profile';
 import BetHistory from './components/BetHistory';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import Transaction from './components/Transaction';
+import KYCPage from './components/KYCPage';
 
 // Import API services
 import { userService } from './services/userService';
@@ -643,6 +644,7 @@ export default function App() {
   // Age verification states
   const [showAgeVerification, setShowAgeVerification] = React.useState(false);
   const [isAgeVerified, setIsAgeVerified] = React.useState(false);
+  const [showKYCPage, setShowKYCPage] = React.useState(false);
 
   const gameCards = GAME_CARDS;
   const features = FEATURES;
@@ -884,6 +886,10 @@ export default function App() {
     Alert.alert('KYC Verification', 'KYC verification process will be implemented soon');
   };
 
+  const handleKYCPress = () => {
+    setShowKYCPage(true);
+  };
+
   const handleAgeVerificationAccept = async () => {
     setIsAgeVerified(true);
     setShowAgeVerification(false);
@@ -916,6 +922,7 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
+            onKYCPress={handleKYCPress}
           />
         );
       case 'wallet':
@@ -1264,7 +1271,11 @@ export default function App() {
 
       {/* Content */}
       <View style={[styles.content, !isAgeVerified && styles.blurredContent]}>
-        {renderContent()}
+        {showKYCPage ? (
+          <KYCPage onBack={() => setShowKYCPage(false)} />
+        ) : (
+          renderContent()
+        )}
       </View>
 
       {/* Bottom Menu Component */}
