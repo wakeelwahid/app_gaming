@@ -23,6 +23,22 @@ export default function BetSuccessModal({ visible, betDetails, onClose, onNaviga
     if (visible) {
       console.log('BetSuccessModal became visible');
       setCountdown(3);
+      
+      // Animate in
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: false,
+        }),
+      ]).start();
+      
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
@@ -36,6 +52,10 @@ export default function BetSuccessModal({ visible, betDetails, onClose, onNaviga
       }, 1000);
 
       return () => clearInterval(timer);
+    } else {
+      // Reset animations when not visible
+      fadeAnim.setValue(0);
+      scaleAnim.setValue(0.8);
     }
   }, [visible, onClose]);
 

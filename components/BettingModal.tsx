@@ -278,6 +278,7 @@ export default function BettingModal({
                     console.log('Place bet button pressed, bet list:', betList);
                     console.log('Total amount:', getTotalBetAmount());
                     if (betList.length > 0) {
+                      console.log('Calling onPlaceBets...');
                       onPlaceBets();
                     } else {
                       Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
