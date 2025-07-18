@@ -1,88 +1,77 @@
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const isSmallDevice = SCREEN_WIDTH < 375;
 
 interface BottomMenuProps {
   activeTab: string;
   onMenuItemPress: (key: string) => void;
 }
 
-export default function BottomMenu({ 
-  activeTab, 
-  onMenuItemPress
-}: BottomMenuProps) {
+export default function BottomMenu({ activeTab, onMenuItemPress }: BottomMenuProps) {
+  const [scaleAnims] = useState({
+    home: new Animated.Value(1),
+    mybets: new Animated.Value(1),
+    wallet: new Animated.Value(1),
+    games: new Animated.Value(1),
+    profile: new Animated.Value(1),
+  });
+
+  const handlePress = (key: string) => {
+    // Animate the pressed tab
+    Animated.sequence([
+      Animated.timing(scaleAnims[key], {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: false,
+      }),
+      Animated.timing(scaleAnims[key], {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: false,
+      }),
+    ]).start();
+
+    onMenuItemPress(key);
+  };
+
+  const TabItem = ({ tabKey, iconName, label }) => (
+    <TouchableOpacity 
+      style={[styles.tabItem, activeTab === tabKey && styles.activeTabItem]} 
+      onPress={() => handlePress(tabKey)}
+    >
+      <Animated.View 
+        style={[
+          styles.tabContent,
+          { transform: [{ scale: scaleAnims[tabKey] }] },
+          activeTab === tabKey && styles.activeTabContent
+        ]}
+      >
+        <Ionicons 
+          name={iconName} 
+          size={20} 
+          color={activeTab === tabKey ? '#4A90E2' : '#999'} 
+        />
+        <Text style={[styles.tabText, activeTab === tabKey && styles.activeTabText]}>
+          {label}
+        </Text>
+      </Animated.View>
+    </TouchableOpacity>
+  );
+
   return (
-    <>
-      <View style={styles.bottomTabBar}>
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'home' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('home')}
-        >
-          <Ionicons 
-            name="home" 
-            size={20} 
-            color={activeTab === 'home' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'home' && styles.activeTabText]}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'mybets' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('mybets')}
-        >
-          <Ionicons 
-            name="list-circle" 
-            size={20} 
-            color={activeTab === 'mybets' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'mybets' && styles.activeTabText]}>My Bets</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'wallet' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('wallet')}
-        >
-          <Ionicons 
-            name="wallet" 
-            size={20} 
-            color={activeTab === 'wallet' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'wallet' && styles.activeTabText]}>Wallet</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'games' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('games')}
-        >
-          <Ionicons 
-            name="game-controller" 
-            size={20} 
-            color={activeTab === 'games' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'games' && styles.activeTabText]}>Games</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'profile' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('profile')}
-        >
-          <Ionicons 
-            name="person" 
-            size={20} 
-            color={activeTab === 'profile' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'profile' && styles.activeTabText]}>Profile</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+    <View style={styles.bottomTabBar}>
+      <TabItem tabKey="home" iconName="home" label="Home" />
+      <TabItem tabKey="mybets" iconName="list-circle" label="My Bets" />
+      <TabItem tabKey="wallet" iconName="wallet" label="Wallet" />
+      <TabItem tabKey="games" iconName="game-controller" label="Games" />
+      <TabItem tabKey="profile" iconName="person" label="Profile" />
+    </View>
   );
 }
-
-import { Dimensions } from 'react-native';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const isSmallDevice = SCREEN_WIDTH < 375;
 
 const styles = StyleSheet.create({
   bottomTabBar: {
@@ -95,7 +84,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     height: isSmallDevice ? 50 : 60,
-    position: 'relative',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
   tabItem: {
     flex: 1,
@@ -105,17 +98,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: isSmallDevice ? 2 : 4,
   },
   activeTabItem: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    borderRadius: 8,
+  },
+  tabContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTabContent: {
+    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   tabText: {
     fontSize: isSmallDevice ? 8 : 10,
     color: '#999',
     marginTop: 2,
     textAlign: 'center',
+    fontWeight: '500',
   },
   activeTabText: {
     color: '#4A90E2',
     fontWeight: 'bold',
   },
-  
 });
