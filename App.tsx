@@ -846,12 +846,9 @@ export default function App() {
     setShowAuthModalState(false);
   };
 
-  const handleAddCash = async (```python
-amount: number) => {
+  const handleAddCash = async (amount: number) => {
     // Here you can make API call to add money
     // const result = await apiService.addMoney(amount);
-    //const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
-    //setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
     setShowAddCashModalState(false);
     setDepositAmountState('');
     Alert.alert('Deposit Successful', `₹${amount} has been added to your wallet. Admin approval pending.`);
