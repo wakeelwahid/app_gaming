@@ -56,6 +56,27 @@ export default function WalletOperations({
     }
   };
 
+  const handlePaymentMethodSelect = (method: string) => {
+    Alert.alert(
+      '⚠️ Important Notice',
+      `जब आप ${method} से deposit करते हैं, तो withdrawal भी इसी ${method} account में होगी। कृपया सुनिश्चित करें कि यह आपका own account है।\n\nWhen you deposit via ${method}, withdrawal will also be made to the same ${method} account. Please ensure this is your own account.`,
+      [
+        {
+          text: 'रद्द करें (Cancel)',
+          style: 'cancel',
+        },
+        {
+          text: 'आगे बढ़ें (Continue)',
+          onPress: () => {
+            onPaymentMethodSelect(method);
+            onCloseAddCash();
+            onClosePayment();
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <>
       {/* Add Cash Modal */}
@@ -123,19 +144,19 @@ export default function WalletOperations({
               <View style={styles.paymentMethods}>
                 <TouchableOpacity 
                   style={styles.paymentMethod}
-                  onPress={() => onPaymentMethodSelect('PhonePe')}
+                  onPress={() => handlePaymentMethodSelect('PhonePe')}
                 >
                   <Text style={styles.paymentMethodText}>📱 PhonePe</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.paymentMethod}
-                  onPress={() => onPaymentMethodSelect('Google Pay')}
+                  onPress={() => handlePaymentMethodSelect('Google Pay')}
                 >
                   <Text style={styles.paymentMethodText}>🟢 Google Pay</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.paymentMethod}
-                  onPress={() => onPaymentMethodSelect('Paytm')}
+                  onPress={() => handlePaymentMethodSelect('Paytm')}
                 >
                   <Text style={styles.paymentMethodText}>💙 Paytm</Text>
                 </TouchableOpacity>
