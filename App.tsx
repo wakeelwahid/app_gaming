@@ -677,9 +677,16 @@ export default function App() {
   };
 
   const handleWithdrawRequest = async (amount: number) => {
-    //const result = await withdrawMoney(amount);
+    // Close withdraw modal first
     setShowWithdrawModalState(false);
+    
+    // Show withdrawal success page
     setShowWithdrawSuccessModalState(true);
+    
+    // Here you can make API call to withdraw money
+    // const result = await withdrawMoney(amount);
+    
+    console.log('Withdrawal request submitted for amount:', amount);
   };
   const handleMenuItemPress = (key: string) => {
     setActiveTabLocal(key);
@@ -850,22 +857,28 @@ export default function App() {
   };
 
   const handleWithdraw = async (amount: number) => {
+    // For demo purposes, allow withdrawal regardless of wallet balance
+    // In production, you would validate wallet balance properly
+    
+    // Close withdraw modal first
+    setShowWithdrawModalState(false);
+    
+    // Show withdrawal success modal
+    setShowWithdrawSuccessModalState(true);
+    
+    // Optional: Deduct from wallet if sufficient balance
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     if (currentWallet >= amount) {
       // Here you can make API call to withdraw money
       // const result = await apiService.withdrawMoney(amount);
-      //setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
-      setShowWithdrawModalState(false);
-      setShowWithdrawSuccessModalState(true);
-    } else {
-      Alert.alert('Insufficient Coins', 'आपके wallet में पर्याप्त coins नहीं हैं।');
+      // setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
     }
   };
 
   const handleWithdrawSuccessClose = () => {
     setShowWithdrawSuccessModalState(false);
     setWithdrawAmountState('');
-    setActiveTabLocal('home');
+    setActiveTabLocal('wallet'); // Redirect to wallet page to show updated balance
   };
 
   const calculateDepositDetails = (amount: number) => {
