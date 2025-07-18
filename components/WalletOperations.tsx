@@ -39,6 +39,8 @@ export default function WalletOperations({
   onConfirmPayment,
   onWithdrawRequest
 }: WalletOperationsProps) {
+  const [showPaymentWarningModal, setShowPaymentWarningModal] = useState(false);
+  const [selectedMethodForWarning, setSelectedMethodForWarning] = useState('');
 
   const calculateDepositDetails = (amount: number) => {
     const gst = Math.round(amount * 0.28);
@@ -57,27 +59,13 @@ export default function WalletOperations({
   };
 
   const handlePaymentMethodSelect = (method: string) => {
-    Alert.alert(
-      '⚠️ महत्वपूर्ण सूचना | Important Notice',
-      `जब आप ${method} से deposit करते हैं, तो withdrawal भी इसी ${method} account में होगी। कृपया सुनिश्चित करें कि यह आपका own account है।\n\nWhen you deposit via ${method}, withdrawal will also be made to the same ${method} account. Please ensure this is your own account.`,
-      [
-        {
-          text: 'रद्द करें (Cancel)',
-          style: 'cancel',
-          onPress: () => {
-            console.log('Payment method selection cancelled');
-          }
-        },
-        {
-          text: 'समझ गया, आगे बढ़ें (Continue)',
-          onPress: () => {
-            console.log('Payment method selected:', method);
-            onPaymentMethodSelect(method);
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setSelectedMethodForWarning(method);
+    setShowPaymentWarningModal(true);
+  };
+
+  const handleConfirmPaymentMethod = () => {
+    setShowPaymentWarningModal(false);
+    onPaymentMethodSelect(selectedMethodForWarning);
   };
 
   return (
@@ -300,6 +288,62 @@ export default function WalletOperations({
                 <Text style={styles.withdrawInfoText}>• Processing time: 5 to 10 minutes</Text>
                 <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
                 <Text style={styles.withdrawInfoText}>• Bank charges may apply</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Payment Warning Modal */}
+      <Modal
+        visible={showPaymentWarningModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowPaymentWarningModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.paymentWarningModalContainer}>
+            <View style={styles.warningModalHeader}>
+              <Text style={styles.warningModalTitle}>⚠️ महत्वपूर्ण सूचना</Text>
+              <TouchableOpacity onPress={() => setShowPaymentWarningModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.warningModalContent}>
+              <View style={styles.warningIconContainer}>
+                <Text style={styles.warningIcon}>⚠️</Text>
+              </View>
+
+              <Text style={styles.warningMainText}>
+                जब आप <Text style={styles.highlightText}>{selectedMethodForWarning}</Text> से deposit करते हैं, तो withdrawal भी इसी {selectedMethodForWarning} account में होगी।
+              </Text>
+
+              <Text style={styles.warningSubText}>
+                When you deposit via <Text style={styles.highlightText}>{selectedMethodForWarning}</Text>, withdrawal will also be made to the same {selectedMethodForWarning} account.
+              </Text>
+
+              <View style={styles.warningPointsContainer}>
+                <Text style={styles.warningPoint}>• कृपया सुनिश्चित करें कि यह आपका own account है</Text>
+                <Text style={styles.warningPoint}>• Please ensure this is your own account</Text>
+                <Text style={styles.warningPoint}>• Withdrawal केवल same payment method में होगी</Text>
+                <Text style={styles.warningPoint}>• No changes allowed after deposit</Text>
+              </View>
+
+              <View style={styles.warningButtonsContainer}>
+                <TouchableOpacity
+                  style={styles.cancelWarningButton}
+                  onPress={() => setShowPaymentWarningModal(false)}
+                >
+                  <Text style={styles.cancelWarningButtonText}>रद्द करें (Cancel)</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.confirmWarningButton}
+                  onPress={handleConfirmPaymentMethod}
+                >
+                  <Text style={styles.confirmWarningButtonText}>समझ गया, आगे बढ़ें</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -640,5 +684,101 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 12,
     marginBottom: 4,
+  },
+  paymentWarningModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '90%',
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: '#FF6B6B',
+    maxWidth: 400,
+  },
+  warningModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    backgroundColor: '#1a1a1a',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  },
+  warningModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FF6B6B',
+    flex: 1,
+  },
+  warningModalContent: {
+    padding: 20,
+  },
+  warningIconContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  warningIcon: {
+    fontSize: 50,
+    color: '#FF6B6B',
+  },
+  warningMainText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 15,
+    lineHeight: 22,
+  },
+  warningSubText: {
+    color: '#ccc',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  warningPointsContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  warningPoint: {
+    color: '#FFD700',
+    fontSize: 12,
+    marginBottom: 8,
+    lineHeight: 16,
+  },
+  warningButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  cancelWarningButton: {
+    flex: 1,
+    backgroundColor: '#333',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#666',
+  },
+  cancelWarningButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  confirmWarningButton: {
+    flex: 1,
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  confirmWarningButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
