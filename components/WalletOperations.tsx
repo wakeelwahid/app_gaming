@@ -391,18 +391,13 @@ export default function WalletOperations({
               </View>
 
               <Text style={styles.confirmMainText}>
-                क्या आप ₹{withdrawAmount} withdraw करना चाहते हैं?
+                क्या आप withdraw करना चाहते हैं?
               </Text>
 
               <View style={styles.withdrawDetailsContainer}>
                 <View style={styles.withdrawDetailRow}>
-                  <Text style={styles.withdrawDetailLabel}>💰 Amount:</Text>
-                  <Text style={styles.withdrawDetailValue}>₹{withdrawAmount}</Text>
-                </View>
-                
-                <View style={styles.withdrawDetailRow}>
-                  <Text style={styles.withdrawDetailLabel}>📱 UPI ID:</Text>
-                  <Text style={styles.withdrawDetailValue}>user@phonepe</Text>
+                  <Text style={styles.withdrawDetailLabel}>📱 UPI ID (जिससे last deposit किया था):</Text>
+                  <Text style={styles.withdrawDetailValueHighlight}>user@phonepe</Text>
                 </View>
 
                 <View style={styles.withdrawDetailRow}>
@@ -413,7 +408,7 @@ export default function WalletOperations({
 
               <View style={styles.confirmWarningContainer}>
                 <Text style={styles.confirmWarningText}>
-                  ⚠️ यह amount आपके registered UPI account में transfer होगी
+                  ⚠️ जिस UPI ID से आपने last deposit किया था, उसी में withdrawal आएगी
                 </Text>
                 <Text style={styles.confirmWarningSubText}>
                   Amount credited after admin approval
@@ -979,6 +974,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'right',
+  },
+  withdrawDetailValueHighlight: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    backgroundColor: '#1a1a1a',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFD700',
   },
   confirmWarningContainer: {
     backgroundColor: '#1a1a1a',
