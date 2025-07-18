@@ -10,6 +10,7 @@ interface WalletOperationsProps {
   withdrawAmount: string;
   selectedPaymentMethod: string;
   utrNumber: string;
+  linkedAccount: string;
   onCloseAddCash: () => void;
   onCloseWithdraw: () => void;
   onClosePayment: () => void;
@@ -29,6 +30,7 @@ export default function WalletOperations({
   withdrawAmount,
   selectedPaymentMethod,
   utrNumber,
+  linkedAccount,
   onCloseAddCash,
   onCloseWithdraw,
   onClosePayment,
@@ -238,6 +240,22 @@ export default function WalletOperations({
             </View>
 
             <View style={styles.withdrawContent}>
+              {linkedAccount && (
+                <View style={styles.linkedAccountInfo}>
+                  <Text style={styles.linkedAccountTitle}>💳 Linked Account</Text>
+                  <View style={styles.linkedAccountContainer}>
+                    <Text style={styles.linkedAccountText}>
+                      {linkedAccount === 'PhonePe' && '📱 PhonePe'}
+                      {linkedAccount === 'Google Pay' && '🟢 Google Pay'}
+                      {linkedAccount === 'Paytm' && '💙 Paytm'}
+                    </Text>
+                    <Text style={styles.linkedAccountNote}>
+                      Withdrawal होगी इसी account में
+                    </Text>
+                  </View>
+                </View>
+              )}
+
               <Text style={styles.withdrawLabel}>Amount (₹)</Text>
               <TextInput
                 style={styles.withdrawInput}
@@ -275,6 +293,9 @@ export default function WalletOperations({
                 <Text style={styles.withdrawInfoText}>• Processing time: 5 to 10 minutes</Text>
                 <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
                 <Text style={styles.withdrawInfoText}>• Bank charges may apply</Text>
+                {linkedAccount && (
+                  <Text style={styles.withdrawInfoText}>• Account: {linkedAccount} (Fixed)</Text>
+                )}
               </View>
             </View>
           </View>
@@ -608,5 +629,39 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 12,
     marginBottom: 4,
+  },
+  linkedAccountInfo: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  linkedAccountTitle: {
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  linkedAccountContainer: {
+    backgroundColor: '#0a0a0a',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#00FF88',
+  },
+  linkedAccountText: {
+    color: '#00FF88',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  linkedAccountNote: {
+    color: '#999',
+    fontSize: 12,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });

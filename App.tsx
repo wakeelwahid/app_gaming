@@ -628,6 +628,8 @@ export default function App() {
   const [selectedPaymentMethodLocal, setSelectedPaymentMethodLocal] = useState('');
   const [utrNumberLocal, setUtrNumberLocal] = useState('');
   const [activeTabState, setActiveTabState] = useState('home');
+    // Account Linking State
+  const [linkedAccountState, setLinkedAccountState] = useState<string | null>(null);
 
   useEffect(() => {
     // Check age verification on app start
@@ -660,10 +662,25 @@ export default function App() {
   };
 
   const handlePaymentMethodSelect = (method: string) => {
-    setSelectedPaymentMethodState(method);
-    setShowAddCashModalState(false);
-    setShowPaymentModalState(true);
-  };
+        Alert.alert(
+            'Account Confirmation',
+            `You are depositing to ${method}. Withdrawals will be processed to the same account.`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirm',
+                    onPress: () => {
+                        setSelectedPaymentMethodState(method);
+                        setShowAddCashModalState(false);
+                        setShowPaymentModalState(true);
+                    },
+                },
+            ]
+        );
+    };
 
   const handleUTRConfirmation = async () => {
     if (utrNumberState.length !== 12) {
@@ -729,7 +746,7 @@ export default function App() {
 
     // For demo purposes, allow bet placement even with insufficient balance
     // In production, you would validate wallet balance properly
-    
+
     // Deduct money from wallet (only if sufficient balance)
     if (currentWallet >= totalAmount) {
       withdrawMoney(totalAmount);
@@ -875,21 +892,38 @@ export default function App() {
     return { gst, cashback, total };
   };
 
-  const handlePaymentMethodSelectState = (method: string) => {
-    setSelectedPaymentMethodState(method);
-    setShowAddCashModalState(false);
-    setShowPaymentModalState(true);
-  };
+    const handlePaymentMethodSelectState = (method: string) => {
+        Alert.alert(
+            'Account Confirmation',
+            `You are depositing to ${method}. Withdrawals will be processed to the same account.`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirm',
+                    onPress: () => {
+                        setSelectedPaymentMethodState(method);
+                        setShowAddCashModalState(false);
+                        setShowPaymentModalState(true);
+                    },
+                },
+            ]
+        );
+    };
 
   const handleUTRConfirmationState = () => {
-    if (utrNumberState.length !== 12) {
-      Alert.alert('Invalid UTR', 'Please enter a valid 12-digit UTR number');
-      return;
+    if (utrNumberState.length === 12) {
+      // Link the account permanently after successful payment
+      setLinkedAccountState(selectedPaymentMethodState);
+      setShowPaymentModalState(false);
+      setShowPaymentSuccessModalState(true);
+      setUtrNumberState('');
+      setDepositAmountState('');
+    } else {
+      Alert.alert('Invalid UTR', 'कृपया 12 अंकों का UTR number डालें।');
     }
-
-    // Close payment modal and show success modal
-    setShowPaymentModalState(false);
-    setShowPaymentSuccessModalState(true);
   };
 
   const handlePaymentSuccessClose = () => {
