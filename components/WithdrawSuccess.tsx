@@ -17,29 +17,39 @@ export default function WithdrawSuccess({
   const [countdownSeconds, setCountdownSeconds] = useState(5);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
     if (visible) {
       setCountdownSeconds(5);
-      const timer = setInterval(() => {
+      timer = setInterval(() => {
         setCountdownSeconds((prev) => {
           if (prev <= 1) {
-            clearInterval(timer);
-            onClose();
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
-
-      return () => clearInterval(timer);
     }
-  }, [visible, onClose]);
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [visible]);
+
+  useEffect(() => {
+    if (countdownSeconds === 0 && visible) {
+      onClose();
+    }
+  }, [countdownSeconds, visible, onClose]);
 
   return (
     <Modal
       visible={visible}
       animationType="slide"
       transparent={true}
-      onRequestClose={() => {}}
+      onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.withdrawSuccessModalContainer}>

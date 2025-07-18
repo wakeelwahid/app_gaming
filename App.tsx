@@ -1579,7 +1579,7 @@ export default function App() {
 
       {/* Withdraw Success Component */}
       <WithdrawSuccess
-        visible={showWithdrawSuccessState}
+        visible={showWithdrawSuccessModalState}
         amount={withdrawAmountState}
         paymentMethod={selectedPaymentMethodState || 'Selected UPI'}
         onClose={handleWithdrawSuccessClose}
