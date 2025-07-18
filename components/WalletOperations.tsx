@@ -273,6 +273,18 @@ export default function WalletOperations({
                 ))}
               </View>
 
+              {/* UPI Account Details */}
+              <View style={styles.upiAccountContainer}>
+                <Text style={styles.upiAccountLabel}>💳 Your Registered UPI Account</Text>
+                <View style={styles.upiAccountBox}>
+                  <Text style={styles.upiAccountText}>user@phonepe</Text>
+                  <Text style={styles.upiAccountSubText}>Verified Account • Same as deposit</Text>
+                </View>
+                <Text style={styles.upiAccountNote}>
+                  Withdrawal will be processed to this UPI account only
+                </Text>
+              </View>
+
               <TouchableOpacity
                 style={[styles.withdrawRequestButton, (!withdrawAmount || parseFloat(withdrawAmount) < 100) && styles.withdrawButtonDisabled]}
                 onPress={handleWithdrawSubmit}
@@ -684,6 +696,46 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 12,
     marginBottom: 4,
+  },
+  upiAccountContainer: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+  },
+  upiAccountLabel: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  upiAccountBox: {
+    backgroundColor: '#0a0a0a',
+    borderWidth: 1,
+    borderColor: '#00FF88',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+  },
+  upiAccountText: {
+    color: '#00FF88',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  upiAccountSubText: {
+    color: '#999',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  upiAccountNote: {
+    color: '#FFD700',
+    fontSize: 12,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   paymentWarningModalContainer: {
     backgroundColor: '#0a0a0a',
