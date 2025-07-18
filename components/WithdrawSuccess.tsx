@@ -14,11 +14,11 @@ export default function WithdrawSuccess({
   paymentMethod,
   onClose
 }: WithdrawSuccessProps) {
-  const [countdownSeconds, setCountdownSeconds] = useState(5);
+  const [countdownSeconds, setCountdownSeconds] = useState(7);
 
   useEffect(() => {
     if (visible) {
-      setCountdownSeconds(5);
+      setCountdownSeconds(7);
       const timer = setInterval(() => {
         setCountdownSeconds((prev) => {
           if (prev <= 1) {
@@ -46,62 +46,42 @@ export default function WithdrawSuccess({
           <View style={styles.successContent}>
             {/* Success Icon */}
             <View style={styles.successIcon}>
-              <Text style={styles.successIconText}>💰</Text>
+              <Text style={styles.successIconText}>✅</Text>
             </View>
 
             {/* Success Message */}
-            <Text style={styles.successTitle}>Redeem Request Submitted!</Text>
-            <Text style={styles.successMessage}>
-              आपका ₹{amount} का withdrawal request successfully submit हो गया है।
-            </Text>
+            <Text style={styles.successTitle}>Withdrawal Successful!</Text>
 
             {/* Amount Display */}
             <View style={styles.amountDisplayContainer}>
-              <Text style={styles.amountDisplayLabel}>Withdrawal Amount:</Text>
+              <Text style={styles.amountDisplayLabel}>Amount:</Text>
               <Text style={styles.amountDisplayValue}>₹{amount}</Text>
             </View>
 
-            {/* Payment Method Display */}
-            <View style={styles.paymentMethodDisplayContainer}>
-              <Text style={styles.paymentMethodDisplayLabel}>💳 Payment Method:</Text>
-              <Text style={styles.paymentMethodDisplayValue}>{paymentMethod}</Text>
-              <Text style={styles.paymentMethodNote}>
-                आपको इसी account में payment मिलेगी
-              </Text>
+            {/* UPI ID Display */}
+            <View style={styles.upiDisplayContainer}>
+              <Text style={styles.upiDisplayLabel}>UPI ID:</Text>
+              <Text style={styles.upiDisplayValue}>user@{paymentMethod.toLowerCase()}</Text>
             </View>
 
-            {/* Timer Message */}
-            <View style={styles.timerContainer}>
-              <Text style={styles.timerMessage}>
-                💳 Payment 5 to 10 minutes में {paymentMethod} account में successful हो जाएगी
-              </Text>
-              <Text style={styles.timerNote}>
-                Processing में थोड़ा समय लगता है
-              </Text>
-            </View>
-
-            {/* Additional Info */}
-            <View style={styles.infoContainer}>
-              <Text style={styles.infoTitle}>📋 Important Information:</Text>
-              <Text style={styles.infoText}>• आपके {paymentMethod} account में payment transfer हो जाएगी</Text>
-              <Text style={styles.infoText}>• Processing time: 5-10 minutes</Text>
-              <Text style={styles.infoText}>• SMS notification मिलेगा जब payment complete होगी</Text>
-              <Text style={styles.infoText}>• Same account से deposit किया था, उसी में withdrawal होगी</Text>
+            {/* Processing Time */}
+            <View style={styles.timeContainer}>
+              <Text style={styles.timeText}>Processing Time: 5-10 minutes</Text>
             </View>
 
             {/* Countdown */}
             <View style={styles.countdownContainer}>
               <Text style={styles.countdownText}>
-                Redirecting to home in {countdownSeconds} seconds...
+                Auto redirect in {countdownSeconds} seconds
               </Text>
             </View>
 
-            {/* Manual Home Button */}
+            {/* Manual Close Button */}
             <TouchableOpacity
-              style={styles.goHomeButton}
+              style={styles.closeButton}
               onPress={onClose}
             >
-              <Text style={styles.goHomeButtonText}>GO TO HOME</Text>
+              <Text style={styles.closeButtonText}>OK</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -119,114 +99,80 @@ const styles = StyleSheet.create({
   },
   withdrawSuccessModalContainer: {
     backgroundColor: '#0a0a0a',
-    width: '90%',
+    width: '85%',
     borderRadius: 15,
-    padding: 20,
+    padding: 25,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderWidth: 2,
+    borderColor: '#00FF88',
   },
   successContent: {
     alignItems: 'center',
+    width: '100%',
   },
   successIcon: {
-    backgroundColor: '#4A90E2',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    backgroundColor: '#00FF88',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
   },
   successIconText: {
-    fontSize: 30,
+    fontSize: 35,
     color: '#000',
   },
   successTitle: {
-    color: '#4A90E2',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  successMessage: {
-    color: '#999',
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 22,
-  },
-  amountDisplayContainer: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#333',
-    width: '100%',
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  amountDisplayLabel: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  amountDisplayValue: {
     color: '#00FF88',
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 5,
+    marginBottom: 25,
+    textAlign: 'center',
   },
-  paymentMethodDisplayContainer: {
+  amountDisplayContainer: {
     backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
+    padding: 20,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#FFD700',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 15,
     alignItems: 'center',
   },
-  paymentMethodDisplayLabel: {
+  amountDisplayLabel: {
     color: '#FFD700',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 5,
   },
-  paymentMethodDisplayValue: {
+  amountDisplayValue: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginTop: 5,
   },
-  paymentMethodNote: {
-    color: '#999',
-    fontSize: 12,
-    marginTop: 5,
-    textAlign: 'center',
-  },
-  timerContainer: {
-    marginBottom: 20,
-    alignItems: 'center',
+  upiDisplayContainer: {
     backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
+    padding: 20,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#4A90E2',
     width: '100%',
+    marginBottom: 15,
+    alignItems: 'center',
   },
-  timerMessage: {
-    color: '#00FF88',
+  upiDisplayLabel: {
+    color: '#4A90E2',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 5,
   },
-  timerNote: {
-    color: '#999',
-    fontSize: 12,
-    textAlign: 'center',
+  upiDisplayValue: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  infoContainer: {
+  timeContainer: {
     backgroundColor: '#1a1a1a',
     padding: 15,
     borderRadius: 10,
@@ -234,33 +180,28 @@ const styles = StyleSheet.create({
     borderColor: '#333',
     width: '100%',
     marginBottom: 20,
+    alignItems: 'center',
   },
-  infoTitle: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  infoText: {
+  timeText: {
     color: '#999',
-    fontSize: 12,
-    marginBottom: 4,
+    fontSize: 14,
+    textAlign: 'center',
   },
   countdownContainer: {
     marginBottom: 20,
   },
   countdownText: {
     color: '#FFD700',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
   },
-  goHomeButton: {
-    backgroundColor: '#4A90E2',
+  closeButton: {
+    backgroundColor: '#00FF88',
     paddingVertical: 15,
-    paddingHorizontal: 30,
+    paddingHorizontal: 40,
     borderRadius: 10,
   },
-  goHomeButtonText: {
+  closeButtonText: {
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
