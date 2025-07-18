@@ -34,15 +34,16 @@ interface BetData {
 
 // API Service for all HTTP requests
 export const apiService = {
-  baseURL: 'https://api.yourapp.com',
+  baseURL: process.env.EXPO_PUBLIC_API_URL || 'https://api.example.com',
 
-  async request(endpoint: string, options: RequestInit = {}) {
+  // GET request
+  get: async (endpoint: string) => {
     try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        ...options,
+      const response = await fetch(`${apiService.baseURL}${endpoint}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          ...options.headers,
+          'Authorization': `Bearer ${await getAuthToken()}`,
         },
       });
 
@@ -52,59 +53,78 @@ export const apiService = {
 
       return await response.json();
     } catch (error) {
-      console.error('API Error:', error);
-      // Return a default error response instead of throwing
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error',
-        data: null 
-      };
-    }
-  },
-
-  async get(endpoint: string) {
-    try {
-      return await this.request(endpoint);
-    } catch (error) {
       console.error('API GET Error:', error);
-      return { success: false, error: 'Failed to fetch data', data: null };
+      throw error;
     }
   },
 
-  async post(endpoint: string, data: any) {
+  // POST request
+  post: async (endpoint: string, data: any) => {
     try {
-      return await this.request(endpoint, {
+      const response = await fetch(`${apiService.baseURL}${endpoint}`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await getAuthToken()}`,
+        },
         body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('API POST Error:', error);
-      return { success: false, error: 'Failed to post data', data: null };
+      throw error;
     }
   },
 
-  async put(endpoint: string, data: any) {
+  // PUT request
+  put: async (endpoint: string, data: any) => {
     try {
-      return await this.request(endpoint, {
+      const response = await fetch(`${apiService.baseURL}${endpoint}`, {
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await getAuthToken()}`,
+        },
         body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('API PUT Error:', error);
-      return { success: false, error: 'Failed to update data', data: null };
+      throw error;
     }
   },
 
-  async delete(endpoint: string) {
+  // DELETE request
+  delete: async (endpoint: string) => {
     try {
-      return await this.request(endpoint, {
+      const response = await fetch(`${apiService.baseURL}${endpoint}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await getAuthToken()}`,
+        },
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('API DELETE Error:', error);
-      return { success: false, error: 'Failed to delete data', data: null };
+      throw error;
     }
-  },
+  }
 };
 
 // Helper function to get auth token

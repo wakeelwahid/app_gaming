@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
 
@@ -10,7 +11,7 @@ export const useAuth = () => {
     try {
       setIsLoading(true);
       const result = await userService.login(credentials);
-
+      
       if (result.success) {
         setUser(result.user);
         setIsAuthenticated(true);
@@ -29,7 +30,7 @@ export const useAuth = () => {
     try {
       setIsLoading(true);
       const result = await userService.register(userData);
-
+      
       if (result.success) {
         setUser(result.user);
         setIsAuthenticated(true);
@@ -72,17 +73,12 @@ export const useAuth = () => {
     const checkAuthStatus = async () => {
       try {
         const result = await userService.checkAuthStatus();
-        if (result?.success) {
-          setUser(result.user || null);
+        if (result.success) {
+          setUser(result.user);
           setIsAuthenticated(true);
-        } else {
-          setUser(null);
-          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error('Auth check error:', error);
-        setUser(null);
-        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }
