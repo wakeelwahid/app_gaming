@@ -275,13 +275,13 @@ export default function WalletOperations({
 
               {/* UPI Account Details */}
               <View style={styles.upiAccountContainer}>
-                <Text style={styles.upiAccountLabel}>💳 Your Registered UPI Account</Text>
+                <Text style={styles.upiAccountLabel}>💳 आपका रजिस्टर्ड UPI खाता</Text>
                 <View style={styles.upiAccountBox}>
                   <Text style={styles.upiAccountText}>user@phonepe</Text>
-                  <Text style={styles.upiAccountSubText}>Verified Account • Same as deposit</Text>
+                  <Text style={styles.upiAccountSubText}>वेरिफाइड अकाउंट • डिपाजिट वाला ही अकाउंट</Text>
                 </View>
                 <Text style={styles.upiAccountNote}>
-                  Withdrawal will be processed to this UPI account only
+                  निकासी केवल इसी UPI खाते में की जाएगी
                 </Text>
               </View>
 
