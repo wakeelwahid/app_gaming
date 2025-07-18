@@ -273,29 +273,6 @@ export default function WalletOperations({
                 ))}
               </View>
 
-              {/* UPI Details Display - Show when amount is selected */}
-              {withdrawAmount && parseFloat(withdrawAmount) >= 100 && (
-                <View style={styles.upiDetailsContainer}>
-                  <Text style={styles.upiDetailsTitle}>💳 Withdrawal Details</Text>
-                  <View style={styles.upiDetailRow}>
-                    <Text style={styles.upiDetailLabel}>Amount:</Text>
-                    <Text style={styles.upiDetailValue}>₹{withdrawAmount}</Text>
-                  </View>
-                  <View style={styles.upiDetailRow}>
-                    <Text style={styles.upiDetailLabel}>Processing Time:</Text>
-                    <Text style={styles.upiDetailValue}>5-10 minutes</Text>
-                  </View>
-                  <View style={styles.upiDetailRow}>
-                    <Text style={styles.upiDetailLabel}>Payment Method:</Text>
-                    <Text style={styles.upiDetailValue}>Same UPI used for deposit</Text>
-                  </View>
-                  <View style={styles.upiDetailRow}>
-                    <Text style={styles.upiDetailLabel}>Status:</Text>
-                    <Text style={styles.upiDetailValueSuccess}>Ready to Process</Text>
-                  </View>
-                </View>
-              )}
-
               <TouchableOpacity
                 style={[styles.withdrawRequestButton, (!withdrawAmount || parseFloat(withdrawAmount) < 100) && styles.withdrawButtonDisabled]}
                 onPress={handleWithdrawSubmit}
@@ -803,47 +780,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  upiDetailsContainer: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 2,
-    borderColor: '#4A90E2',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-  },
-  upiDetailsTitle: {
-    color: '#4A90E2',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 15,
-  },
-  upiDetailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  upiDetailLabel: {
-    color: '#999',
-    fontSize: 14,
-    flex: 1,
-  },
-  upiDetailValue: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'right',
-  },
-  upiDetailValueSuccess: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'right',
   },
 });
