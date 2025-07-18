@@ -41,6 +41,7 @@ export default function WalletOperations({
 }: WalletOperationsProps) {
   const [showPaymentWarningModal, setShowPaymentWarningModal] = useState(false);
   const [selectedMethodForWarning, setSelectedMethodForWarning] = useState('');
+  const [showWithdrawConfirmModal, setShowWithdrawConfirmModal] = useState(false);
 
   const calculateDepositDetails = (amount: number) => {
     const gst = Math.round(amount * 0.28);
@@ -52,10 +53,16 @@ export default function WalletOperations({
   const handleWithdrawSubmit = () => {
     const amount = parseFloat(withdrawAmount);
     if (amount >= 100) {
-      onWithdrawRequest(amount);
+      setShowWithdrawConfirmModal(true);
     } else {
       Alert.alert('Invalid Amount', 'Minimum withdrawal amount is ₹100');
     }
+  };
+
+  const handleConfirmWithdraw = () => {
+    setShowWithdrawConfirmModal(false);
+    const amount = parseFloat(withdrawAmount);
+    onWithdrawRequest(amount);
   };
 
   const handlePaymentMethodSelect = (method: string) => {
@@ -355,6 +362,77 @@ export default function WalletOperations({
                   onPress={handleConfirmPaymentMethod}
                 >
                   <Text style={styles.confirmWarningButtonText}>समझ गया, आगे बढ़ें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Withdrawal Confirmation Modal */}
+      <Modal
+        visible={showWithdrawConfirmModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowWithdrawConfirmModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.withdrawConfirmModalContainer}>
+            <View style={styles.confirmModalHeader}>
+              <Text style={styles.confirmModalTitle}>💰 Withdrawal Confirm करें</Text>
+              <TouchableOpacity onPress={() => setShowWithdrawConfirmModal(false)}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.confirmModalContent}>
+              <View style={styles.confirmIconContainer}>
+                <Text style={styles.confirmIcon}>💳</Text>
+              </View>
+
+              <Text style={styles.confirmMainText}>
+                क्या आप ₹{withdrawAmount} withdraw करना चाहते हैं?
+              </Text>
+
+              <View style={styles.withdrawDetailsContainer}>
+                <View style={styles.withdrawDetailRow}>
+                  <Text style={styles.withdrawDetailLabel}>💰 Amount:</Text>
+                  <Text style={styles.withdrawDetailValue}>₹{withdrawAmount}</Text>
+                </View>
+                
+                <View style={styles.withdrawDetailRow}>
+                  <Text style={styles.withdrawDetailLabel}>📱 UPI ID:</Text>
+                  <Text style={styles.withdrawDetailValue}>user@phonepe</Text>
+                </View>
+
+                <View style={styles.withdrawDetailRow}>
+                  <Text style={styles.withdrawDetailLabel}>⏰ Processing Time:</Text>
+                  <Text style={styles.withdrawDetailValue}>5-10 minutes</Text>
+                </View>
+              </View>
+
+              <View style={styles.confirmWarningContainer}>
+                <Text style={styles.confirmWarningText}>
+                  ⚠️ यह amount आपके registered UPI account में transfer होगी
+                </Text>
+                <Text style={styles.confirmWarningSubText}>
+                  Amount credited after admin approval
+                </Text>
+              </View>
+
+              <View style={styles.confirmButtonsContainer}>
+                <TouchableOpacity
+                  style={styles.cancelConfirmButton}
+                  onPress={() => setShowWithdrawConfirmModal(false)}
+                >
+                  <Text style={styles.cancelConfirmButtonText}>रद्द करें</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.confirmWithdrawButton}
+                  onPress={handleConfirmWithdraw}
+                >
+                  <Text style={styles.confirmWithdrawButtonText}>हाँ, Withdraw करें</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -829,6 +907,128 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmWarningButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  withdrawConfirmModalContainer: {
+    backgroundColor: '#0a0a0a',
+    width: '90%',
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+    maxWidth: 400,
+  },
+  confirmModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+    backgroundColor: '#1a1a1a',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  },
+  confirmModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    flex: 1,
+  },
+  confirmModalContent: {
+    padding: 20,
+  },
+  confirmIconContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  confirmIcon: {
+    fontSize: 50,
+    color: '#4A90E2',
+  },
+  confirmMainText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 24,
+  },
+  withdrawDetailsContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  withdrawDetailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  withdrawDetailLabel: {
+    color: '#999',
+    fontSize: 14,
+    flex: 1,
+  },
+  withdrawDetailValue: {
+    color: '#00FF88',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'right',
+  },
+  confirmWarningContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  confirmWarningText: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+    lineHeight: 18,
+  },
+  confirmWarningSubText: {
+    color: '#999',
+    fontSize: 12,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  confirmButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  cancelConfirmButton: {
+    flex: 1,
+    backgroundColor: '#333',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#666',
+  },
+  cancelConfirmButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  confirmWithdrawButton: {
+    flex: 1,
+    backgroundColor: '#4A90E2',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  confirmWithdrawButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
