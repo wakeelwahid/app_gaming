@@ -679,13 +679,13 @@ export default function App() {
   const handleWithdrawRequest = async (amount: number) => {
     // Close withdraw modal first
     setShowWithdrawModalState(false);
-    
+
     // Show withdrawal success page
     setShowWithdrawSuccessModalState(true);
-    
+
     // Here you can make API call to withdraw money
     // const result = await withdrawMoney(amount);
-    
+
     console.log('Withdrawal request submitted for amount:', amount);
   };
   const handleMenuItemPress = (key: string) => {
@@ -736,7 +736,7 @@ export default function App() {
 
     // For demo purposes, allow bet placement even with insufficient balance
     // In production, you would validate wallet balance properly
-    
+
     // Deduct money from wallet (only if sufficient balance)
     if (currentWallet >= totalAmount) {
       withdrawMoney(totalAmount);
@@ -846,7 +846,8 @@ export default function App() {
     setShowAuthModalState(false);
   };
 
-  const handleAddCash = async (amount: number) => {
+  const handleAddCash = async (```python
+amount: number) => {
     // Here you can make API call to add money
     // const result = await apiService.addMoney(amount);
     //const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
@@ -859,13 +860,13 @@ export default function App() {
   const handleWithdraw = async (amount: number) => {
     // For demo purposes, allow withdrawal regardless of wallet balance
     // In production, you would validate wallet balance properly
-    
+
     // Close withdraw modal first
     setShowWithdrawModalState(false);
-    
+
     // Show withdrawal success modal
     setShowWithdrawSuccessModalState(true);
-    
+
     // Optional: Deduct from wallet if sufficient balance
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     if (currentWallet >= amount) {
@@ -1581,8 +1582,9 @@ export default function App() {
 
       {/* Withdraw Success Component */}
       <WithdrawSuccess
-        visible={showWithdrawSuccessModalState}
+        visible={showWithdrawSuccessState}
         amount={withdrawAmountState}
+        paymentMethod={selectedPaymentMethodState || 'Selected UPI'}
         onClose={handleWithdrawSuccessClose}
       />
       {activeTabLocal === 'bets' && (

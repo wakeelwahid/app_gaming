@@ -4,12 +4,14 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 interface WithdrawSuccessProps {
   visible: boolean;
   amount: string;
+  paymentMethod: string;
   onClose: () => void;
 }
 
 export default function WithdrawSuccess({
   visible,
   amount,
+  paymentMethod,
   onClose
 }: WithdrawSuccessProps) {
   const [countdownSeconds, setCountdownSeconds] = useState(5);
@@ -59,10 +61,19 @@ export default function WithdrawSuccess({
               <Text style={styles.amountDisplayValue}>₹{amount}</Text>
             </View>
 
+            {/* Payment Method Display */}
+            <View style={styles.paymentMethodDisplayContainer}>
+              <Text style={styles.paymentMethodDisplayLabel}>💳 Payment Method:</Text>
+              <Text style={styles.paymentMethodDisplayValue}>{paymentMethod}</Text>
+              <Text style={styles.paymentMethodNote}>
+                आपको इसी account में payment मिलेगी
+              </Text>
+            </View>
+
             {/* Timer Message */}
             <View style={styles.timerContainer}>
               <Text style={styles.timerMessage}>
-                💳 Payment 5 to 10 minutes में successful हो जाएगी
+                💳 Payment 5 to 10 minutes में {paymentMethod} account में successful हो जाएगी
               </Text>
               <Text style={styles.timerNote}>
                 Processing में थोड़ा समय लगता है
@@ -72,9 +83,10 @@ export default function WithdrawSuccess({
             {/* Additional Info */}
             <View style={styles.infoContainer}>
               <Text style={styles.infoTitle}>📋 Important Information:</Text>
-              <Text style={styles.infoText}>• आपके bank account में payment transfer हो जाएगी</Text>
+              <Text style={styles.infoText}>• आपके {paymentMethod} account में payment transfer हो जाएगी</Text>
               <Text style={styles.infoText}>• Processing time: 5-10 minutes</Text>
               <Text style={styles.infoText}>• SMS notification मिलेगा जब payment complete होगी</Text>
+              <Text style={styles.infoText}>• Same account से deposit किया था, उसी में withdrawal होगी</Text>
             </View>
 
             {/* Countdown */}
@@ -164,6 +176,33 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 5,
+  },
+  paymentMethodDisplayContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+    width: '100%',
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  paymentMethodDisplayLabel: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  paymentMethodDisplayValue: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+  paymentMethodNote: {
+    color: '#999',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center',
   },
   timerContainer: {
     marginBottom: 20,
