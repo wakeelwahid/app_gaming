@@ -273,41 +273,6 @@ export default function WalletOperations({
                 ))}
               </View>
 
-              {/* UPI Account Details from Database */}
-              <View style={styles.upiAccountContainer}>
-                <Text style={styles.upiAccountLabel}>💳 Your Registered UPI Account</Text>
-                <View style={styles.upiAccountBox}>
-                  <Text style={styles.upiAccountText}>user@phonepe</Text>
-                  <Text style={styles.upiAccountSubText}>Verified Account • Same as deposit</Text>
-                </View>
-                <Text style={styles.upiAccountNote}>
-                  Withdrawal will be processed to this account only
-                </Text>
-              </View>
-
-              {/* Show withdrawal details when amount is selected */}
-              {withdrawAmount && parseFloat(withdrawAmount) >= 100 && (
-                <View style={styles.withdrawDetailsContainer}>
-                  <Text style={styles.withdrawDetailsTitle}>📋 Withdrawal Summary</Text>
-                  <View style={styles.withdrawDetailRow}>
-                    <Text style={styles.withdrawDetailLabel}>Amount:</Text>
-                    <Text style={styles.withdrawDetailValue}>₹{withdrawAmount}</Text>
-                  </View>
-                  <View style={styles.withdrawDetailRow}>
-                    <Text style={styles.withdrawDetailLabel}>UPI Account:</Text>
-                    <Text style={styles.withdrawDetailValue}>user@phonepe</Text>
-                  </View>
-                  <View style={styles.withdrawDetailRow}>
-                    <Text style={styles.withdrawDetailLabel}>Processing Time:</Text>
-                    <Text style={styles.withdrawDetailValue}>5-10 minutes</Text>
-                  </View>
-                  <View style={styles.withdrawDetailRow}>
-                    <Text style={styles.withdrawDetailLabel}>Status:</Text>
-                    <Text style={styles.withdrawDetailValueSuccess}>Ready to Process</Text>
-                  </View>
-                </View>
-              )}
-
               <TouchableOpacity
                 style={[styles.withdrawRequestButton, (!withdrawAmount || parseFloat(withdrawAmount) < 100) && styles.withdrawButtonDisabled]}
                 onPress={handleWithdrawSubmit}
@@ -719,88 +684,6 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 12,
     marginBottom: 4,
-  },
-  upiAccountContainer: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 2,
-    borderColor: '#4A90E2',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-  },
-  upiAccountLabel: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  upiAccountBox: {
-    backgroundColor: '#0a0a0a',
-    borderWidth: 1,
-    borderColor: '#00FF88',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-  },
-  upiAccountText: {
-    color: '#00FF88',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  upiAccountSubText: {
-    color: '#999',
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 4,
-  },
-  upiAccountNote: {
-    color: '#FFD700',
-    fontSize: 12,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  withdrawDetailsContainer: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 2,
-    borderColor: '#FFD700',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-  },
-  withdrawDetailsTitle: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 15,
-  },
-  withdrawDetailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  withdrawDetailLabel: {
-    color: '#999',
-    fontSize: 14,
-    flex: 1,
-  },
-  withdrawDetailValue: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'right',
-  },
-  withdrawDetailValueSuccess: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'right',
   },
   paymentWarningModalContainer: {
     backgroundColor: '#0a0a0a',
