@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
@@ -16,11 +17,11 @@ export default function PaymentSuccess({
   paymentMethod,
   onClose
 }: PaymentSuccessProps) {
-  const [countdownSeconds, setCountdownSeconds] = useState(5);
+  const [countdownSeconds, setCountdownSeconds] = useState(7);
 
   useEffect(() => {
     if (visible) {
-      setCountdownSeconds(5);
+      setCountdownSeconds(7);
       const timer = setInterval(() => {
         setCountdownSeconds((prev) => {
           if (prev <= 1) {
@@ -52,40 +53,39 @@ export default function PaymentSuccess({
             </View>
 
             {/* Success Message */}
-            <Text style={styles.successTitle}>Payment Pending!</Text>
-            <Text style={styles.successMessage}>
-              Your payment of ₹{amount} via {paymentMethod} is being processed.
-            </Text>
-
-            {/* UTR Display */}
-            <View style={styles.utrDisplayContainer}>
-              <Text style={styles.utrDisplayLabel}>UTR Number:</Text>
-              <Text style={styles.utrDisplayValue}>{utrNumber}</Text>
+            <Text style={styles.successTitle}>Deposit Successful!</Text>
+            
+            {/* Amount Display */}
+            <View style={styles.amountContainer}>
+              <Text style={styles.amountLabel}>Amount</Text>
+              <Text style={styles.amountValue}>₹{amount}</Text>
             </View>
 
-            {/* Timer Message */}
-            <View style={styles.timerContainer}>
-              <Text style={styles.timerMessage}>
-                💰 Wallet will be updated in 5 minutes
-              </Text>
-              <Text style={styles.timerNote}>
-                Admin approval required for security
-              </Text>
+            {/* Payment Method */}
+            <View style={styles.methodContainer}>
+              <Text style={styles.methodLabel}>Payment Method</Text>
+              <Text style={styles.methodValue}>{paymentMethod}</Text>
+            </View>
+
+            {/* UTR Display */}
+            <View style={styles.utrContainer}>
+              <Text style={styles.utrLabel}>UTR Number</Text>
+              <Text style={styles.utrValue}>{utrNumber}</Text>
             </View>
 
             {/* Countdown */}
             <View style={styles.countdownContainer}>
               <Text style={styles.countdownText}>
-                Redirecting to home in {countdownSeconds} seconds...
+                Closing in {countdownSeconds} seconds...
               </Text>
             </View>
 
-            {/* Manual Home Button */}
+            {/* Manual Close Button */}
             <TouchableOpacity
-              style={styles.goHomeButton}
+              style={styles.closeButton}
               onPress={onClose}
             >
-              <Text style={styles.goHomeButtonText}>GO TO HOME</Text>
+              <Text style={styles.closeButtonText}>CLOSE</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -103,71 +103,97 @@ const styles = StyleSheet.create({
   },
   paymentSuccessModalContainer: {
     backgroundColor: '#0a0a0a',
-    width: '90%',
+    width: '85%',
     borderRadius: 15,
-    padding: 20,
+    padding: 25,
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#00FF88',
   },
   successContent: {
     alignItems: 'center',
+    width: '100%',
   },
   successIcon: {
     backgroundColor: '#00FF88',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
   },
   successIconText: {
-    fontSize: 30,
+    fontSize: 35,
     color: '#000',
   },
   successTitle: {
-    color: '#FFD700',
-    fontSize: 22,
+    color: '#00FF88',
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  successMessage: {
-    color: '#999',
-    fontSize: 16,
+    marginBottom: 25,
     textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 22,
   },
-  utrDisplayContainer: {
+  amountContainer: {
     backgroundColor: '#1a1a1a',
     padding: 15,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#FFD700',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 15,
+    alignItems: 'center',
   },
-  utrDisplayLabel: {
+  amountLabel: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  amountValue: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+  methodContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    width: '100%',
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  methodLabel: {
     color: '#4A90E2',
     fontSize: 14,
     fontWeight: 'bold',
   },
-  utrDisplayValue: {
+  methodValue: {
     color: '#fff',
     fontSize: 16,
     marginTop: 5,
   },
-  timerContainer: {
+  utrContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#999',
+    width: '100%',
     marginBottom: 20,
     alignItems: 'center',
   },
-  timerMessage: {
-    color: '#00FF88',
-    fontSize: 16,
+  utrLabel: {
+    color: '#999',
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  timerNote: {
-    color: '#999',
-    fontSize: 12,
+  utrValue: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 5,
   },
   countdownContainer: {
     marginBottom: 20,
@@ -175,14 +201,15 @@ const styles = StyleSheet.create({
   countdownText: {
     color: '#FFD700',
     fontSize: 16,
+    textAlign: 'center',
   },
-  goHomeButton: {
+  closeButton: {
     backgroundColor: '#4A90E2',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
   },
-  goHomeButtonText: {
+  closeButtonText: {
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',

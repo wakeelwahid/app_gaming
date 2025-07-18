@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -42,6 +42,31 @@ export default function WalletOperations({
   const [showPaymentWarningModal, setShowPaymentWarningModal] = useState(false);
   const [selectedMethodForWarning, setSelectedMethodForWarning] = useState('');
   const [showWithdrawConfirmModal, setShowWithdrawConfirmModal] = useState(false);
+    const [paymentTimer, setPaymentTimer] = useState(300); // 5 minutes = 300 seconds
+
+  useEffect(() => {
+    if (showPaymentModal) {
+      setPaymentTimer(300);
+      const timer = setInterval(() => {
+        setPaymentTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            onClosePayment();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [showPaymentModal, onClosePayment]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   const calculateDepositDetails = (amount: number) => {
     const gst = Math.round(amount * 0.28);
@@ -193,6 +218,10 @@ export default function WalletOperations({
             </View>
 
             <View style={styles.paymentQRContent}>
+            <View style={styles.timerContainer}>
+                <Text style={styles.timerText}>{formatTime(paymentTimer)}</Text>
+                <Text style={styles.timerNote}>Time remaining to complete payment</Text>
+              </View>
               {/* QR Code Display */}
               <View style={styles.qrCodeContainer}>
                 <View style={styles.qrCodePlaceholder}>
@@ -1027,5 +1056,25 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  timerContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+    alignItems: 'center',
+  },
+  timerText: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  timerNote: {
+    color: '#999',
+    fontSize: 12,
+    textAlign: 'center',
   },
 });
