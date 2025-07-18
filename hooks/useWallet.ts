@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { walletService } from '../services/walletService';
 
@@ -9,6 +8,10 @@ export const useWallet = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    fetchWalletData();
+  }, []);
+
   const fetchWalletData = async () => {
     try {
       setIsLoading(true);
@@ -17,12 +20,13 @@ export const useWallet = () => {
         walletService.getTransactionHistory()
       ]);
 
-      setWallet(`₹${balanceData.balance.toFixed(2)}`);
-      setWinnings(`₹${balanceData.winnings.toFixed(2)}`);
-      setBonus(`₹${balanceData.bonus.toFixed(2)}`);
-      setTransactions(transactionData);
+      setWallet(`₹${balanceData.balance?.toFixed(2) || '0.00'}`);
+      setWinnings(`₹${balanceData.winnings?.toFixed(2) || '0.00'}`);
+      setBonus(`₹${balanceData.bonus?.toFixed(2) || '0.00'}`);
+      setTransactions(transactionData || []);
     } catch (error) {
       console.error('Error fetching wallet data:', error);
+      // Keep default values on error
     } finally {
       setIsLoading(false);
     }
@@ -71,10 +75,6 @@ export const useWallet = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchWalletData();
-  }, []);
 
   return {
     wallet,
