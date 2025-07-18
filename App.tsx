@@ -846,8 +846,8 @@ export default function App() {
     setShowAuthModalState(false);
   };
 
-  const handleAddCash = async (amount: number) =>```python
-{
+  const handleAddCash = async (```python
+amount: number) => {
     // Here you can make API call to add money
     // const result = await apiService.addMoney(amount);
     //const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
