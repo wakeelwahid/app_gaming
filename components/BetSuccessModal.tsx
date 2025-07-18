@@ -11,9 +11,10 @@ interface BetSuccessModalProps {
     gameName: string;
   } | null;
   onClose: () => void;
+  onNavigateToMyBets?: () => void;
 }
 
-export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuccessModalProps) {
+export default function BetSuccessModal({ visible, betDetails, onClose, onNavigateToMyBets }: BetSuccessModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.8));
   const [countdown, setCountdown] = React.useState(3);
@@ -123,7 +124,9 @@ export default function BetSuccessModal({ visible, betDetails, onClose }: BetSuc
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={() => {
             onClose();
-            // This will be handled by the parent component to navigate to mybets
+            if (onNavigateToMyBets) {
+              onNavigateToMyBets();
+            }
           }}>
             <Text style={styles.closeButtonText}>View My Bets</Text>
             <Ionicons name="arrow-forward" size={16} color="#0a0a0a" />

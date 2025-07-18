@@ -624,6 +624,7 @@ export default function App() {
   const [withdrawAmountLocal, setWithdrawAmountLocal] = useState('');
   const [selectedPaymentMethodLocal, setSelectedPaymentMethodLocal] = useState('');
   const [utrNumberLocal, setUtrNumberLocal] = useState('');
+  const [activeTabState, setActiveTabState] = useState('home');
 
   useEffect(() => {
     // Check age verification on app start
@@ -712,7 +713,7 @@ export default function App() {
 
   const handlePlaceBets = () => {
     console.log('handlePlaceBets called with betList:', betListState);
-    
+
     if (betListState.length === 0) {
       Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
       return;
@@ -726,7 +727,7 @@ export default function App() {
     if (currentWallet >= totalAmount) {
       // Deduct money from wallet
       withdrawMoney(totalAmount);
-      
+
       // Create bet records with proper status and timestamp
       const newBets = betListState.map(bet => ({
         ...bet,
@@ -840,6 +841,7 @@ export default function App() {
     //const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     //setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
     setShowAddCashModalState(false);
+    ```text
     setDepositAmountState('');
     Alert.alert('Deposit Successful', `₹${amount} has been added to your wallet. Admin approval pending.`);
   };
@@ -1582,6 +1584,11 @@ export default function App() {
           console.log('BetSuccessModal manually closed');
           setShowBetSuccessState(false);
           setActiveTabLocal('mybets');
+        }}
+        onNavigateToMyBets={() => {
+          setShowBetSuccessState(false);
+          setActiveTabLocal('mybets');
+          setActiveTabState('mybets');
         }}
       />
 
