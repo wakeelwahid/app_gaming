@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -13,7 +13,6 @@ interface HeaderProps {
 
 export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [pulseAnim] = useState(new Animated.Value(1));
 
   const profileMenuItems = [
     { icon: 'swap-horizontal', title: 'Transactions', key: 'transactions' },
@@ -25,29 +24,12 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
     { icon: 'log-out', title: 'Logout', key: 'logout' },
   ];
 
-  React.useEffect(() => {
-    // Pulse animation for wallet
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.1,
-          duration: 1000,
-          useNativeDriver: false,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: false,
-        }),
-      ])
-    ).start();
-  }, []);
-
   const handleMenuItemPress = (key: string) => {
     setShowProfileMenu(false);
     if (onMenuItemPress) {
       onMenuItemPress(key);
     }
+    console.log('Menu item pressed:', key);
   };
 
   return (
@@ -58,30 +40,25 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
             style={styles.profileButton}
             onPress={() => setShowProfileMenu(true)}
           >
-            <Animated.View style={[
-              styles.profileIcon,
-              { transform: [{ scale: pulseAnim }] }
-            ]}>
+            <View style={styles.profileIcon}>
               <Ionicons name="person" size={20} color="#fff" />
-            </Animated.View>
+            </View>
           </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text style={styles.headerTitle}>👑 DREAM11</Text>
-            <Text style={styles.tagline}>Premium Gaming Platform</Text>
+            <Text style={styles.tagline}>भारत का नंबर 1 गेमिंग प्लेटफॉर्म</Text>
           </View>
         </View>
 
         <View style={styles.headerRight}>
-          <Animated.View style={[
-            styles.walletContainer,
-            { transform: [{ scale: pulseAnim }] }
-          ]}>
+          <View style={styles.walletContainer}>
             <Ionicons name="wallet" size={20} color="#00FF88" />
             <Text style={styles.walletAmount}>{wallet}</Text>
-          </Animated.View>
+          </View>
         </View>
       </View>
 
+      {/* Profile Menu Modal */}
       <Modal
         visible={showProfileMenu}
         animationType="fade"
@@ -93,7 +70,7 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
           activeOpacity={1}
           onPress={() => setShowProfileMenu(false)}
         >
-          <Animated.View style={styles.profileMenuContainer}>
+          <View style={styles.profileMenuContainer}>
             <View style={styles.profileMenuHeader}>
               <View style={styles.profileMenuIcon}>
                 <Ionicons name="person" size={24} color="#4A90E2" />
@@ -122,7 +99,7 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
                 </Text>
               </TouchableOpacity>
             ))}
-          </Animated.View>
+          </View>
         </TouchableOpacity>
       </Modal>
     </>
@@ -140,11 +117,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#333',
     height: 55,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
   },
   headerLeft: {
     flex: 1,
@@ -161,11 +133,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4A90E2',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#4A90E2',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
-    elevation: 3,
   },
   titleContainer: {
     flexDirection: 'column',
@@ -194,11 +161,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#00FF88',
-    shadowColor: '#00FF88',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 3,
   },
   walletAmount: {
     fontSize: 14,
@@ -206,6 +168,7 @@ const styles = StyleSheet.create({
     color: '#00FF88',
     marginLeft: 6,
   },
+  // Modal Styles
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -220,10 +183,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4A90E2',
     minWidth: 200,
-    shadowColor: '#4A90E2',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     elevation: 5,
   },
   profileMenuHeader: {

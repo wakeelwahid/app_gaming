@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface GameCardProps {
   game: {
@@ -16,51 +16,8 @@ interface GameCardProps {
 }
 
 export default function GameCard({ game, onPlayNow }: GameCardProps) {
-  const [scaleAnim] = useState(new Animated.Value(1));
-  const [glowAnim] = useState(new Animated.Value(0));
-
-  const handlePressIn = () => {
-    Animated.parallel([
-      Animated.timing(scaleAnim, {
-        toValue: 0.95,
-        duration: 150,
-        useNativeDriver: false,
-      }),
-      Animated.timing(glowAnim, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.parallel([
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: false,
-      }),
-      Animated.timing(glowAnim, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  };
-
   return (
-    <Animated.View style={[
-      styles.gameCard,
-      { 
-        backgroundColor: game.bgColor,
-        transform: [{ scale: scaleAnim }],
-        shadowOpacity: glowAnim.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0.3, 0.6]
-        })
-      }
-    ]}>
+    <TouchableOpacity style={[styles.gameCard, { backgroundColor: game.bgColor }]}>
       <View style={styles.gameHeader}>
         <Text style={[styles.gameTitle, { color: game.color }]}>
           {game.id <= 4 ? '⭐' : '💎'} {game.title}
@@ -83,12 +40,10 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
       <TouchableOpacity 
         style={[styles.playButton, { backgroundColor: game.color }]}
         onPress={() => onPlayNow(game)}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
       >
         <Text style={styles.playButtonText}>Play Now →</Text>
       </TouchableOpacity>
-    </Animated.View>
+    </TouchableOpacity>
   );
 }
 
@@ -100,10 +55,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: '#333',
-    shadowColor: '#4A90E2',
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
   },
   gameHeader: {
     marginBottom: 10,
@@ -140,11 +91,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 6,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 2,
   },
   playButtonText: {
     color: '#000',
