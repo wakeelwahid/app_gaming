@@ -1,121 +1,293 @@
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useRef, useEffect } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallDevice = screenWidth < 380;
 
 interface BottomMenuProps {
-  activeTab: string;
-  onMenuItemPress: (key: string) => void;
+  currentScreen: string;
+  onScreenChange: (screen: string) => void;
 }
 
-export default function BottomMenu({ 
-  activeTab, 
-  onMenuItemPress
-}: BottomMenuProps) {
+export default function BottomMenu({ currentScreen, onScreenChange }: BottomMenuProps) {
+  const menuItems = [
+    { key: 'home', icon: '🏠', label: 'होम' },
+    { key: 'games', icon: '🎮', label: 'गेम्स' },
+    { key: 'mybet', icon: '🎯', label: 'मेरा बेट' },
+    { key: 'history', icon: '📊', label: 'हिस्ट्री' },
+    { key: 'wallet', icon: '💰', label: 'वॉलेट' },
+  ];
+
+  const animatedValues = useRef(
+    menuItems.reduce((acc, item) => {
+      acc[item.key] = {
+        scale: new Animated.Value(currentScreen === item.key ? 1.2 : 1),
+        glow: new Animated.Value(currentScreen === item.key ? 1 : 0),
+        bounce: new Animated.Value(0),
+      };
+      return acc;
+    }, {} as any)
+  ).current;
+
+  const containerAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Container slide up animation
+    Animated.timing(containerAnim, {
+      toValue: 1,
+      duration: 800,
+      easing: Easing.out(Easing.back(1.1)),
+      useNativeDriver: false,
+    }).start();
+
+    // Continuous pulse animation for active item
+    Object.keys(animatedValues).forEach(key => {
+      if (currentScreen === key) {
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(animatedValues[key].bounce, {
+              toValue: 1,
+              duration: 1000,
+              easing: Easing.inOut(Easing.cubic),
+              useNativeDriver: false,
+            }),
+            Animated.timing(animatedValues[key].bounce, {
+              toValue: 0,
+              duration: 1000,
+              easing: Easing.inOut(Easing.cubic),
+              useNativeDriver: false,
+            }),
+          ])
+        ).start();
+      }
+    });
+  }, [currentScreen]);
+
+  const handlePress = (screen: string) => {
+    // Animate current item out
+    if (currentScreen !== screen) {
+      Animated.parallel([
+        Animated.timing(animatedValues[currentScreen]?.scale, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValues[currentScreen]?.glow, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: false,
+        }),
+      ]).start();
+
+      // Animate new item in
+      Animated.parallel([
+        Animated.spring(animatedValues[screen]?.scale, {
+          toValue: 1.2,
+          tension: 100,
+          friction: 3,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValues[screen]?.glow, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+
+    onScreenChange(screen);
+  };
+
+  const containerTranslateY = containerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [100, 0],
+  });
+
   return (
-    <>
-      <View style={styles.bottomTabBar}>
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'home' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('home')}
-        >
-          <Ionicons 
-            name="home" 
-            size={20} 
-            color={activeTab === 'home' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'home' && styles.activeTabText]}>Home</Text>
-        </TouchableOpacity>
+    <Animated.View style={[styles.container, { transform: [{ translateY: containerTranslateY }] }]}>
+      <LinearGradient
+        colors={['#1a1a1a', '#2a2a2a', '#1a1a1a']}
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <View style={styles.menuContainer}>
+          {menuItems.map((item) => {
+            const isActive = currentScreen === item.key;
+            const scale = animatedValues[item.key]?.scale;
+            const glow = animatedValues[item.key]?.glow;
+            const bounce = animatedValues[item.key]?.bounce;
 
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'mybets' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('mybets')}
-        >
-          <Ionicons 
-            name="list-circle" 
-            size={20} 
-            color={activeTab === 'mybets' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'mybets' && styles.activeTabText]}>My Bets</Text>
-        </TouchableOpacity>
+            const glowOpacity = glow?.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 0.8],
+            });
 
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'wallet' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('wallet')}
-        >
-          <Ionicons 
-            name="wallet" 
-            size={20} 
-            color={activeTab === 'wallet' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'wallet' && styles.activeTabText]}>Wallet</Text>
-        </TouchableOpacity>
+            const bounceTranslate = bounce?.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, -5],
+            });
 
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'games' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('games')}
-        >
-          <Ionicons 
-            name="game-controller" 
-            size={20} 
-            color={activeTab === 'games' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'games' && styles.activeTabText]}>Games</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.tabItem, activeTab === 'profile' && styles.activeTabItem]} 
-          onPress={() => onMenuItemPress('profile')}
-        >
-          <Ionicons 
-            name="person" 
-            size={20} 
-            color={activeTab === 'profile' ? '#4A90E2' : '#999'} 
-          />
-          <Text style={[styles.tabText, activeTab === 'profile' && styles.activeTabText]}>Profile</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+            return (
+              <TouchableOpacity
+                key={item.key}
+                style={styles.menuItem}
+                onPress={() => handlePress(item.key)}
+                activeOpacity={0.7}
+              >
+                <Animated.View
+                  style={[
+                    styles.itemContainer,
+                    {
+                      transform: [
+                        { scale: scale },
+                        { translateY: bounceTranslate || 0 }
+                      ],
+                    },
+                  ]}
+                >
+                  {/* Glow Effect */}
+                  <Animated.View
+                    style={[
+                      styles.glowEffect,
+                      {
+                        opacity: glowOpacity,
+                        shadowColor: isActive ? '#FFD700' : '#4A90E2',
+                      },
+                    ]}
+                  />
+                  
+                  {/* Icon Container */}
+                  <View style={[styles.iconContainer, isActive && styles.activeIconContainer]}>
+                    <LinearGradient
+                      colors={isActive ? ['#FFD700', '#FFA500'] : ['#4A90E2', '#357ABD']}
+                      style={styles.iconGradient}
+                    >
+                      <Text style={[styles.icon, isActive && styles.activeIcon]}>
+                        {item.icon}
+                      </Text>
+                    </LinearGradient>
+                  </View>
+                  
+                  {/* Label */}
+                  <Text style={[styles.label, isActive && styles.activeLabel]}>
+                    {item.label}
+                  </Text>
+                  
+                  {/* Active Indicator */}
+                  {isActive && (
+                    <Animated.View style={[styles.activeIndicator, { opacity: glow }]} />
+                  )}
+                </Animated.View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </LinearGradient>
+    </Animated.View>
   );
 }
 
-import { Dimensions } from 'react-native';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const isSmallDevice = SCREEN_WIDTH < 375;
-
 const styles = StyleSheet.create({
-  bottomTabBar: {
+  container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
+  gradient: {
+    paddingTop: isSmallDevice ? 10 : 15,
+    paddingBottom: isSmallDevice ? 20 : 25,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    elevation: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+  },
+  menuContainer: {
     flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
-    paddingVertical: isSmallDevice ? 4 : 6,
-    paddingHorizontal: isSmallDevice ? 2 : 5,
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-    alignItems: 'center',
     justifyContent: 'space-around',
-    height: isSmallDevice ? 50 : 60,
+    alignItems: 'center',
+    paddingHorizontal: isSmallDevice ? 10 : 20,
+  },
+  menuItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  itemContainer: {
+    alignItems: 'center',
     position: 'relative',
   },
-  tabItem: {
+  glowEffect: {
+    position: 'absolute',
+    top: -5,
+    left: -5,
+    right: -5,
+    bottom: -5,
+    borderRadius: 25,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  iconContainer: {
+    width: isSmallDevice ? 35 : 40,
+    height: isSmallDevice ? 35 : 40,
+    borderRadius: isSmallDevice ? 17.5 : 20,
+    overflow: 'hidden',
+    marginBottom: 4,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  activeIconContainer: {
+    elevation: 8,
+    shadowColor: '#FFD700',
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+  },
+  iconGradient: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: isSmallDevice ? 4 : 6,
-    paddingHorizontal: isSmallDevice ? 2 : 4,
+    alignItems: 'center',
   },
-  activeTabItem: {
-    backgroundColor: 'transparent',
+  icon: {
+    fontSize: isSmallDevice ? 16 : 18,
   },
-  tabText: {
-    fontSize: isSmallDevice ? 8 : 10,
+  activeIcon: {
+    fontSize: isSmallDevice ? 18 : 20,
+  },
+  label: {
     color: '#999',
-    marginTop: 2,
+    fontSize: isSmallDevice ? 9 : 10,
+    fontWeight: '600',
     textAlign: 'center',
+    marginTop: 2,
   },
-  activeTabText: {
-    color: '#4A90E2',
+  activeLabel: {
+    color: '#FFD700',
     fontWeight: 'bold',
+    textShadowColor: 'rgba(255, 212, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-  
+  activeIndicator: {
+    position: 'absolute',
+    bottom: -8,
+    width: 20,
+    height: 3,
+    backgroundColor: '#FFD700',
+    borderRadius: 1.5,
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 3,
+  },
 });
