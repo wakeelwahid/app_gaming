@@ -841,7 +841,6 @@ export default function App() {
     //const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
     //setWallet(`₹${(currentWallet + amount).toFixed(2)}`);
     setShowAddCashModalState(false);
-    ```text
     setDepositAmountState('');
     Alert.alert('Deposit Successful', `₹${amount} has been added to your wallet. Admin approval pending.`);
   };
