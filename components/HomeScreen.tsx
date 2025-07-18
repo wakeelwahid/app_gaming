@@ -61,112 +61,124 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
   );
 }
 
+import { Dimensions } from 'react-native';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const isSmallDevice = SCREEN_WIDTH < 375;
+const isMediumDevice = SCREEN_WIDTH >= 375 && SCREEN_WIDTH < 768;
+
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: isSmallDevice ? 10 : 15,
   },
   promoScroll: {
-    marginVertical: 15,
+    marginVertical: isSmallDevice ? 10 : 15,
   },
   promoCard: {
     backgroundColor: '#1a1a1a',
-    padding: 15,
-    marginRight: 10,
-    borderRadius: 10,
+    padding: isSmallDevice ? 12 : 15,
+    marginRight: isSmallDevice ? 8 : 10,
+    borderRadius: isSmallDevice ? 8 : 10,
     borderWidth: 1,
     borderColor: '#4A90E2',
-    minWidth: 250,
+    minWidth: isSmallDevice ? 200 : 250,
   },
   promoText: {
     color: '#4A90E2',
-    fontSize: 14,
+    fontSize: isSmallDevice ? 12 : 14,
     fontWeight: 'bold',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: isSmallDevice ? 16 : 18,
     fontWeight: 'bold',
     color: '#4A90E2',
-    marginBottom: 15,
+    marginBottom: isSmallDevice ? 12 : 15,
     textAlign: 'center',
   },
   featuresContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: isSmallDevice ? 15 : 20,
+    gap: isSmallDevice ? 8 : 10,
   },
   featureCard: {
     backgroundColor: '#1a1a1a',
-    width: '48%',
-    padding: 15,
-    borderRadius: 10,
+    width: isSmallDevice ? '47%' : '48%',
+    padding: isSmallDevice ? 12 : 15,
+    borderRadius: isSmallDevice ? 8 : 10,
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: isSmallDevice ? 8 : 10,
     borderWidth: 1,
     borderColor: '#333',
+    minHeight: isSmallDevice ? 80 : 90,
   },
   featureIcon: {
-    fontSize: 24,
-    marginBottom: 8,
+    fontSize: isSmallDevice ? 20 : 24,
+    marginBottom: isSmallDevice ? 6 : 8,
   },
   featureTitle: {
     color: '#4A90E2',
-    fontSize: 12,
+    fontSize: isSmallDevice ? 10 : 12,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
   },
   featureSubtitle: {
     color: '#999',
-    fontSize: 10,
+    fontSize: isSmallDevice ? 8 : 10,
     textAlign: 'center',
   },
   timeKycContainer: {
     backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
+    padding: isSmallDevice ? 12 : 15,
+    borderRadius: isSmallDevice ? 8 : 10,
+    marginBottom: isSmallDevice ? 15 : 20,
     borderWidth: 1,
     borderColor: '#333',
-    flexDirection: 'row',
+    flexDirection: isSmallDevice ? 'column' : 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: isSmallDevice ? 10 : 0,
   },
   timeSection: {
-    flex: 1,
+    flex: isSmallDevice ? 0 : 1,
   },
   currentTime: {
     color: '#00FF88',
-    fontSize: 16,
+    fontSize: isSmallDevice ? 14 : 16,
     fontWeight: 'bold',
+    textAlign: isSmallDevice ? 'center' : 'left',
   },
   kycButton: {
     backgroundColor: '#FF4444',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingHorizontal: isSmallDevice ? 12 : 15,
+    paddingVertical: isSmallDevice ? 8 : 10,
+    borderRadius: isSmallDevice ? 6 : 8,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+    minHeight: isSmallDevice ? 35 : 40,
   },
   kycButtonIcon: {
-    fontSize: 14,
+    fontSize: isSmallDevice ? 12 : 14,
   },
   kycButtonText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: isSmallDevice ? 10 : 12,
     fontWeight: 'bold',
   },
   gamesContainer: {
-    marginBottom: 20,
+    marginBottom: isSmallDevice ? 15 : 20,
   },
   gameRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: isSmallDevice ? 8 : 10,
   },
   bottomSpacing: {
-    height: 100,
+    height: isSmallDevice ? 80 : 100,
   },
 });

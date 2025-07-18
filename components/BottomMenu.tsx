@@ -79,30 +79,36 @@ export default function BottomMenu({
   );
 }
 
+import { Dimensions } from 'react-native';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const isSmallDevice = SCREEN_WIDTH < 375;
+
 const styles = StyleSheet.create({
   bottomTabBar: {
     flexDirection: 'row',
     backgroundColor: '#1a1a1a',
-    paddingVertical: 6,
-    paddingHorizontal: 5,
+    paddingVertical: isSmallDevice ? 4 : 6,
+    paddingHorizontal: isSmallDevice ? 2 : 5,
     borderTopWidth: 1,
     borderTopColor: '#333',
     alignItems: 'center',
     justifyContent: 'space-around',
-    height: 60,
+    height: isSmallDevice ? 50 : 60,
     position: 'relative',
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
+    paddingVertical: isSmallDevice ? 4 : 6,
+    paddingHorizontal: isSmallDevice ? 2 : 4,
   },
   activeTabItem: {
     backgroundColor: 'transparent',
   },
   tabText: {
-    fontSize: 10,
+    fontSize: isSmallDevice ? 8 : 10,
     color: '#999',
     marginTop: 2,
     textAlign: 'center',
