@@ -58,22 +58,25 @@ export default function WalletOperations({
 
   const handlePaymentMethodSelect = (method: string) => {
     Alert.alert(
-      '⚠️ Important Notice',
+      '⚠️ महत्वपूर्ण सूचना | Important Notice',
       `जब आप ${method} से deposit करते हैं, तो withdrawal भी इसी ${method} account में होगी। कृपया सुनिश्चित करें कि यह आपका own account है।\n\nWhen you deposit via ${method}, withdrawal will also be made to the same ${method} account. Please ensure this is your own account.`,
       [
         {
           text: 'रद्द करें (Cancel)',
           style: 'cancel',
+          onPress: () => {
+            console.log('Payment method selection cancelled');
+          }
         },
         {
-          text: 'आगे बढ़ें (Continue)',
+          text: 'समझ गया, आगे बढ़ें (Continue)',
           onPress: () => {
+            console.log('Payment method selected:', method);
             onPaymentMethodSelect(method);
-            onCloseAddCash();
-            onClosePayment();
           },
         },
-      ]
+      ],
+      { cancelable: false }
     );
   };
 
@@ -170,6 +173,7 @@ export default function WalletOperations({
                   <Text style={styles.depositInfoText}>• 28% GST applicable on all deposits</Text>
                   <Text style={styles.depositInfoText}>• 5% cashback on deposits above ₹2000</Text>
                   <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
+                  <Text style={styles.depositWarningText}>⚠️ Withdrawal केवल deposit वाले account में होगी</Text>
                 </View>
               )}
             </View>
@@ -463,6 +467,13 @@ const styles = StyleSheet.create({
   depositInfoText: {
     color: '#999',
     fontSize: 12,
+    marginBottom: 4,
+  },
+  depositWarningText: {
+    color: '#FF6B6B',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: 8,
     marginBottom: 4,
   },
   paymentQRModalContainer: {
