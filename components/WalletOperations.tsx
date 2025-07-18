@@ -87,14 +87,14 @@ export default function WalletOperations({
         <View style={styles.modalOverlay}>
           <View style={styles.addCashModalContainer}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💰 Add Coins via UPI</Text>
+              <Text style={styles.modalTitle}>💰 UPI से पैसे Add करें</Text>
               <TouchableOpacity onPress={onCloseAddCash}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.addCashContent}>
-              <Text style={styles.depositLabel}>Deposit Amount (₹)</Text>
+              <Text style={styles.depositLabel}>Amount डालें (₹)</Text>
               <TextInput
                 style={styles.depositInput}
                 placeholder="Enter amount"
@@ -119,7 +119,7 @@ export default function WalletOperations({
               {depositAmount && parseFloat(depositAmount) >= 100 && (
                 <View style={styles.depositSummary}>
                   <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Deposit Amount (Excl. Govt. Tax)</Text>
+                    <Text style={styles.summaryLabel}>Deposit Amount (Tax छोड़कर)</Text>
                     <Text style={styles.summaryValue}>₹{depositAmount}</Text>
                   </View>
                   <View style={styles.summaryRow}>
@@ -132,13 +132,13 @@ export default function WalletOperations({
                   </View>
                   <View style={styles.summaryDivider} />
                   <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabelTotal}>Total (A + B)</Text>
+                    <Text style={styles.summaryLabelTotal}>Total Amount</Text>
                     <Text style={styles.summaryValueTotal}>₹{calculateDepositDetails(parseFloat(depositAmount)).total}</Text>
                   </View>
                 </View>
               )}
 
-              <Text style={styles.paymentMethodLabel}>UPI Payment Method</Text>
+              <Text style={styles.paymentMethodLabel}>UPI से Payment करें</Text>
               <View style={styles.paymentMethods}>
                 <TouchableOpacity 
                   style={styles.paymentMethod}
@@ -162,12 +162,12 @@ export default function WalletOperations({
 
               {(!depositAmount || parseFloat(depositAmount) < 100) && (
                 <View style={styles.depositInfo}>
-                  <Text style={styles.depositInfoTitle}>📌 Deposit Information:</Text>
-                  <Text style={styles.depositInfoText}>• Minimum deposit: ₹100</Text>
-                  <Text style={styles.depositInfoText}>• Instant UPI deposits (Max ₹50,000)</Text>
-                  <Text style={styles.depositInfoText}>• 28% GST applicable on all deposits</Text>
-                  <Text style={styles.depositInfoText}>• 5% cashback on deposits above ₹2000</Text>
-                  <Text style={styles.depositInfoText}>• Wallet balance updated after admin approval</Text>
+                  <Text style={styles.depositInfoTitle}>📌 Deposit की जानकारी:</Text>
+                  <Text style={styles.depositInfoText}>• कम से कम deposit: ₹100</Text>
+                  <Text style={styles.depositInfoText}>• तुरंत UPI deposits (Max ₹50,000)</Text>
+                  <Text style={styles.depositInfoText}>• सभी deposits पर 28% GST लगेगा</Text>
+                  <Text style={styles.depositInfoText}>• ₹2000 से ऊपर 5% cashback मिलेगा</Text>
+                  <Text style={styles.depositInfoText}>• Admin approval के बाद wallet balance update होगा</Text>
                   <Text style={styles.depositWarningText}>⚠️ Withdrawal केवल deposit वाले account में होगी</Text>
                 </View>
               )}
@@ -278,18 +278,6 @@ export default function WalletOperations({
                     <Text style={styles.quickAmountText}>₹{amount}</Text>
                   </TouchableOpacity>
                 ))}
-              </View>
-
-              {/* UPI Account Details */}
-              <View style={styles.upiAccountContainer}>
-                <Text style={styles.upiAccountLabel}>💳 आपका रजिस्टर्ड UPI खाता</Text>
-                <View style={styles.upiAccountBox}>
-                  <Text style={styles.upiAccountText}>user@phonepe</Text>
-                  <Text style={styles.upiAccountSubText}>वेरिफाइड अकाउंट • डिपाजिट वाला ही अकाउंट</Text>
-                </View>
-                <Text style={styles.upiAccountNote}>
-                  निकासी केवल इसी UPI खाते में की जाएगी
-                </Text>
               </View>
 
               <TouchableOpacity
