@@ -93,7 +93,7 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.betHeader}>
-        <Text style={styles.betLogo}>My Challenges</Text>
+        <Text style={styles.betLogo}>My Bets</Text>
       </View>
 
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -106,9 +106,9 @@ const MyBet = ({ placedBets = [] }: MyBetProps) => {
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>🎯</Text>
-            <Text style={styles.emptyTitle}>कोई bet नहीं लगाया गया</Text>
+            <Text style={styles.emptyTitle}>कोई bet नहीं है</Text>
             <Text style={styles.emptyMessage}>
-              अपना पहला bet लगाएं और यहाँ देखें
+              अपना bet लगाएं और यहाँ देखें
             </Text>
           </View>
         )}
