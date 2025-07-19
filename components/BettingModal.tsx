@@ -186,22 +186,6 @@ export default function BettingModal({
                   🎯 Numbers (1-100)
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.tab, currentBetType === 'andar' && styles.activeTab]}
-                onPress={() => onBetTypeChange('andar')}
-              >
-                <Text style={[styles.tabText, currentBetType === 'andar' && styles.activeTabText]}>
-                  🟢 Andar (0-9)
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.tab, currentBetType === 'bahar' && styles.activeTab]}
-                onPress={() => onBetTypeChange('bahar')}
-              >
-                <Text style={[styles.tabText, currentBetType === 'bahar' && styles.activeTabText]}>
-                  🔴 Bahar (0-9)
-                </Text>
-              </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.contentScrollView} showsVerticalScrollIndicator={false}>
@@ -840,6 +824,31 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     color: '#000',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  betTypeSelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-around', // Distribute buttons evenly
+    marginBottom: 15, // Space below the selector
+  },
+  betTypeButton: {
+    backgroundColor: '#2c3e50', // Darker background
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#34495e', // Slightly lighter border
+  },
+  activeBetTypeButton: {
+    backgroundColor: '#e67e22', // Highlighted background
+    borderColor: '#d35400',
+  },
+  betTypeText: {
+    color: '#ecf0f1', // Light text
+    fontSize: 14,
+  },
+  activeBetTypeText: {
+    color: '#ffffff',
     fontWeight: 'bold',
   },
 });
