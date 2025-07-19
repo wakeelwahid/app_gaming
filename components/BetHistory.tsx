@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,14 +10,24 @@ interface BetHistoryProps {
 
 export default function BetHistory({ visible, betHistory = [], onClose }: BetHistoryProps) {
   const [selectedGameFilter, setSelectedGameFilter] = useState<string>('All');
-  
+
   if (!visible) return null;
 
+  // Filter betHistory to only include bets from the last 7 days
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const recentBetHistory = betHistory.filter(bet => {
+    const betDate = new Date(bet.timestamp);
+    return betDate >= sevenDaysAgo;
+  });
+
+
   // Group bets by game and date
-  const groupedBetsByGame = betHistory.reduce((acc, bet) => {
+  const groupedBetsByGame = recentBetHistory.reduce((acc, bet) => {
     const gameKey = bet.game || 'Unknown Game';
     const dateKey = bet.timestamp ? new Date(bet.timestamp).toDateString() : 'Unknown Date';
-    
+
     if (!acc[gameKey]) {
       acc[gameKey] = {};
     }
@@ -30,15 +39,15 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
   }, {});
 
   const games = Object.keys(groupedBetsByGame);
-  const allGames = ['All', ...games];
-  
+  const allGames = games;
+
   const filteredGames = selectedGameFilter === 'All' 
     ? groupedBetsByGame 
     : { [selectedGameFilter]: groupedBetsByGame[selectedGameFilter] };
 
   const getBetChipColor = (bet: any) => {
     const { type, number, status } = bet;
-    
+
     // Base colors for different bet types
     if (type?.toLowerCase() === 'andar') {
       return status === 'win' ? '#00FF88' : '#4CAF50';
@@ -57,13 +66,13 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
 
   const getBetChipStyle = (bet: any) => {
     const baseStyle = [styles.betChip];
-    
+
     if (bet.status === 'win') {
       baseStyle.push(styles.winChip);
     } else if (bet.status === 'loss') {
       baseStyle.push(styles.lossChip);
     }
-    
+
     return baseStyle;
   };
 
@@ -176,7 +185,7 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
         </TouchableOpacity>
       </View>
 
-      {betHistory && betHistory.length > 0 ? (
+      {recentBetHistory && recentBetHistory.length > 0 ? (
         <>
           {renderGameFilter()}
           <ScrollView style={styles.gamesList} showsVerticalScrollIndicator={false}>
@@ -188,9 +197,9 @@ export default function BetHistory({ visible, betHistory = [], onClose }: BetHis
       ) : (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyIcon}>🎲</Text>
-          <Text style={styles.emptyTitle}>कोई bet history नहीं है</Text>
+          <Text style={styles.emptyTitle}>Last 7 days में कोई bet नहीं है</Text>
           <Text style={styles.emptyMessage}>
-            अपना पहला bet लगाएं और यहां अपनी history देखें
+            अपना bet लगाएं और यहाँ देखें
           </Text>
         </View>
       )}
