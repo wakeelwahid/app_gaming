@@ -14,12 +14,8 @@ interface RefundPolicyProps {
 export default function RefundPolicy({ onBack }: RefundPolicyProps) {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
+      {/* Header - Removed Back Button */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Ionicons name="arrow-back" size={24} color="#4A90E2" />
-          <Text style={styles.backText}>Back</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>💳 Refund Policy</Text>
       </View>
 
@@ -41,95 +37,95 @@ export default function RefundPolicy({ onBack }: RefundPolicyProps) {
 
         {/* Policy Sections */}
         <View style={styles.policyContainer}>
-          <Text style={styles.sectionTitle}>📋 Deposit Refund Policy</Text>
+          <Text style={styles.sectionTitle}>📋 Deposit Refund नीति</Text>
           <Text style={styles.policyText}>• Deposit के तुरंत बाद refund नहीं किया जा सकता</Text>
-          <Text style={styles.policyText}>• Technical error के case में 24 घंटे के अंदर refund</Text>
-          <Text style={styles.policyText}>• Duplicate payment के case में automatic refund</Text>
+          <Text style={styles.policyText}>• Technical error के case में 24 घंटे के अंदर refund मिलेगा</Text>
+          <Text style={styles.policyText}>• Duplicate payment के case में automatic refund हो जाएगा</Text>
           <Text style={styles.policyText}>• Wrong payment के case में 2-3 working days में refund</Text>
           <Text style={styles.policyText}>• GST charges refund नहीं किए जाएंगे</Text>
 
-          <Text style={styles.sectionTitle}>🎮 Game Bet Refund Policy</Text>
+          <Text style={styles.sectionTitle}>🎮 Game Bet Refund नीति</Text>
           <Text style={styles.policyText}>• एक बार bet place होने के बाद cancel नहीं हो सकता</Text>
-          <Text style={styles.policyText}>• Result declare होने के बाद कोई refund नहीं</Text>
-          <Text style={styles.policyText}>• Technical issue के case में admin द्वारा review</Text>
+          <Text style={styles.policyText}>• Result declare होने के बाद कोई refund नहीं मिलेगा</Text>
+          <Text style={styles.policyText}>• Technical issue के case में admin द्वारा review किया जाएगा</Text>
           <Text style={styles.policyText}>• Wrong number selection की जिम्मेदारी user की है</Text>
           <Text style={styles.policyText}>• Game close होने के बाद bet cancel नहीं हो सकता</Text>
 
-          <Text style={styles.sectionTitle}>💰 Wallet Refund Scenarios</Text>
+          <Text style={styles.sectionTitle}>💰 Wallet Refund के हालात</Text>
           <Text style={styles.policyText}>• Account ban के case में balance refund किया जाएगा</Text>
-          <Text style={styles.policyText}>• Fraud activity detect होने पर no refund</Text>
-          <Text style={styles.policyText}>• User द्वारा account delete पर balance withdrawal</Text>
-          <Text style={styles.policyText}>• Legal issues के case में amount hold</Text>
+          <Text style={styles.policyText}>• Fraud activity detect होने पर कोई refund नहीं</Text>
+          <Text style={styles.policyText}>• User द्वारा account delete पर balance withdrawal कर सकते हैं</Text>
+          <Text style={styles.policyText}>• Legal issues के case में amount hold रहेगा</Text>
           <Text style={styles.policyText}>• KYC incomplete होने पर withdrawal restrictions</Text>
 
-          <Text style={styles.sectionTitle}>⏰ Refund Processing Time</Text>
-          <Text style={styles.policyText}>• UPI refund: 2-24 hours</Text>
-          <Text style={styles.policyText}>• Bank account refund: 3-7 working days</Text>
-          <Text style={styles.policyText}>• Credit/Debit card refund: 5-10 working days</Text>
-          <Text style={styles.policyText}>• E-wallet refund: Instant to 24 hours</Text>
-          <Text style={styles.policyText}>• International payments: 10-15 working days</Text>
+          <Text style={styles.sectionTitle}>⏰ Refund Processing का समय</Text>
+          <Text style={styles.policyText}>• UPI refund: 2-24 घंटे में</Text>
+          <Text style={styles.policyText}>• Bank account refund: 3-7 working days में</Text>
+          <Text style={styles.policyText}>• Credit/Debit card refund: 5-10 working days में</Text>
+          <Text style={styles.policyText}>• E-wallet refund: Instant से 24 घंटे तक</Text>
+          <Text style={styles.policyText}>• International payments: 10-15 working days तक</Text>
 
-          <Text style={styles.sectionTitle}>📝 Refund Request Process</Text>
-          <Text style={styles.policyText}>• Customer support से contact करें</Text>
+          <Text style={styles.sectionTitle}>📝 Refund Request करने का तरीका</Text>
+          <Text style={styles.policyText}>• हमारी customer support से संपर्क करें</Text>
           <Text style={styles.policyText}>• Transaction ID और screenshot provide करें</Text>
           <Text style={styles.policyText}>• Valid reason के साथ request submit करें</Text>
           <Text style={styles.policyText}>• KYC documents की जरूरत हो सकती है</Text>
-          <Text style={styles.policyText}>• Admin approval के बाद refund processing</Text>
+          <Text style={styles.policyText}>• Admin approval के बाद refund processing शुरू होगी</Text>
 
-          <Text style={styles.sectionTitle}>❌ Non-Refundable Cases</Text>
-          <Text style={styles.policyText}>• Winning amount dispute करना</Text>
-          <Text style={styles.policyText}>• Fair play violations</Text>
-          <Text style={styles.policyText}>• Multiple account creation</Text>
-          <Text style={styles.policyText}>• Bonus amount misuse</Text>
-          <Text style={styles.policyText}>• Terms & conditions violation</Text>
+          <Text style={styles.sectionTitle}>❌ जिन cases में Refund नहीं मिलेगा</Text>
+          <Text style={styles.policyText}>• Winning amount पर dispute करना</Text>
+          <Text style={styles.policyText}>• Fair play violations करने पर</Text>
+          <Text style={styles.policyText}>• Multiple account create करने पर</Text>
+          <Text style={styles.policyText}>• Bonus amount का misuse करने पर</Text>
+          <Text style={styles.policyText}>• Terms & conditions violation करने पर</Text>
 
-          <Text style={styles.sectionTitle}>🔄 Partial Refund Conditions</Text>
-          <Text style={styles.policyText}>• Service charges deduction</Text>
-          <Text style={styles.policyText}>• Processing fees deduction</Text>
-          <Text style={styles.policyText}>• GST amount non-refundable</Text>
-          <Text style={styles.policyText}>• Bonus amount adjustment</Text>
-          <Text style={styles.policyText}>• TDS deduction if applicable</Text>
+          <Text style={styles.sectionTitle}>🔄 Partial Refund की शर्तें</Text>
+          <Text style={styles.policyText}>• Service charges काट कर refund</Text>
+          <Text style={styles.policyText}>• Processing fees काट कर refund</Text>
+          <Text style={styles.policyText}>• GST amount refund नहीं होगी</Text>
+          <Text style={styles.policyText}>• Bonus amount adjustment के साथ</Text>
+          <Text style={styles.policyText}>• TDS deduction यदि applicable है</Text>
 
-          <Text style={styles.sectionTitle}>📞 Refund Support</Text>
+          <Text style={styles.sectionTitle}>📞 Refund के लिए Support</Text>
           <Text style={styles.policyText}>• WhatsApp: +91 98765 43210</Text>
           <Text style={styles.policyText}>• Telegram: @SattaKingSupport</Text>
-          <Text style={styles.policyText}>• Email: refunds@sattaking.com</Text>
-          <Text style={styles.policyText}>• Support timing: 24x7 available</Text>
-          <Text style={styles.policyText}>• Response time: Within 2 hours</Text>
+          <Text style={styles.policyText}>• Email: refunds@dream11.com</Text>
+          <Text style={styles.policyText}>• Support timing: 24x7 उपलब्ध</Text>
+          <Text style={styles.policyText}>• Response time: 2 घंटे के अंदर</Text>
 
-          <Text style={styles.sectionTitle}>⚖️ Dispute Resolution</Text>
+          <Text style={styles.sectionTitle}>⚖️ विवाद समाधान</Text>
           <Text style={styles.policyText}>• सभी disputes का final decision admin का होगा</Text>
           <Text style={styles.policyText}>• Evidence के basis पर decision लिया जाएगा</Text>
-          <Text style={styles.policyText}>• Legal proceedings की case में court jurisdiction</Text>
+          <Text style={styles.policyText}>• Legal proceedings की स्थिति में court jurisdiction</Text>
           <Text style={styles.policyText}>• Arbitration के through dispute resolution</Text>
           <Text style={styles.policyText}>• Company के terms के अनुसार final decision</Text>
         </View>
 
         {/* Contact Section */}
         <View style={styles.contactContainer}>
-          <Text style={styles.contactTitle}>🆘 Need Help with Refund?</Text>
+          <Text style={styles.contactTitle}>🆘 Refund में Help चाहिए?</Text>
           <Text style={styles.contactText}>
-            Refund के लिए हमारी customer support team से संपर्क करें। हमारी team 24x7 आपकी सेवा में है।
+            Refund के लिए हमारी customer support team से संपर्क करें। हमारी team 24x7 आपकी सेवा में है और आपकी हर समस्या का समाधान करने के लिए तैयार है।
           </Text>
           
           <View style={styles.contactButtons}>
             <TouchableOpacity style={styles.whatsappButton}>
               <Ionicons name="logo-whatsapp" size={20} color="#25D366" />
-              <Text style={styles.contactButtonText}>WhatsApp Support</Text>
+              <Text style={styles.contactButtonText}>WhatsApp पर संपर्क करें</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.telegramButton}>
               <Ionicons name="paper-plane" size={20} color="#0088CC" />
-              <Text style={styles.contactButtonText}>Telegram Support</Text>
+              <Text style={styles.contactButtonText}>Telegram पर संपर्क करें</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Last Updated */}
         <View style={styles.lastUpdated}>
-          <Text style={styles.lastUpdatedText}>Last Updated: January 2025</Text>
+          <Text style={styles.lastUpdatedText}>आखिरी बार अपडेट किया गया: January 2025</Text>
           <Text style={styles.lastUpdatedSubtext}>
-            यह policy समय-समय पर update हो सकती है। Latest policy के लिए app check करते रहें।
+            यह policy समय-समय पर update हो सकती है। Latest policy के लिए app को regularly check करते रहें।
           </Text>
         </View>
       </View>
@@ -143,23 +139,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0a0a',
   },
   header: {
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: isSmallDevice ? 15 : 20,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
     backgroundColor: '#1a1a1a',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  backText: {
-    color: '#4A90E2',
-    fontSize: 16,
-    marginLeft: 5,
-    fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: isSmallDevice ? 18 : 20,
