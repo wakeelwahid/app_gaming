@@ -1,12 +1,15 @@
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Animated, Dimensions } from 'react-native';
 import GameCard from './GameCard';
 
 interface GamesProps {
   gameCards: any[];
   onGameSelect: (game: any) => void;
 }
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const isSmallDevice = SCREEN_WIDTH < 375;
 
 export default function Games({ gameCards, onGameSelect }: GamesProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -45,26 +48,22 @@ export default function Games({ gameCards, onGameSelect }: GamesProps) {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <Animated.View 
           style={[
-            styles.gamesGrid,
+            styles.gamesContainer,
             {
               opacity: fadeAnim,
               transform: [{ translateY: slideAnim }],
             }
           ]}
         >
-          {gameCards.map((game, index) => (
-            <View key={game.id} style={{ 
-              opacity: 1,
-              transform: [{ 
-                translateY: 0
-              }]
-            }}>
+          <View style={styles.gameRow}>
+            {gameCards.map((game, index) => (
               <GameCard 
+                key={game.id} 
                 game={game} 
                 onPlayNow={onGameSelect} 
               />
-            </View>
-          ))}
+            ))}
+          </View>
         </Animated.View>
         <View style={styles.bottomSpacing} />
       </ScrollView>
@@ -84,20 +83,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 20,
     paddingHorizontal: 15,
-    textShadowColor: 'rgba(74, 144, 226, 0.5)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadow: '0px 0px 10px rgba(74, 144, 226, 0.5)',
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: isSmallDevice ? 10 : 15,
   },
-  gamesGrid: {
+  gamesContainer: {
+    marginBottom: isSmallDevice ? 15 : 20,
+  },
+  gameRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: isSmallDevice ? 8 : 10,
   },
   bottomSpacing: {
-    height: 100,
+    height: isSmallDevice ? 80 : 100,
   },
 });
