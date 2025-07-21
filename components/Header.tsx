@@ -20,6 +20,7 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
     { icon: 'people', title: 'Refer & Earn', key: 'refer' },
     { icon: 'document-text', title: 'Terms & Conditions', key: 'terms' },
     { icon: 'shield-checkmark', title: 'Privacy Policy', key: 'privacy' },
+    { icon: 'card', title: 'Refund Policy', key: 'refund' },
     { icon: 'help-circle', title: 'Help & Support', key: 'help' },
     { icon: 'log-out', title: 'Logout', key: 'logout' },
   ];

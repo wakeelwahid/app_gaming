@@ -19,6 +19,7 @@ import AgeVerificationModal from './components/AgeVerificationModal';
 import Transaction from './components/Transaction';
 import KYCPage from './components/KYCPage';
 import ReferPage from './components/ReferPage';
+import RefundPolicy from './components/RefundPolicy';
 
 // Import API services
 import { userService } from './services/userService';
@@ -602,6 +603,7 @@ export default function App() {
   const [showAgeVerificationState, setShowAgeVerificationState] = React.useState(false);
   const [isAgeVerifiedState, setIsAgeVerifiedState] = React.useState(false);
   const [showKYCPageState, setShowKYCPageState] = React.useState(false);
+  const [showRefundPolicyState, setShowRefundPolicyState] = React.useState(false);
 
   const gameCards = GAME_CARDS;
   const features = FEATURES;
@@ -1234,6 +1236,8 @@ export default function App() {
       setActiveTabLocal('terms');
     } else if (key === 'privacy') {
       setActiveTabLocal('privacy');
+    } else if (key === 'refund') {
+      setShowRefundPolicyState(true);
     } else if (key === 'help') {
       setActiveTabLocal('help');
     } else if (key === 'logout') {
@@ -1251,6 +1255,8 @@ export default function App() {
       <View style={[styles.content, !isAgeVerifiedState && styles.blurredContent]}>
         {showKYCPageState ? (
           <KYCPage onBack={() => setShowKYCPageState(false)} />
+        ) : showRefundPolicyState ? (
+          <RefundPolicy onBack={() => setShowRefundPolicyState(false)} />
         ) : (
           renderContent()
         )}

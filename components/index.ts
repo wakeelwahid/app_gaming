@@ -13,3 +13,4 @@ export { default as BetHistory } from './BetHistory';
 export { default as BetSuccessModal } from './BetSuccessModal';
 export { default as MyBet } from './MyBet';
 export { default as ReferPage } from './ReferPage';
+export { default as RefundPolicy } from './RefundPolicy';
