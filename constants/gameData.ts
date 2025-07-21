@@ -5,8 +5,8 @@ export const GAME_CARDS = [
     openTime: '05:00 PM',
     closeTime: '04:50 PM',
     status: 'Open for Play',
-    color: '#4A90E2',
-    bgColor: '#1A3A5A'
+    color: '#FFD700',
+    bgColor: '#1e1e1e'
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const GAME_CARDS = [
     closeTime: '06:40 PM',
     status: 'Open for Play',
     color: '#00FF88',
-    bgColor: '#1A4A3A'
+    bgColor: '#1e1e1e'
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const GAME_CARDS = [
     closeTime: '07:50 PM',
     status: 'Open for Play',
     color: '#4A90E2',
-    bgColor: '#1A3A5A'
+    bgColor: '#1e1e1e'
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ export const GAME_CARDS = [
     closeTime: '10:30 PM',
     status: 'Open for Play',
     color: '#9B59B6',
-    bgColor: '#3A2A4A'
+    bgColor: '#1e1e1e'
   },
   {
     id: 5,
@@ -41,8 +41,8 @@ export const GAME_CARDS = [
     openTime: '07:00 AM',
     closeTime: '02:30 AM',
     status: 'Open for Play',
-    color: '#E74C3C',
-    bgColor: '#4A2A2A'
+    color: '#FF6B6B',
+    bgColor: '#1e1e1e'
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ export const GAME_CARDS = [
     closeTime: '10:10 PM',
     status: 'Multiple Sessions',
     color: '#FF1493',
-    bgColor: '#4A2A3A'
+    bgColor: '#1e1e1e'
   }
 ];
 
