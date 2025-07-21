@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import GameCard from './GameCard';
@@ -30,7 +29,9 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
       <View style={styles.featuresContainer}>
         {features.map((feature, index) => (
           <View key={index} style={styles.featureCard}>
-            <Text style={styles.featureIcon}>{feature.icon}</Text>
+            <View style={styles.featureIconContainer}>
+              <Text style={styles.featureIcon}>{feature.icon}</Text>
+            </View>
             <Text style={styles.featureTitle}>{feature.title}</Text>
             <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
           </View>
@@ -98,37 +99,69 @@ const styles = StyleSheet.create({
   },
   featuresContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: isSmallDevice ? 15 : 20,
-    gap: isSmallDevice ? 8 : 10,
+    paddingHorizontal: 20,
+    marginBottom: 30,
   },
   featureCard: {
-    backgroundColor: '#1a1a1a',
-    width: isSmallDevice ? '47%' : '48%',
-    padding: isSmallDevice ? 12 : 15,
-    borderRadius: isSmallDevice ? 8 : 10,
+    flex: 1,
+    backgroundColor: '#2A2A2A',
+    padding: 15,
+    marginHorizontal: 5,
+    borderRadius: 15,
     alignItems: 'center',
-    marginBottom: isSmallDevice ? 8 : 10,
-    borderWidth: 1,
-    borderColor: '#333',
-    minHeight: isSmallDevice ? 80 : 90,
+    borderWidth: 2,
+    borderColor: '#444',
+    position: 'relative',
+    overflow: 'hidden',
+    boxShadow: '0 8px 32px rgba(74, 144, 226, 0.15), 0 4px 16px rgba(0, 255, 136, 0.1)',
+    elevation: 12,
+  },
+  featureIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(74, 144, 226, 0.3)',
   },
   featureIcon: {
-    fontSize: isSmallDevice ? 20 : 24,
-    marginBottom: isSmallDevice ? 6 : 8,
+    fontSize: 24,
+    color: '#4A90E2',
+    textShadowColor: 'rgba(74, 144, 226, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   featureTitle: {
-    color: '#4A90E2',
-    fontSize: isSmallDevice ? 10 : 12,
+    color: '#fff',
+    fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
+    textShadowColor: 'rgba(255, 255, 255, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   featureSubtitle: {
     color: '#999',
-    fontSize: isSmallDevice ? 8 : 10,
+    fontSize: 10,
     textAlign: 'center',
+    lineHeight: 14,
+  },
+  featureGlow: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    zIndex: -1,
+    boxShadow: '0 0 20px rgba(74, 144, 226, 0.5)',
   },
   timeKycContainer: {
     backgroundColor: '#1a1a1a',
