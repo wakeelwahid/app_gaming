@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 
@@ -187,7 +186,7 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
           }
         ]}
       />
-      
+
       <TouchableOpacity 
         style={[
           styles.gameCard, 
