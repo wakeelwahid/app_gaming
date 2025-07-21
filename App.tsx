@@ -843,7 +843,6 @@ export default function App() {
     // Here you can make API call for registration
     // const result = await apiService.registerUser(userData);
     Alert.alert('Register', 'Registration functionality to be implemented');
-<previous_generation>```python
     setShowAuthModalState(false);
   };
 
