@@ -18,6 +18,7 @@ import BetHistory from './components/BetHistory';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import Transaction from './components/Transaction';
 import KYCPage from './components/KYCPage';
+import ReferPage from './components/ReferPage';
 
 // Import API services
 import { userService } from './services/userService';
@@ -1051,117 +1052,7 @@ export default function App() {
       case 'transactions':
         return <Transaction />;
       case 'refer':
-        return (
-          <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
-            {/* Header Benefits */}
-            <View style={styles.referBenefitsContainer}>
-              <View style={styles.benefitItem}>
-                <Text style={styles.benefitTitle}>Instant ₹50 Bonus</Text>
-                <Text style={styles.benefitDescription}>Get ₹50 when your friend makes their first deposit.</Text>
-              </View>
-              <View style={styles.benefitItem}>
-                <Text style={styles.benefitTitle}>1% Lifetime Commission</Text>
-                <Text style={styles.benefitDescription}>Earn 1% of their winnings forever.</Text>
-              </View>
-              <View style={styles.benefitItem}>
-                <Text style={styles.benefitTitle}>No Limits</Text>
-                <Text style={styles.benefitDescription}>Refer unlimited friends and earn more.</Text>
-              </View>
-            </View>
-
-            {/* Referral Stats */}
-            <View style={styles.referralStatsGrid}>
-              <View style={styles.statCard}>
-                <Text style={styles.statMainNumber}>0</Text>
-                <Text style={styles.statMainLabel}>Total Referrals</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statMainNumber}>₹0</Text>
-                <Text style={styles.statMainLabel}>Direct Bonus Earned</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statMainNumber}>₹0</Text>
-                <Text style={styles.statMainLabel}>Commission Earned</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statMainNumber}>₹0.00</Text>
-                <Text style={styles.statMainLabel}>Total Earnings</Text>
-              </View>
-            </View>
-
-            {/* Referral Code Section */}
-            <View style={styles.referralCodeSection}>
-              <Text style={styles.referralCodeTitle}>Your Unique Referral Code</Text>
-              <Text style={styles.referralCodeSubtitle}>Share this code with your friends</Text>
-
-              <View style={styles.codeDisplayContainer}>
-                <Text style={styles.referralCodeDisplay}>{userDataState.referralCode || 'N/A'}</Text>
-              </View>
-
-              <View style={styles.referralActions}>
-                <TouchableOpacity style={styles.copyCodeButton}>
-                  <Ionicons name="copy" size={16} color="#000" />
-                  <Text style={styles.copyCodeText}>COPY CODE</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.shareWhatsAppButton}>
-                  <Ionicons name="logo-whatsapp" size={16} color="#fff" />
-                  <Text style={styles.shareWhatsAppText}>SHARE ON WHATSAPP</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.shareTelegramButton}>
-                  <Ionicons name="send" size={16} color="#fff" />
-                  <Text style={styles.shareTelegramText}>SHARE ON TELEGRAM</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* How It Works */}
-            <View style={styles.howItWorksSection}>
-              <Text style={styles.howItWorksTitle}>How It Works</Text>
-              <View style={styles.stepsContainer}>
-                <View style={styles.workStep}>
-                  <Text style={styles.workStepNumber}>1</Text>
-                  <View style={styles.workStepContent}>
-                    <Text style={styles.workStepTitle}>Share Your Code</Text>
-                    <Text style={styles.workStepDescription}>Share your unique referral code with friends.</Text>
-                  </View>
-                </View>
-
-                <View style={styles.workStep}>
-                  <Text style={styles.workStepNumber}>2</Text>
-                  <View style={styles.workStepContent}>
-                    <Text style={styles.workStepTitle}>Friend Registers</Text>
-                    <Text style={styles.workStepDescription}>Your friend signs up and makes their first deposit.</Text>
-                  </View>
-                </View>
-
-                <View style={styles.workStep}>
-                  <Text style={styles.workStepNumber}>3</Text>
-                  <View style={styles.workStepContent}>
-                    <Text style={styles.workStepTitle}>Start Earning</Text>
-                    <Text style={styles.workStepDescription}>Get ₹50 + 1% commission on their winnings.</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Commission Structure */}
-            <View style={styles.commissionStructure}>
-              <Text style={styles.commissionTitle}>Commission Structure</Text>
-              <View style={styles.commissionItems}>
-                <View style={styles.commissionItem}>
-                  <Text style={styles.commissionAmount}>₹50</Text>
-                  <Text style={styles.commissionLabel}>Instant bonus per referral</Text>
-                </View>
-                <View style={styles.commissionItem}>
-                  <Text style={styles.commissionAmount}>1%</Text>
-                  <Text style={styles.commissionLabel}>Lifetime commission</Text>
-                </View>
-              </View>
-            </View>
-          </ScrollView>
-        );
+        return <ReferPage userData={userDataState} />;
       case 'terms':
         return (
           <View style={styles.tabContent}>
