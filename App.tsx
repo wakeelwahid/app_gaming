@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, Modal, TextInput, Alert, FlatList, Animated, Dimensions, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 // Import components
@@ -843,6 +843,7 @@ export default function App() {
     // Here you can make API call for registration
     // const result = await apiService.registerUser(userData);
     Alert.alert('Register', 'Registration functionality to be implemented');
+<previous_generation>```python
     setShowAuthModalState(false);
   };
 
@@ -1052,72 +1053,115 @@ export default function App() {
         return <Transaction />;
       case 'refer':
         return (
-          <View style={styles.tabContent}>
-            {/* Refer & Earn Component */}
-            <View style={styles.referContainer}>
-              <View style={styles.referHeaderCard}>
-                <Text style={styles.referMainTitle}>Invite Your Friends & Earn</Text>
-                <Text style={styles.referSubtitle}>Get ₹500 for every friend who joins using your code!</Text>
+          <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+            {/* Header Benefits */}
+            <View style={styles.referBenefitsContainer}>
+              <View style={styles.benefitItem}>
+                <Text style={styles.benefitTitle}>Instant ₹50 Bonus</Text>
+                <Text style={styles.benefitDescription}>Get ₹50 when your friend makes their first deposit.</Text>
               </View>
-
-              <View style={styles.referCodeCard}>
-                <Text style={styles.referCodeLabel}>Your Referral Code</Text>
-                <View style={styles.codeContainer}>
-                  <Text style={styles.referralCode}>{userDataState.referralCode}</Text>
-                  <TouchableOpacity style={styles.copyButton}>
-                  </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity style={styles.shareButton}>
-                  <Ionicons name="share-social" size={24} color="#fff" />
-                  <Text style={styles.shareButtonText}>Share Code</Text>
-                </TouchableOpacity>
+              <View style={styles.benefitItem}>
+                <Text style={styles.benefitTitle}>1% Lifetime Commission</Text>
+                <Text style={styles.benefitDescription}>Earn 1% of their winnings forever.</Text>
               </View>
-
-              <View style={styles.howItWorksCard}>
-                <Text style={styles.howItWorksTitle}>How It Works</Text>
-                <View style={styles.stepContainer}>
-                  <View style={styles.step}>
-                    <Text style={styles.stepNumber}>1</Text>
-                    <Text style={styles.stepText}>Share your referral code with friends.</Text>
-                  </View>
-                  <View style={styles.step}>
-                    <Text style={styles.stepNumber}>2</Text>
-                    <Text style={styles.stepText}>Your friend signs up using your code.</Text>
-                  </View>
-                  <View style={styles.step}>
-                    <Text style={styles.stepNumber}>3</Text>
-                    <Text style={styles.stepText}>You both get ₹500 when they make their first deposit!</Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.referStatsCard}>
-                <Text style={styles.statsTitle}>Your Referral Stats</Text>
-                <View style={styles.statsContainer}>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>12</Text>
-                    <Text style={styles.statLabel}>Friends Invited</Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>5</Text>
-                    <Text style={styles.statLabel}>Friends Joined</Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>₹2500</Text>
-                    <Text style={styles.statLabel}>Total Earnings</Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.termsCard}>
-                <Text style={styles.termsTitle}>Terms & Conditions</Text>
-                <Text style={styles.termText}>• Referrals must be new users.</Text>
-                <Text style={styles.termText}>• Rewards are credited upon first deposit.</Text>
-                <Text style={styles.termText}>• Terms are subject to change.</Text>
+              <View style={styles.benefitItem}>
+                <Text style={styles.benefitTitle}>No Limits</Text>
+                <Text style={styles.benefitDescription}>Refer unlimited friends and earn more.</Text>
               </View>
             </View>
-          </View>
+
+            {/* Referral Stats */}
+            <View style={styles.referralStatsGrid}>
+              <View style={styles.statCard}>
+                <Text style={styles.statMainNumber}>0</Text>
+                <Text style={styles.statMainLabel}>Total Referrals</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statMainNumber}>₹0</Text>
+                <Text style={styles.statMainLabel}>Direct Bonus Earned</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statMainNumber}>₹0</Text>
+                <Text style={styles.statMainLabel}>Commission Earned</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statMainNumber}>₹0.00</Text>
+                <Text style={styles.statMainLabel}>Total Earnings</Text>
+              </View>
+            </View>
+
+            {/* Referral Code Section */}
+            <View style={styles.referralCodeSection}>
+              <Text style={styles.referralCodeTitle}>Your Unique Referral Code</Text>
+              <Text style={styles.referralCodeSubtitle}>Share this code with your friends</Text>
+
+              <View style={styles.codeDisplayContainer}>
+                <Text style={styles.referralCodeDisplay}>{userDataState.referralCode || 'N/A'}</Text>
+              </View>
+
+              <View style={styles.referralActions}>
+                <TouchableOpacity style={styles.copyCodeButton}>
+                  <Ionicons name="copy" size={16} color="#000" />
+                  <Text style={styles.copyCodeText}>COPY CODE</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.shareWhatsAppButton}>
+                  <Ionicons name="logo-whatsapp" size={16} color="#fff" />
+                  <Text style={styles.shareWhatsAppText}>SHARE ON WHATSAPP</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.shareTelegramButton}>
+                  <Ionicons name="send" size={16} color="#fff" />
+                  <Text style={styles.shareTelegramText}>SHARE ON TELEGRAM</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* How It Works */}
+            <View style={styles.howItWorksSection}>
+              <Text style={styles.howItWorksTitle}>How It Works</Text>
+              <View style={styles.stepsContainer}>
+                <View style={styles.workStep}>
+                  <Text style={styles.workStepNumber}>1</Text>
+                  <View style={styles.workStepContent}>
+                    <Text style={styles.workStepTitle}>Share Your Code</Text>
+                    <Text style={styles.workStepDescription}>Share your unique referral code with friends.</Text>
+                  </View>
+                </View>
+
+                <View style={styles.workStep}>
+                  <Text style={styles.workStepNumber}>2</Text>
+                  <View style={styles.workStepContent}>
+                    <Text style={styles.workStepTitle}>Friend Registers</Text>
+                    <Text style={styles.workStepDescription}>Your friend signs up and makes their first deposit.</Text>
+                  </View>
+                </View>
+
+                <View style={styles.workStep}>
+                  <Text style={styles.workStepNumber}>3</Text>
+                  <View style={styles.workStepContent}>
+                    <Text style={styles.workStepTitle}>Start Earning</Text>
+                    <Text style={styles.workStepDescription}>Get ₹50 + 1% commission on their winnings.</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            {/* Commission Structure */}
+            <View style={styles.commissionStructure}>
+              <Text style={styles.commissionTitle}>Commission Structure</Text>
+              <View style={styles.commissionItems}>
+                <View style={styles.commissionItem}>
+                  <Text style={styles.commissionAmount}>₹50</Text>
+                  <Text style={styles.commissionLabel}>Instant bonus per referral</Text>
+                </View>
+                <View style={styles.commissionItem}>
+                  <Text style={styles.commissionAmount}>1%</Text>
+                  <Text style={styles.commissionLabel}>Lifetime commission</Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
         );
       case 'terms':
         return (
@@ -1656,8 +1700,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   mainBalanceAmount: {
-    color: '#00FF88',
-    fontSize: isSmallDevice ? 24 : isMediumDevice ? 28 : 32,
+    color: '#00FF88',    fontSize: isSmallDevice ? 24 : isMediumDevice ? 28 : 32,
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -2132,190 +2175,218 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
-  referContainer: {
-    padding: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    width: '100%',
-  },
-  referTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4A90E2',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  referCode: {
-    fontSize: 16,
-    color: '#00FF88',
+  referBenefitsContainer: {
     marginBottom: 20,
-    fontWeight: 'bold',
   },
-  shareButtonText: {
-    color: '#fff',
+  benefitItem: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFD700',
+  },
+  benefitTitle: {
+    color: '#FFD700',
     fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginBottom: 5,
   },
-
-  // Enhanced Refer & Earn Styles
-  referHeaderCard: {
-    backgroundColor: '#1a1a1a',
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-    alignItems: 'center',
-  },
-  referMainTitle: {
-    color: '#FFD700',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  referSubtitle: {
-    color: '#00FF88',
+  benefitDescription: {
+    color: '#ccc',
     fontSize: 14,
-    textAlign: 'center',
+    lineHeight: 18,
   },
-  referCodeCard: {
+  referralStatsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 25,
+  },
+  statCard: {
     backgroundColor: '#1a1a1a',
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 15,
+    padding: 15,
+    borderRadius: 12,
+    width: '48%',
+    marginBottom: 10,
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#333',
   },
-  referCodeLabel: {
-    color: '#fff',
-    fontSize: 16,
+  statMainNumber: {
+    color: '#00FF88',
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 5,
+  },
+  statMainLabel: {
+    color: '#999',
+    fontSize: 12,
     textAlign: 'center',
   },
-  codeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#2a2a2a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  referralCode: {
-    color: '#FFD700',
-    fontSize: 20,
-    fontWeight: 'bold',
-    letterSpacing: 2,
-    marginRight: 10,
-  },
-  copyButton: {
-    padding: 8,
-    backgroundColor: '#333',
-    borderRadius: 8,
-  },
-  shareButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4A90E2',
-    padding: 15,
-    borderRadius: 10,
-  },
-  howItWorksCard: {
+  referralCodeSection: {
     backgroundColor: '#1a1a1a',
     padding: 20,
     borderRadius: 15,
-    marginBottom: 15,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  referralCodeTitle: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  referralCodeSubtitle: {
+    color: '#999',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  codeDisplayContainer: {
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  referralCodeDisplay: {
+    color: '#00FF88',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    letterSpacing: 2,
+  },
+  referralActions: {
+    gap: 10,
+  },
+  copyCodeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFD700',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  copyCodeText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  shareWhatsAppButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#25D366',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  shareWhatsAppText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  shareTelegramButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0088CC',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  shareTelegramText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  howItWorksSection: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 25,
     borderWidth: 1,
     borderColor: '#333',
   },
   howItWorksTitle: {
     color: '#FFD700',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
     textAlign: 'center',
+    marginBottom: 20,
   },
-  stepContainer: {
-    gap: 12,
+  stepsContainer: {
+    gap: 15,
   },
-  step: {
+  workStep: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    gap: 15,
   },
-  stepNumber: {
-    color: '#FFD700',
+  workStepNumber: {
+    backgroundColor: '#4A90E2',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    backgroundColor: '#2a2a2a',
-    borderRadius: 15,
     width: 30,
     height: 30,
+    borderRadius: 15,
     textAlign: 'center',
     lineHeight: 30,
-    marginRight: 15,
   },
-  stepText: {
-    color: '#fff',
-    fontSize: 14,
+  workStepContent: {
     flex: 1,
   },
-  referStatsCard: {
+  workStepTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  workStepDescription: {
+    color: '#999',
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  commissionStructure: {
     backgroundColor: '#1a1a1a',
     padding: 20,
     borderRadius: 15,
-    marginBottom: 15,
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#00FF88',
   },
-  statsTitle: {
+  commissionTitle: {
     color: '#FFD700',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
     textAlign: 'center',
+    marginBottom: 20,
   },
-  statsContainer: {
+  commissionItems: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  statItem: {
+  commissionItem: {
     alignItems: 'center',
   },
-  statNumber: {
+  commissionAmount: {
     color: '#00FF88',
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  statLabel: {
+  commissionLabel: {
     color: '#999',
     fontSize: 12,
     textAlign: 'center',
-  },
-  termsCard: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  termsTitle: {
-    color: '#FFD700',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  termText: {
-    color: '#999',
-    fontSize: 12,
-    marginBottom: 5,
-    paddingLeft: 10,
   },
 
   // Policy & Terms Styles
