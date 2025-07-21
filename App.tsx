@@ -1114,6 +1114,118 @@ export default function App() {
             </View>
           </View>
         );
+      case 'refund':
+        return (
+          <ScrollView style={styles.refundContainer} showsVerticalScrollIndicator={false}>
+            <Text style={styles.tabTitle}>💳 Refund Policy</Text>
+            <Text style={styles.pageSubtitle}>हमारी refund policy के नियम और शर्तें</Text>
+
+            {/* Important Notice */}
+            <View style={styles.noticeContainer}>
+              <Text style={styles.noticeIcon}>⚠️</Text>
+              <View style={styles.noticeContent}>
+                <Text style={styles.noticeTitle}>महत्वपूर्ण सूचना</Text>
+                <Text style={styles.noticeText}>
+                  यह एक gaming platform है। सभी bets और deposits के लिए विशेष नियम लागू होते हैं।
+                </Text>
+              </View>
+            </View>
+
+            {/* Policy Sections */}
+            <View style={styles.policyContainer}>
+              <Text style={styles.policySection}>📋 Deposit Refund Policy</Text>
+              <Text style={styles.policyText}>• Deposit के तुरंत बाद refund नहीं किया जा सकता</Text>
+              <Text style={styles.policyText}>• Technical error के case में 24 घंटे के अंदर refund</Text>
+              <Text style={styles.policyText}>• Duplicate payment के case में automatic refund</Text>
+              <Text style={styles.policyText}>• Wrong payment के case में 2-3 working days में refund</Text>
+              <Text style={styles.policyText}>• GST charges refund नहीं किए जाएंगे</Text>
+
+              <Text style={styles.policySection}>🎮 Game Bet Refund Policy</Text>
+              <Text style={styles.policyText}>• एक बार bet place होने के बाद cancel नहीं हो सकता</Text>
+              <Text style={styles.policyText}>• Result declare होने के बाद कोई refund नहीं</Text>
+              <Text style={styles.policyText}>• Technical issue के case में admin द्वारा review</Text>
+              <Text style={styles.policyText}>• Wrong number selection की जिम्मेदारी user की है</Text>
+              <Text style={styles.policyText}>• Game close होने के बाद bet cancel नहीं हो सकता</Text>
+
+              <Text style={styles.policySection}>💰 Wallet Refund Scenarios</Text>
+              <Text style={styles.policyText}>• Account ban के case में balance refund किया जाएगा</Text>
+              <Text style={styles.policyText}>• Fraud activity detect होने पर no refund</Text>
+              <Text style={styles.policyText}>• User द्वारा account delete पर balance withdrawal</Text>
+              <Text style={styles.policyText}>• Legal issues के case में amount hold</Text>
+              <Text style={styles.policyText}>• KYC incomplete होने पर withdrawal restrictions</Text>
+
+              <Text style={styles.policySection}>⏰ Refund Processing Time</Text>
+              <Text style={styles.policyText}>• UPI refund: 2-24 hours</Text>
+              <Text style={styles.policyText}>• Bank account refund: 3-7 working days</Text>
+              <Text style={styles.policyText}>• Credit/Debit card refund: 5-10 working days</Text>
+              <Text style={styles.policyText}>• E-wallet refund: Instant to 24 hours</Text>
+              <Text style={styles.policyText}>• International payments: 10-15 working days</Text>
+
+              <Text style={styles.policySection}>📝 Refund Request Process</Text>
+              <Text style={styles.policyText}>• Customer support से contact करें</Text>
+              <Text style={styles.policyText}>• Transaction ID और screenshot provide करें</Text>
+              <Text style={styles.policyText}>• Valid reason के साथ request submit करें</Text>
+              <Text style={styles.policyText}>• KYC documents की जरूरत हो सकती है</Text>
+              <Text style={styles.policyText}>• Admin approval के बाद refund processing</Text>
+
+              <Text style={styles.policySection}>❌ Non-Refundable Cases</Text>
+              <Text style={styles.policyText}>• Winning amount dispute करना</Text>
+              <Text style={styles.policyText}>• Fair play violations</Text>
+              <Text style={styles.policyText}>• Multiple account creation</Text>
+              <Text style={styles.policyText}>• Bonus amount misuse</Text>
+              <Text style={styles.policyText}>• Terms & conditions violation</Text>
+
+              <Text style={styles.policySection}>🔄 Partial Refund Conditions</Text>
+              <Text style={styles.policyText}>• Service charges deduction</Text>
+              <Text style={styles.policyText}>• Processing fees deduction</Text>
+              <Text style={styles.policyText}>• GST amount non-refundable</Text>
+              <Text style={styles.policyText}>• Bonus amount adjustment</Text>
+              <Text style={styles.policyText}>• TDS deduction if applicable</Text>
+
+              <Text style={styles.policySection}>📞 Refund Support</Text>
+              <Text style={styles.policyText}>• WhatsApp: +91 98765 43210</Text>
+              <Text style={styles.policyText}>• Telegram: @SattaKingSupport</Text>
+              <Text style={styles.policyText}>• Email: refunds@sattaking.com</Text>
+              <Text style={styles.policyText}>• Support timing: 24x7 available</Text>
+              <Text style={styles.policyText}>• Response time: Within 2 hours</Text>
+
+              <Text style={styles.policySection}>⚖️ Dispute Resolution</Text>
+              <Text style={styles.policyText}>• सभी disputes का final decision admin का होगा</Text>
+              <Text style={styles.policyText}>• Evidence के basis पर decision लिया जाएगा</Text>
+              <Text style={styles.policyText}>• Legal proceedings की case में court jurisdiction</Text>
+              <Text style={styles.policyText}>• Arbitration के through dispute resolution</Text>
+              <Text style={styles.policyText}>• Company के terms के अनुसार final decision</Text>
+            </View>
+
+            {/* Contact Section */}
+            <View style={styles.contactContainer}>
+              <Text style={styles.contactTitle}>🆘 Refund के लिए Help चाहिए?</Text>
+              <Text style={styles.contactText}>
+                Refund के लिए हमारी customer support team से संपर्क करें। हमारी team 24x7 आपकी सेवा में है।
+              </Text>
+              
+              <View style={styles.contactButtons}>
+                <TouchableOpacity style={styles.whatsappButton}>
+                  <Ionicons name="logo-whatsapp" size={20} color="#25D366" />
+                  <Text style={styles.contactButtonText}>WhatsApp Support</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.telegramButton}>
+                  <Ionicons name="paper-plane" size={20} color="#0088CC" />
+                  <Text style={styles.contactButtonText}>Telegram Support</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Last Updated */}
+            <View style={styles.lastUpdated}>
+              <Text style={styles.lastUpdatedText}>Last Updated: January 2025</Text>
+              <Text style={styles.lastUpdatedSubtext}>
+                यह policy समय-समय पर update हो सकती है। Latest policy के लिए app check करते रहें।
+              </Text>
+            </View>
+          </ScrollView>
+        );
       case 'games':
         return (
           <Games
@@ -1237,7 +1349,7 @@ export default function App() {
     } else if (key === 'privacy') {
       setActiveTabLocal('privacy');
     } else if (key === 'refund') {
-      setShowRefundPolicyState(true);
+      setActiveTabLocal('refund');
     } else if (key === 'help') {
       setActiveTabLocal('help');
     } else if (key === 'logout') {
@@ -1255,8 +1367,6 @@ export default function App() {
       <View style={[styles.content, !isAgeVerifiedState && styles.blurredContent]}>
         {showKYCPageState ? (
           <KYCPage onBack={() => setShowKYCPageState(false)} />
-        ) : showRefundPolicyState ? (
-          <RefundPolicy onBack={() => setShowRefundPolicyState(false)} />
         ) : (
           renderContent()
         )}
@@ -2421,5 +2531,111 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
+  },
+  // Refund Policy Styles
+  refundContainer: {
+    flex: 1,
+    backgroundColor: '#0a0a0a',
+    padding: isSmallDevice ? 15 : 20,
+  },
+  pageSubtitle: {
+    fontSize: isSmallDevice ? 14 : 16,
+    color: '#999',
+    textAlign: 'center',
+    marginBottom: 25,
+  },
+  noticeContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#2a1a00',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  noticeIcon: {
+    fontSize: 24,
+    marginRight: 15,
+  },
+  noticeContent: {
+    flex: 1,
+  },
+  noticeTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  noticeText: {
+    color: '#fff',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  contactContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  contactTitle: {
+    color: '#4A90E2',
+    fontSize: isSmallDevice ? 16 : 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  contactText: {
+    color: '#fff',
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  contactButtons: {
+    gap: 10,
+  },
+  whatsappButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#25D366',
+    padding: 12,
+    borderRadius: 8,
+  },
+  telegramButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0088CC',
+    padding: 12,
+    borderRadius: 8,
+  },
+  contactButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  lastUpdated: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#333',
+    alignItems: 'center',
+  },
+  lastUpdatedText: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  lastUpdatedSubtext: {
+    color: '#999',
+    fontSize: 12,
+    textAlign: 'center',
+    lineHeight: 16,
   },
 });
