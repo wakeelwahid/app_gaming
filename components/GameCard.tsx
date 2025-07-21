@@ -18,11 +18,11 @@ interface GameCardProps {
 export default function GameCard({ game, onPlayNow }: GameCardProps) {
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
-  const shimmerAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const borderColorAnim = useRef(new Animated.Value(0)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
   const borderWidthAnim = useRef(new Animated.Value(1)).current;
+  const floatAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Entrance animation
@@ -97,22 +97,27 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
       ])
     ).start();
 
-    // Shimmer effect for premium games
-    if (game.id > 4) {
-      Animated.loop(
-        Animated.timing(shimmerAnim, {
+    // Floating animation for all cards
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
           toValue: 1,
           duration: 2000,
           useNativeDriver: false,
-        })
-      ).start();
-    }
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
 
     // Rotation animation for icon
     Animated.loop(
       Animated.timing(rotateAnim, {
         toValue: 1,
-        duration: 3000,
+        duration: 4000,
         useNativeDriver: false,
       })
     ).start();
@@ -135,9 +140,9 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
     });
   };
 
-  const shimmerInterpolate = shimmerAnim.interpolate({
+  const floatInterpolate = floatAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 200],
+    outputRange: [0, -5],
   });
 
   const rotateInterpolate = rotateAnim.interpolate({
@@ -164,7 +169,10 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
     <Animated.View style={[
       styles.cardContainer,
       {
-        transform: [{ scale: scaleAnim }],
+        transform: [
+          { scale: scaleAnim },
+          { translateY: floatInterpolate }
+        ],
       }
     ]}>
       {/* Animated border glow effect */}
@@ -224,17 +232,8 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
           />
         </View>
 
-        {/* Shimmer overlay for premium games */}
-        {game.id > 4 && (
-          <Animated.View 
-            style={[
-              styles.shimmerOverlay,
-              {
-                transform: [{ translateX: shimmerInterpolate }],
-              }
-            ]}
-          />
-        )}
+        {/* Enhanced visual effects for all games */}
+        <View style={styles.gradientOverlay} />
 
         <View style={styles.gameHeader}>
           <View style={styles.titleContainer}>
@@ -246,7 +245,7 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
                 }
               ]}
             >
-              {game.id <= 4 ? '⭐' : '💎'}
+              {game.title.includes('24') ? '🎯' : game.id <= 4 ? '⭐' : '💎'}
             </Animated.Text>
             <Text style={[styles.gameTitle, { color: game.color }]}>
               {game.title}
@@ -316,8 +315,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'transparent',
     zIndex: 1,
-    boxShadow: '0 8px 32px rgba(0, 255, 136, 0.2)',
-    elevation: 12,
+    boxShadow: '0 12px 40px rgba(0, 255, 136, 0.3), 0 4px 15px rgba(255, 215, 0, 0.2)',
+    elevation: 15,
   },
   cornerDecorations: {
     position: 'absolute',
@@ -329,9 +328,11 @@ const styles = StyleSheet.create({
   },
   cornerAccent: {
     position: 'absolute',
-    width: 8,
-    height: 8,
-    borderRadius: 2,
+    width: 10,
+    height: 10,
+    borderRadius: 3,
+    boxShadow: '0 0 8px rgba(255, 255, 255, 0.5)',
+    elevation: 5,
   },
   topLeft: {
     top: 4,
@@ -349,14 +350,14 @@ const styles = StyleSheet.create({
     bottom: 4,
     right: 4,
   },
-  shimmerOverlay: {
+  gradientOverlay: {
     position: 'absolute',
     top: 0,
-    left: -100,
-    width: 100,
-    height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    transform: [{ skewX: '-20deg' }],
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.1) 100%)',
+    borderRadius: 12,
     zIndex: 1,
   },
   gameHeader: {
@@ -421,15 +422,15 @@ const styles = StyleSheet.create({
     textShadowRadius: 5,
   },
   playButton: {
-    paddingVertical: 8,
-    borderRadius: 6,
+    paddingVertical: 10,
+    borderRadius: 8,
     alignItems: 'center',
     zIndex: 2,
     position: 'relative',
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
-    elevation: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 6px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(255, 255, 255, 0.1)',
+    elevation: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   playButtonText: {
     color: '#000',
