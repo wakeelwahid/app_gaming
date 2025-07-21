@@ -92,7 +92,7 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
           <Text style={styles.playButtonText}>Play Now →</Text>
         </TouchableOpacity>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 }
 
