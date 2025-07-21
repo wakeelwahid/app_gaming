@@ -6,7 +6,7 @@ export const GAME_CARDS = [
     closeTime: '04:50 PM',
     status: 'Open for Play',
     color: '#4A90E2',
-    bgColor: '#1a1a1a'
+    bgColor: '#1A3A5A'
   },
   {
     id: 2,
@@ -14,8 +14,8 @@ export const GAME_CARDS = [
     openTime: '10:00 PM',
     closeTime: '06:40 PM',
     status: 'Open for Play',
-    color: '#4A90E2',
-    bgColor: '#1a1a1a'
+    color: '#00FF88',
+    bgColor: '#1A4A3A'
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const GAME_CARDS = [
     closeTime: '07:50 PM',
     status: 'Open for Play',
     color: '#4A90E2',
-    bgColor: '#1a1a1a'
+    bgColor: '#1A3A5A'
   },
   {
     id: 4,
@@ -32,8 +32,8 @@ export const GAME_CARDS = [
     openTime: '04:00 AM',
     closeTime: '10:30 PM',
     status: 'Open for Play',
-    color: '#4A90E2',
-    bgColor: '#1a1a1a'
+    color: '#9B59B6',
+    bgColor: '#3A2A4A'
   },
   {
     id: 5,
@@ -41,17 +41,17 @@ export const GAME_CARDS = [
     openTime: '07:00 AM',
     closeTime: '02:30 AM',
     status: 'Open for Play',
-    color: '#4A90E2',
-    bgColor: '#1a1a1a'
+    color: '#E74C3C',
+    bgColor: '#4A2A2A'
   },
   {
     id: 6,
     title: 'Diamond King',
     openTime: '06:00 AM',
     closeTime: '10:10 PM',
-    status: '24x7 निकासी',
-    color: '#4A90E2',
-    bgColor: '#1a1a1a'
+    status: 'Multiple Sessions',
+    color: '#FF1493',
+    bgColor: '#4A2A3A'
   }
 ];
 
