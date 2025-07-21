@@ -17,16 +17,16 @@ export default function Games({ gameCards, onGameSelect }: GamesProps) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 800,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.spring(slideAnim, {
         toValue: 0,
         tension: 50,
         friction: 8,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start();
-  }, [fadeAnim, slideAnim]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -53,31 +53,17 @@ export default function Games({ gameCards, onGameSelect }: GamesProps) {
           ]}
         >
           {gameCards.map((game, index) => (
-            <Animated.View 
-              key={game.id} 
-              style={[
-                styles.gameCardWrapper,
-                {
-                  opacity: fadeAnim,
-                  transform: [
-                    { 
-                      translateY: slideAnim
-                    },
-                    {
-                      scale: fadeAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0.8, 1]
-                      })
-                    }
-                  ]
-                }
-              ]}
-            >
+            <View key={game.id} style={{ 
+              opacity: 1,
+              transform: [{ 
+                translateY: 0
+              }]
+            }}>
               <GameCard 
                 game={game} 
                 onPlayNow={onGameSelect} 
               />
-            </Animated.View>
+            </View>
           ))}
         </Animated.View>
         <View style={styles.bottomSpacing} />
@@ -110,10 +96,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },
-  gameCardWrapper: {
-    width: '48%',
-    marginBottom: 15,
   },
   bottomSpacing: {
     height: 100,

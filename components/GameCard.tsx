@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 
@@ -18,21 +17,20 @@ interface GameCardProps {
 export default function GameCard({ game, onPlayNow }: GameCardProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     // Continuous pulse animation for status
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 1.05,
+          toValue: 1.1,
           duration: 1500,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(pulseAnim, {
           toValue: 1,
           duration: 1500,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ])
     ).start();
@@ -42,26 +40,12 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
       Animated.timing(rotateAnim, {
         toValue: 1,
         duration: 4000,
-        useNativeDriver: true,
+        useNativeDriver: false,
       })
     ).start();
-  }, [pulseAnim, rotateAnim]);
+  }, []);
 
   const handlePress = () => {
-    // Scale animation on press
-    Animated.sequence([
-      Animated.timing(scaleAnim, {
-        toValue: 0.95,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-    
     onPlayNow(game);
   };
 
@@ -72,73 +56,71 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
 
   return (
     <View style={styles.cardContainer}>
-      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-        <TouchableOpacity 
+      <TouchableOpacity 
+        style={[
+          styles.gameCard, 
+          { 
+            backgroundColor: game.bgColor,
+            borderColor: game.color,
+          }
+        ]}
+        onPress={handlePress}
+        activeOpacity={0.8}
+      >
+        <View style={styles.gameHeader}>
+          <View style={styles.titleContainer}>
+            <Animated.Text 
+              style={[
+                styles.gameIcon,
+                {
+                  transform: [{ rotate: rotateInterpolate }],
+                }
+              ]}
+            >
+              {game.title.includes('24') ? '🎯' : game.id <= 4 ? '⭐' : '💎'}
+            </Animated.Text>
+            <Text style={[styles.gameTitle, { color: game.color }]}>
+              {game.title}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.gameDetails}>
+          <View style={styles.gameTime}>
+            <Text style={styles.timeLabel}>Open:</Text>
+            <Text style={styles.timeValue}>{game.openTime}</Text>
+          </View>
+          <View style={styles.gameTime}>
+            <Text style={styles.timeLabel}>Close:</Text>
+            <Text style={styles.timeValue}>{game.closeTime}</Text>
+          </View>
+        </View>
+
+        <Animated.Text 
           style={[
-            styles.gameCard, 
-            { 
-              backgroundColor: game.bgColor,
-              borderColor: game.color,
+            styles.gameStatus,
+            {
+              transform: [{ scale: pulseAnim }],
             }
           ]}
-          onPress={handlePress}
-          activeOpacity={0.8}
         >
-          <View style={styles.gameHeader}>
-            <View style={styles.titleContainer}>
-              <Animated.Text 
-                style={[
-                  styles.gameIcon,
-                  {
-                    transform: [{ rotate: rotateInterpolate }],
-                  }
-                ]}
-              >
-                {game.title.includes('24') ? '🎯' : game.id <= 4 ? '⭐' : '💎'}
-              </Animated.Text>
-              <Text style={[styles.gameTitle, { color: game.color }]}>
-                {game.title}
-              </Text>
-            </View>
-          </View>
+          {game.status}
+        </Animated.Text>
 
-          <View style={styles.gameDetails}>
-            <View style={styles.gameTime}>
-              <Text style={styles.timeLabel}>Open:</Text>
-              <Text style={styles.timeValue}>{game.openTime}</Text>
-            </View>
-            <View style={styles.gameTime}>
-              <Text style={styles.timeLabel}>Close:</Text>
-              <Text style={styles.timeValue}>{game.closeTime}</Text>
-            </View>
-          </View>
-
-          <Animated.Text 
-            style={[
-              styles.gameStatus,
-              {
-                transform: [{ scale: pulseAnim }],
-              }
-            ]}
-          >
-            {game.status}
-          </Animated.Text>
-
-          <TouchableOpacity 
-            style={[styles.playButton, { backgroundColor: game.color }]}
-            onPress={handlePress}
-          >
-            <Text style={styles.playButtonText}>Play Now →</Text>
-          </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.playButton, { backgroundColor: game.color }]}
+          onPress={handlePress}
+        >
+          <Text style={styles.playButtonText}>Play Now →</Text>
         </TouchableOpacity>
-      </Animated.View>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: '100%',
+    width: '48%',
     marginBottom: 15,
   },
   gameCard: {
