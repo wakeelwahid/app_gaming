@@ -13,9 +13,10 @@ interface BetSuccessModalProps {
   } | null;
   onClose: () => void;
   onNavigateToMyBets?: () => void;
+  onNavigateToHome?: () => void;
 }
 
-export default function BetSuccessModal({ visible, betDetails, onClose, onNavigateToMyBets }: BetSuccessModalProps) {
+export default function BetSuccessModal({ visible, betDetails, onClose, onNavigateToMyBets, onNavigateToHome }: BetSuccessModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.8));
   const [countdown, setCountdown] = React.useState(7); // Changed to 7 seconds
