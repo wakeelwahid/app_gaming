@@ -20,6 +20,9 @@ import Transaction from './components/Transaction';
 import KYCPage from './components/KYCPage';
 import ReferPage from './components/ReferPage';
 import RefundPolicy from './components/RefundPolicy';
+import {
+  GameHistory,
+} from './components';
 
 // Import API services
 import { userService } from './services/userService';
@@ -631,6 +634,7 @@ export default function App() {
   const [selectedPaymentMethodLocal, setSelectedPaymentMethodLocal] = useState('');
   const [utrNumberLocal, setUtrNumberLocal] = useState('');
   const [activeTabState, setActiveTabState] = useState('home');
+    const [currentViewState, setCurrentViewState] = useState('home');
 
   useEffect(() => {
     // Check age verification on app start
@@ -1203,13 +1207,13 @@ export default function App() {
               <Text style={styles.contactText}>
                 Refund के लिए हमारी customer support team से संपर्क करें। हमारी team 24x7 आपकी सेवा में है।
               </Text>
-              
+
               <View style={styles.contactButtons}>
                 <TouchableOpacity style={styles.whatsappButton}>
                   <Ionicons name="logo-whatsapp" size={20} color="#25D366" />
                   <Text style={styles.contactButtonText}>WhatsApp Support</Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity style={styles.telegramButton}>
                   <Ionicons name="paper-plane" size={20} color="#0088CC" />
                   <Text style={styles.contactButtonText}>Telegram Support</Text>
@@ -1355,7 +1359,9 @@ export default function App() {
     } else if (key === 'logout') {
       // Handle logout logic
       console.log('Logout clicked');
-    }
+    } else if (key === 'game-history') {
+          setCurrentViewState('game-history');
+        }
   };
 
   return (
@@ -1368,7 +1374,16 @@ export default function App() {
         {showKYCPageState ? (
           <KYCPage onBack={() => setShowKYCPageState(false)} />
         ) : (
-          renderContent()
+          <>
+        {currentViewState === 'refund-policy' && (
+          <RefundPolicy />
+        )}
+
+        {currentViewState === 'game-history' && (
+          <GameHistory betHistory={betHistoryState} />
+        )}
+          {renderContent()}
+                </>
         )}
       </View>
 
@@ -1632,21 +1647,8 @@ export default function App() {
         visible={showWithdrawSuccessModalState}
         amount={withdrawAmountState}
         paymentMethod={selectedPaymentMethodState || 'Selected UPI'}
-        onClose={handleWithdrawSuccessClose}
-      />
-      {activeTabLocal === 'bets' && (
-        <BetHistory
-          visible={true}
-          betHistory={betHistoryState || []}
-          onClose={() => setActiveTabLocal('home')}
-        />
-      )}
-
-      <BetSuccessModal
-        visible={showBetSuccessState}
-        betDetails={lastBetDetailsState}
-        onClose={() => {
-          console.log('BetSuccessModal manually closed');
+        onThe addition of GameHistory component and route handling is completed.```text
+WithdrawSuccessModal manually closed');
           setShowBetSuccessState(false);
           setActiveTabLocal('mybets');
         }}

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,7 +77,7 @@ export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
               </View>
               <Text style={styles.profileMenuTitle}>Menu</Text>
             </View>
-            
+
             {profileMenuItems.map((item) => (
               <TouchableOpacity
                 key={item.key}
