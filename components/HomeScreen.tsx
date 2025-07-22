@@ -67,7 +67,7 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
         </TouchableOpacity>
         
         <View style={styles.timeCenterSection}>
-          <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
+          <Text style={styles.currentTime}>🕐12:28:27</Text>
         </View>
         
         <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
@@ -241,10 +241,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FFF',
+    backgroundColor: '#FFF',
+      paddingHorizontal: isSmallDevice ? 8 : 10,
+      paddingVertical: isSmallDevice ? 4 : 6,
+    borderRadius: isSmallDevice ? 6 : 8,
+      minHeight: isSmallDevice ? 32 : 36,
+    marginHorizontal: isSmallDevice ? 8 : 10,
+    
+    
   },
   currentTime: {
     color: '#4A90E2',
-    fontSize: isSmallDevice ? 14 : 16,
+    fontSize: isSmallDevice ? 10 : 12,
     fontWeight: 'bold',
     textAlign: 'center',
   },
