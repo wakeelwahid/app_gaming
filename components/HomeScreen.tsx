@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import GameCard from './GameCard';
+import { Ionicons } from '@expo/vector-icons';
 
 interface HomeScreenProps {
   gameCards: any[];
@@ -32,13 +33,15 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
             styles.featureCard,
             index === 0 && styles.feature24x7,
             index === 1 && styles.feature5min,
-            index === 2 && styles.feature100safe
+            index === 2 && styles.feature100safe,
+            index === 3 && styles.feature24x7Support
           ]}>
             <View style={[
               styles.featureIconContainer,
               index === 0 && styles.iconContainer24x7,
               index === 1 && styles.iconContainer5min,
-              index === 2 && styles.iconContainer100safe
+              index === 2 && styles.iconContainer100safe,
+              index === 3 && styles.iconContainer24x7Support
             ]}>
               <Text style={styles.featureIcon}>{feature.icon}</Text>
             </View>
@@ -46,7 +49,8 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
               styles.featureTitle,
               index === 0 && styles.title24x7,
               index === 1 && styles.title5min,
-              index === 2 && styles.title100safe
+              index === 2 && styles.title100safe,
+              index === 3 && styles.title24x7Support
             ]}>{feature.title}</Text>
             <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
             {/* Colorful glow effect */}
@@ -54,7 +58,8 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
               styles.featureGlow,
               index === 0 && styles.glow24x7,
               index === 1 && styles.glow5min,
-              index === 2 && styles.glow100safe
+              index === 2 && styles.glow100safe,
+              index === 3 && styles.glow24x7Support
             ]} />
           </View>
         ))}
@@ -65,11 +70,11 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
         <TouchableOpacity style={styles.gameRulesButton} onPress={() => Alert.alert('Game Rules', '🎯 सभी गेम्स के नियम:\n\n1. बेट लगाने से पहले समय चेक करें\n2. एक बार बेट लगने के बाद cancel नहीं हो सकता\n3. Result declare होने का wait करें\n4. Fair play का पालन करें\n5. जिम्मेदारी से खेलें\n\n✅ सभी गेम्स 100% fair हैं')}>
           <Text style={styles.gameRulesText}>📋 Game Rules</Text>
         </TouchableOpacity>
-        
+
         <View style={styles.timeCenterSection}>
           <Text style={styles.currentTime}>🕐12:28:27</Text>
         </View>
-        
+
         <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
           <Text style={styles.kycButtonIcon}>🔐</Text>
           <Text style={styles.kycButtonText}>Complete KYC</Text>
@@ -226,6 +231,21 @@ const styles = StyleSheet.create({
   glow100safe: {
     borderColor: 'rgba(255, 107, 107, 0.4)',
   },
+    // 24x7 Support Feature Styles
+  feature24x7Support: {
+    backgroundColor: '#1a1a1a',
+    borderColor: '#00BFFF',
+  },
+  iconContainer24x7Support: {
+    backgroundColor: 'rgba(0, 191, 255, 0.15)',
+    borderColor: 'rgba(0, 191, 255, 0.4)',
+  },
+  title24x7Support: {
+    color: '#00BFFF',
+  },
+  glow24x7Support: {
+    borderColor: 'rgba(0, 191, 255, 0.4)',
+  },
   timeKycContainer: {
     backgroundColor: '#1a1a1a',
     padding: isSmallDevice ? 12 : 15,
@@ -249,8 +269,8 @@ const styles = StyleSheet.create({
     borderRadius: isSmallDevice ? 6 : 8,
       minHeight: isSmallDevice ? 32 : 36,
     marginHorizontal: isSmallDevice ? 8 : 10,
-    
-    
+
+
   },
   currentTime: {
     color: '#4A90E2',
