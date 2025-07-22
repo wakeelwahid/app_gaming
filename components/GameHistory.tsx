@@ -105,20 +105,11 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString('en-US', { 
-        day: 'numeric', 
-        month: 'short'
-      });
-    }
+    return date.toLocaleDateString('en-GB', { 
+      day: '2-digit', 
+      month: '2-digit',
+      year: 'numeric'
+    });
   };
 
   const getBetTypeText = (type: string) => {
@@ -366,22 +357,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
+    backgroundColor: 'transparent',
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+    marginBottom: 10,
   },
   dateTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4A90E2',
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#666',
   },
   dateBetCount: {
-    fontSize: 12,
-    color: '#999',
+    fontSize: 10,
+    color: '#555',
   },
   betsScrollContainer: {
     marginBottom: 10,
