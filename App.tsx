@@ -1647,11 +1647,7 @@ export default function App() {
         visible={showWithdrawSuccessModalState}
         amount={withdrawAmountState}
         paymentMethod={selectedPaymentMethodState || 'Selected UPI'}
-        onThe addition of GameHistory component and route handling is completed.```text
-WithdrawSuccessModal manually closed');
-          setShowBetSuccessState(false);
-          setActiveTabLocal('mybets');
-        }}
+        onClose={handleWithdrawSuccessClose}
         onNavigateToMyBets={() => {
           setShowBetSuccessState(false);
           setActiveTabLocal('mybets');
