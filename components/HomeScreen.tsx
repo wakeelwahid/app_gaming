@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import GameCard from './GameCard';
+import GameRulesModal from './GameRulesModal';
 import { Ionicons } from '@expo/vector-icons';
 
 interface HomeScreenProps {
@@ -11,6 +12,7 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress }: HomeScreenProps) {
+  const [showGameRules, setShowGameRules] = useState(false);
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       {/* Promotional Banner */}
@@ -67,7 +69,7 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
 
       {/* Game Rules, Time and KYC Section */}
       <View style={styles.timeKycContainer}>
-        <TouchableOpacity style={styles.gameRulesButton} onPress={() => Alert.alert('Game Rules', '🎯 सभी गेम्स के नियम:\n\n1. बेट लगाने से पहले समय चेक करें\n2. एक बार बेट लगने के बाद cancel नहीं हो सकता\n3. Result declare होने का wait करें\n4. Fair play का पालन करें\n5. जिम्मेदारी से खेलें\n\n✅ सभी गेम्स 100% fair हैं')}>
+        <TouchableOpacity style={styles.gameRulesButton} onPress={() => setShowGameRules(true)}>
           <Text style={styles.gameRulesText}>📋 Game Rules</Text>
         </TouchableOpacity>
 
@@ -90,6 +92,12 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
         </View>
       </View>
       <View style={styles.bottomSpacing} />
+      
+      {/* Game Rules Modal */}
+      <GameRulesModal 
+        visible={showGameRules} 
+        onClose={() => setShowGameRules(false)} 
+      />
     </ScrollView>
   );
 }
