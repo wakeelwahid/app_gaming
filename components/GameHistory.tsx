@@ -8,7 +8,91 @@ interface GameHistoryProps {
   betHistory?: any[];
 }
 
-export default function GameHistory({ betHistory = [] }: GameHistoryProps) {
+// Mock game history data for last 7 days
+const mockGameHistory = [
+  {
+    id: '1',
+    game: 'Jaipur King',
+    number: '45',
+    amount: 100,
+    type: 'single',
+    status: 'win',
+    winAmount: 900,
+    timestamp: Date.now() - (1 * 24 * 60 * 60 * 1000), // 1 day ago
+    sessionTime: '09:00 PM - 04:50 PM',
+    resultNumber: '45'
+  },
+  {
+    id: '2',
+    game: 'Delhi Bazaar',
+    number: '23',
+    amount: 50,
+    type: 'jodi',
+    status: 'loss',
+    timestamp: Date.now() - (2 * 24 * 60 * 60 * 1000), // 2 days ago
+    sessionTime: '10:00 AM - 05:00 PM',
+    resultNumber: '67'
+  },
+  {
+    id: '3',
+    game: 'Jaipur King',
+    number: '8',
+    amount: 200,
+    type: 'andar',
+    status: 'win',
+    winAmount: 360,
+    timestamp: Date.now() - (3 * 24 * 60 * 60 * 1000), // 3 days ago
+    sessionTime: '09:00 PM - 04:50 PM',
+    resultNumber: '8'
+  },
+  {
+    id: '4',
+    game: 'Mumbai King',
+    number: '91',
+    amount: 150,
+    type: 'single',
+    status: 'pending',
+    timestamp: Date.now() - (4 * 24 * 60 * 60 * 1000), // 4 days ago
+    sessionTime: '11:00 AM - 06:00 PM',
+    resultNumber: null
+  },
+  {
+    id: '5',
+    game: 'Delhi Bazaar',
+    number: '5',
+    amount: 75,
+    type: 'bahar',
+    status: 'loss',
+    timestamp: Date.now() - (5 * 24 * 60 * 60 * 1000), // 5 days ago
+    sessionTime: '10:00 AM - 05:00 PM',
+    resultNumber: '2'
+  },
+  {
+    id: '6',
+    game: 'Jaipur King',
+    number: '34',
+    amount: 300,
+    type: 'jodi',
+    status: 'win',
+    winAmount: 2700,
+    timestamp: Date.now() - (6 * 24 * 60 * 60 * 1000), // 6 days ago
+    sessionTime: '09:00 PM - 04:50 PM',
+    resultNumber: '34'
+  },
+  {
+    id: '7',
+    game: 'Mumbai King',
+    number: '7',
+    amount: 100,
+    type: 'andar',
+    status: 'loss',
+    timestamp: Date.now() - (7 * 24 * 60 * 60 * 1000), // 7 days ago
+    sessionTime: '11:00 AM - 06:00 PM',
+    resultNumber: '3'
+  }
+];
+
+export default function GameHistory({ betHistory = mockGameHistory }: GameHistoryProps) {
   const [selectedGame, setSelectedGame] = useState<string>('All Games');
   const [filteredHistory, setFilteredHistory] = useState<any[]>([]);
 
@@ -116,8 +200,8 @@ export default function GameHistory({ betHistory = [] }: GameHistoryProps) {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🎯 Game History</Text>
-        <Text style={styles.headerSubtitle}>पिछले 7 दिन का रिकॉर्ड</Text>
+        <Text style={styles.headerTitle}>📊 Game History</Text>
+        <Text style={styles.headerSubtitle}>पिछले 7 दिन की Game History देखें</Text>
       </View>
 
       {/* Game Filter Dropdown */}
@@ -178,8 +262,8 @@ export default function GameHistory({ betHistory = [] }: GameHistoryProps) {
                 <View key={betIndex} style={styles.betCard}>
                   <View style={styles.betHeader}>
                     <View style={styles.gameInfo}>
-                      <Text style={styles.gameName}>{bet.game}</Text>
-                      <Text style={styles.sessionTime}>{bet.sessionTime}</Text>
+                      <Text style={styles.gameName}>🎮 {bet.game}</Text>
+                      <Text style={styles.sessionTime}>⏰ {bet.sessionTime}</Text>
                     </View>
                     <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) }]}>
                       <Text style={styles.statusText}>{getStatusText(bet.status)}</Text>
@@ -189,21 +273,24 @@ export default function GameHistory({ betHistory = [] }: GameHistoryProps) {
                   <View style={styles.betDetails}>
                     <View style={styles.betInfo}>
                       <View style={styles.numberContainer}>
-                        <Text style={styles.betNumber}>{bet.number}</Text>
+                        <Text style={styles.betNumber}>🎯 {bet.number}</Text>
                         <Text style={styles.betType}>{getBetTypeText(bet.type)}</Text>
                       </View>
                       
                       <View style={styles.amountContainer}>
-                        <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                        <Text style={styles.betAmount}>💰 ₹{bet.amount}</Text>
                         {bet.winAmount && (
-                          <Text style={styles.winAmount}>Win: ₹{bet.winAmount}</Text>
+                          <Text style={styles.winAmount}>🏆 Win: ₹{bet.winAmount}</Text>
+                        )}
+                        {bet.resultNumber && (
+                          <Text style={styles.resultNumber}>📊 Result: {bet.resultNumber}</Text>
                         )}
                       </View>
                     </View>
 
                     <View style={styles.timeContainer}>
                       <Text style={styles.betTime}>
-                        {new Date(bet.timestamp).toLocaleTimeString('hi-IN', {
+                        ⏰ {new Date(bet.timestamp).toLocaleTimeString('hi-IN', {
                           hour: '2-digit',
                           minute: '2-digit'
                         })}
@@ -217,12 +304,15 @@ export default function GameHistory({ betHistory = [] }: GameHistoryProps) {
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>📊</Text>
-            <Text style={styles.emptyTitle}>कोई History नहीं मिली</Text>
+            <Text style={styles.emptyTitle}>कोई Game History नहीं मिली</Text>
             <Text style={styles.emptyMessage}>
               {selectedGame === 'All Games' 
-                ? 'पिछले 7 दिनों में कोई bet नहीं लगाई गई'
-                : `${selectedGame} के लिए कोई bet नहीं मिली`
+                ? 'पिछले 7 दिनों में कोई game खेली नहीं गई'
+                : `${selectedGame} के लिए कोई game history नहीं मिली`
               }
+            </Text>
+            <Text style={styles.emptySubMessage}>
+              🎮 पहले कोई game खेलें फिर यहां history देखें
             </Text>
           </View>
         )}
@@ -411,6 +501,12 @@ const styles = StyleSheet.create({
     color: '#00FF88',
     fontWeight: 'bold',
   },
+  resultNumber: {
+    fontSize: 11,
+    color: '#4A90E2',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
   timeContainer: {
     alignItems: 'flex-end',
   },
@@ -442,5 +538,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     paddingHorizontal: 40,
+    marginBottom: 10,
+  },
+  emptySubMessage: {
+    fontSize: 12,
+    color: '#4A90E2',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
