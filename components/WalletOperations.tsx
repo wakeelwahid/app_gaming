@@ -318,12 +318,11 @@ export default function WalletOperations({
               </TouchableOpacity>
 
               <View style={styles.withdrawInfo}>
-                <Text style={styles.withdrawInfoTitle}>🕒 24x7 निकासी - किसी भी समय पैसा निकालें:</Text>
+                <Text style={styles.withdrawInfoTitle}>ℹ️ Withdrawal Information:</Text>
                 <Text style={styles.withdrawInfoText}>• Minimum withdrawal: ₹100</Text>
                 <Text style={styles.withdrawInfoText}>• Maximum per request: ₹30,000</Text>
                 <Text style={styles.withdrawInfoText}>• Processing time: 5 to 10 minutes</Text>
                 <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
-                <Text style={styles.withdrawInfoText}>• 24 घंटे withdrawal available</Text>
                 <Text style={styles.withdrawInfoText}>• Bank charges may apply</Text>
               </View>
             </View>
