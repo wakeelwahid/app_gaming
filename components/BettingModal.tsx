@@ -39,27 +39,58 @@ export default function BettingModal({
       setCustomAmount('');
     }
   }, [visible]);
+
   const getTotalBetAmount = () => {
     return betList.reduce((total, bet) => total + bet.amount, 0);
   };
 
   const getNumberButtonStyle = (number: number) => {
-    const hue = (number * 3.6) % 360;
-    const saturation = 70 + (number % 30);
-    const lightness = 40 + (number % 20);
+    // Create professional gradient colors
+    const baseHue = (number * 137.5) % 360; // Golden ratio approximation for better distribution
+    const isEven = number % 2 === 0;
+    const isPrime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97].includes(number);
+
+    let backgroundColor, borderColor, shadowColor;
+
+    if (isPrime) {
+      // Prime numbers get gold theme
+      backgroundColor = '#1a1611';
+      borderColor = '#d4af37';
+      shadowColor = '#d4af37';
+    } else if (isEven) {
+      // Even numbers get blue theme
+      backgroundColor = '#0f1419';
+      borderColor = '#4a9eff';
+      shadowColor = '#4a9eff';
+    } else {
+      // Odd numbers get purple theme
+      backgroundColor = '#16111a';
+      borderColor = '#8b5cf6';
+      shadowColor = '#8b5cf6';
+    }
+
     return {
-      backgroundColor: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
-      borderWidth: 2,
-      borderColor: `hsl(${hue + 30}, ${saturation - 10}%, ${lightness + 10}%)`,
-      shadowColor: `hsl(${hue}, ${saturation}%, ${lightness - 10}%)`,
+      backgroundColor,
+      borderWidth: 1.5,
+      borderColor,
+      shadowColor,
       shadowOffset: {
         width: 0,
-        height: 2,
+        height: 3,
       },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-      elevation: 4,
+      shadowOpacity: 0.4,
+      shadowRadius: 6,
+      elevation: 6,
     };
+  };
+
+  const getNumberTextColor = (number: number) => {
+    const isPrime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97].includes(number);
+    const isEven = number % 2 === 0;
+
+    if (isPrime) return '#ffd700';
+    if (isEven) return '#60a5fa';
+    return '#a78bfa';
   };
 
   const renderNumbers = () => {
@@ -87,6 +118,7 @@ export default function BettingModal({
         >
           <Text style={[
             styles.numberText,
+            { color: getNumberTextColor(i) },
             isSelected && styles.selectedNumberText
           ]}>{i}</Text>
           {isSelected && (
@@ -191,8 +223,8 @@ export default function BettingModal({
             <Text style={styles.modalTitle}>
               {selectedGame?.title} - Select Numbers
             </Text>
-            <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" size={24} color="#fff" />
+            <TouchableOpacity onPress={onClose} style={styles.closeIconContainer}>
+              <Ionicons name="close" size={24} color="#ffffff" />
             </TouchableOpacity>
           </View>
 
@@ -285,8 +317,6 @@ export default function BettingModal({
               </>
             )}
 
-
-
             </ScrollView>
 
             {/* Fixed Bottom Section - Only Place Bet Button */}
@@ -328,8 +358,8 @@ export default function BettingModal({
               <Text style={styles.popupTitle}>
                 Bet Amount - {selectedNumber}
               </Text>
-              <TouchableOpacity onPress={() => setShowAmountPopup(false)}>
-                <Ionicons name="close" size={20} color="#fff" />
+              <TouchableOpacity onPress={() => setShowAmountPopup(false)} style={styles.popupCloseIcon}>
+                <Ionicons name="close" size={20} color="#ffffff" />
               </TouchableOpacity>
             </View>
 
@@ -354,7 +384,7 @@ export default function BettingModal({
               <TextInput
                 style={styles.customAmountInput}
                 placeholder="Enter amount"
-                placeholderTextColor="#999"
+                placeholderTextColor="#666666"
                 value={customAmount}
                 onChangeText={setCustomAmount}
                 keyboardType="numeric"
@@ -386,7 +416,7 @@ export default function BettingModal({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -394,9 +424,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0a0a',
     width: '95%',
     maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#1a1a1a',
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -404,13 +435,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#1a1a1a',
+    backgroundColor: '#111111',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4A90E2',
+    fontWeight: '700',
+    color: '#ffffff',
     flex: 1,
+  },
+  closeIconContainer: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#1a1a1a',
   },
   modalContent: {
     flex: 1,
@@ -426,93 +465,99 @@ const styles = StyleSheet.create({
   bettingTabs: {
     flexDirection: 'row',
     marginBottom: 20,
+    backgroundColor: '#111111',
+    borderRadius: 12,
+    padding: 4,
   },
   tab: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 8,
-    backgroundColor: '#1a1a1a',
-    borderWidth: 1,
-    borderColor: '#333',
-    marginRight: 5,
+    backgroundColor: 'transparent',
     borderRadius: 8,
     alignItems: 'center',
   },
   activeTab: {
-    backgroundColor: '#4A90E2',
-    borderColor: '#4A90E2',
+    backgroundColor: '#1a1a1a',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
   },
   tabText: {
-    color: '#999',
-    fontSize: 11,
-    fontWeight: 'bold',
+    color: '#666666',
+    fontSize: 12,
+    fontWeight: '600',
     textAlign: 'center',
   },
   activeTabText: {
-    color: '#000',
+    color: '#ffffff',
   },
   selectionSummary: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#111111',
+    padding: 16,
+    borderRadius: 12,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#1a1a1a',
   },
   summaryTitle: {
-    color: '#4A90E2',
+    color: '#ffffff',
     fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontWeight: '600',
+    marginBottom: 12,
   },
   selectedNumbersList: {
     flexDirection: 'row',
     gap: 8,
   },
   selectedChip: {
-    backgroundColor: '#4A90E2',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
+    backgroundColor: '#1a1a1a',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333333',
   },
   andarChip: {
-    backgroundColor: '#00FF88',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
+    backgroundColor: '#0f2419',
+    borderColor: '#00ff88',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     alignItems: 'center',
+    borderWidth: 1,
   },
   baharChip: {
-    backgroundColor: '#E74C3C',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
+    backgroundColor: '#241f0f',
+    borderColor: '#ff6b6b',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     alignItems: 'center',
+    borderWidth: 1,
   },
   selectedChipText: {
-    color: '#000',
+    color: '#ffffff',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   selectedChipAmount: {
-    color: '#000',
+    color: '#cccccc',
     fontSize: 10,
   },
   totalAmountDisplay: {
-    marginTop: 10,
+    marginTop: 12,
     alignItems: 'center',
   },
   totalAmountText: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
+    color: '#00ff88',
+    fontSize: 16,
+    fontWeight: '700',
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4A90E2',
-    marginBottom: 15,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 16,
     textAlign: 'center',
   },
   numbersScrollContainer: {
@@ -521,319 +566,180 @@ const styles = StyleSheet.create({
   fixedBottomSection: {
     backgroundColor: '#0a0a0a',
     borderTopWidth: 1,
-    borderTopColor: '#333',
-    padding: 15,
+    borderTopColor: '#1a1a1a',
+    padding: 16,
+    marginHorizontal: -20,
+    marginBottom: -20,
   },
   numbersGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: 8,
   },
   andarBaharGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: 10,
   },
   numberButton: {
     width: '18%',
     aspectRatio: 1,
-    borderWidth: 2,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
     position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
   },
   selectedNumberButton: {
-    backgroundColor: '#00FF88',
-    borderColor: '#00FF88',
-    borderWidth: 3,
-    shadowColor: '#00FF88',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-    elevation: 8,
+    backgroundColor: '#00ff88',
+    borderColor: '#00ff88',
+    borderWidth: 2,
+    boxShadow: '0 0 20px rgba(0, 255, 136, 0.5)',
+    transform: [{ scale: 1.05 }],
   },
   numberText: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+    fontWeight: '700',
+    textAlign: 'center',
   },
   selectedNumberText: {
-    color: '#000',
+    color: '#000000',
     fontSize: 18,
     fontWeight: '900',
-    textShadow: '1px 1px 2px rgba(255, 255, 255, 0.3)',
-  },
-  luckyNumberButton: {
-    backgroundColor: '#2E8B57',
-    borderColor: '#00FF88',
-    borderWidth: 2,
-    shadowColor: '#00FF88',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  luckyNumberText: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
-  },
-  specialNumberButton: {
-    backgroundColor: '#4A0E4E',
-    borderColor: '#9B59B6',
-    borderWidth: 2,
-    shadowColor: '#9B59B6',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  specialNumberText: {
-    color: '#E74C3C',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
-  },
-  luckyIcon: {
-    position: 'absolute',
-    top: -5,
-    left: -5,
-    zIndex: 1,
-  },
-  luckyIconText: {
-    fontSize: 12,
-  },
-  specialIcon: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    zIndex: 1,
-  },
-  specialIconText: {
-    fontSize: 10,
   },
   betAmountBadge: {
     position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: '#00FF88',
-    borderRadius: 12,
-    minWidth: 24,
-    height: 24,
+    top: -6,
+    right: -6,
+    backgroundColor: '#00ff88',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#000',
-    shadowColor: '#00FF88',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 10,
+    borderColor: '#000000',
   },
   betAmountBadgeText: {
-    color: '#000',
-    fontSize: 9,
-    fontWeight: 'bold',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
+    color: '#000000',
+    fontSize: 8,
+    fontWeight: '700',
   },
   betAmountBadgeSmall: {
     position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: '#000',
+    top: 4,
+    right: 4,
+    backgroundColor: '#000000',
     borderRadius: 6,
-    paddingHorizontal: 3,
-    paddingVertical: 1,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
   },
   betAmountBadgeTextSmall: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 8,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   andarBaharButton: {
     width: '48%',
     height: 60,
-    backgroundColor: '#1a1a1a',
-    borderWidth: 2,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10,
     position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    borderWidth: 1.5,
   },
   andarButton: {
-    backgroundColor: '#0D4F2B',
-    borderColor: '#00FF88',
-    shadowColor: '#00FF88',
-    shadowOpacity: 0.5,
+    backgroundColor: '#0f2419',
+    borderColor: '#00ff88',
   },
   baharButton: {
-    backgroundColor: '#4F1A1A',
-    borderColor: '#E74C3C',
-    shadowColor: '#E74C3C',
-    shadowOpacity: 0.5,
+    backgroundColor: '#241f0f',
+    borderColor: '#ff6b6b',
   },
   selectedAndarButton: {
-    backgroundColor: '#00FF88',
-    borderColor: '#00FF88',
-    borderWidth: 3,
-    shadowColor: '#00FF88',
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 10,
+    backgroundColor: '#00ff88',
+    borderColor: '#00ff88',
+    borderWidth: 2,
+    boxShadow: '0 0 20px rgba(0, 255, 136, 0.5)',
   },
   selectedBaharButton: {
-    backgroundColor: '#E74C3C',
-    borderColor: '#E74C3C',
-    borderWidth: 3,
-    shadowColor: '#E74C3C',
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 10,
+    backgroundColor: '#ff6b6b',
+    borderColor: '#ff6b6b',
+    borderWidth: 2,
+    boxShadow: '0 0 20px rgba(255, 107, 107, 0.5)',
   },
   andarBaharText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textAlign: 'center',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
   },
   selectedAndarText: {
-    color: '#000',
+    color: '#000000',
     fontSize: 16,
-    fontWeight: 'bold',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
+    fontWeight: '700',
   },
   selectedBaharText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
-  },
-  betAmountSection: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  betAmountTitle: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  amountButtonsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 8,
-  },
-  amountButton: {
-    width: '30%',
-    backgroundColor: '#2a2a2a',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#00FF88',
-  },
-  amountButtonText: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   placeBetButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
+    backgroundColor: '#00ff88',
+    paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: '#FFD700',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    boxShadow: '0 8px 24px rgba(0, 255, 136, 0.3)',
   },
   placeBetButtonText: {
-    color: '#000',
+    color: '#000000',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   popupOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   amountPopup: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#111111',
     width: '90%',
     maxWidth: 400,
-    borderRadius: 15,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#1a1a1a',
   },
   popupHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#1a1a1a',
   },
   popupTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#4A90E2',
+    fontWeight: '600',
+    color: '#ffffff',
     flex: 1,
+  },
+  popupCloseIcon: {
+    padding: 8,
+    borderRadius: 16,
+    backgroundColor: '#1a1a1a',
   },
   popupContent: {
     padding: 20,
   },
   amountLabel: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontWeight: '600',
+    marginBottom: 12,
   },
   quickAmountGrid: {
     flexDirection: 'row',
@@ -844,38 +750,38 @@ const styles = StyleSheet.create({
   },
   quickAmountButton: {
     width: '30%',
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#1a1a1a',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#00FF88',
+    borderColor: '#333333',
   },
   quickAmountText: {
-    color: '#00FF88',
+    color: '#00ff88',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   customAmountInput: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#1a1a1a',
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#333333',
     borderRadius: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 16,
     marginBottom: 20,
   },
   confirmButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
+    backgroundColor: '#00ff88',
+    paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
   confirmButtonText: {
-    color: '#000',
+    color: '#000000',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
 });
