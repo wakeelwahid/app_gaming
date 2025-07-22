@@ -1,7 +1,13 @@
-
-import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 interface AgeVerificationModalProps {
   visible: boolean;
@@ -9,7 +15,11 @@ interface AgeVerificationModalProps {
   onReject: () => void;
 }
 
-export default function AgeVerificationModal({ visible, onAccept, onReject }: AgeVerificationModalProps) {
+export default function AgeVerificationModal({
+  visible,
+  onAccept,
+  onReject,
+}: AgeVerificationModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.9));
 
@@ -42,13 +52,13 @@ export default function AgeVerificationModal({ visible, onAccept, onReject }: Ag
       onRequestClose={() => {}} // Prevent back button close
     >
       <View style={styles.modalOverlay}>
-        <Animated.View 
+        <Animated.View
           style={[
             styles.verificationModal,
             {
               opacity: fadeAnim,
-              transform: [{ scale: scaleAnim }]
-            }
+              transform: [{ scale: scaleAnim }],
+            },
           ]}
         >
           {/* Warning Icon */}
@@ -58,7 +68,7 @@ export default function AgeVerificationModal({ visible, onAccept, onReject }: Ag
 
           {/* Title */}
           <Text style={styles.title}>🔞 Age Verification Required</Text>
-          
+
           {/* Main Warning Message */}
           <View style={styles.warningContainer}>
             <Text style={styles.warningText}>
@@ -72,25 +82,29 @@ export default function AgeVerificationModal({ visible, onAccept, onReject }: Ag
           {/* Important Points */}
           <View style={styles.pointsContainer}>
             <Text style={styles.pointsTitle}>📋 Important Guidelines:</Text>
-            
+
             <View style={styles.point}>
               <Text style={styles.pointIcon}>🔸</Text>
               <Text style={styles.pointText}>Gambling can be addictive</Text>
             </View>
-            
+
             <View style={styles.point}>
               <Text style={styles.pointIcon}>🔸</Text>
-              <Text style={styles.pointText}>Play responsibly within your limits</Text>
+              <Text style={styles.pointText}>
+                Play responsibly within your limits
+              </Text>
             </View>
-            
+
             <View style={styles.point}>
               <Text style={styles.pointIcon}>🔸</Text>
               <Text style={styles.pointText}>Never chase your losses</Text>
             </View>
-            
+
             <View style={styles.point}>
               <Text style={styles.pointIcon}>🔸</Text>
-              <Text style={styles.pointText}>Seek help if gambling becomes a problem</Text>
+              <Text style={styles.pointText}>
+                Seek help if gambling becomes a problem
+              </Text>
             </View>
           </View>
 
@@ -100,9 +114,8 @@ export default function AgeVerificationModal({ visible, onAccept, onReject }: Ag
               🤝 By continuing, you confirm that:
             </Text>
             <Text style={styles.confirmationPoints}>
-              • You are 18 years or older{'\n'}
-              • You understand the risks of gambling{'\n'}
-              • You agree to play responsibly
+              • You are 18 years or older{"\n"}• You understand the risks of
+              gambling{"\n"}• You agree to play responsibly
             </Text>
           </View>
 
@@ -111,17 +124,10 @@ export default function AgeVerificationModal({ visible, onAccept, onReject }: Ag
             <TouchableOpacity style={styles.rejectButton} onPress={onReject}>
               <Text style={styles.rejectButtonText}>Under 18 / Exit</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.acceptButton} onPress={onAccept}>
               <Text style={styles.acceptButtonText}>I'm 18+ / Continue</Text>
             </TouchableOpacity>
-          </View>
-
-          {/* Footer Warning */}
-          <View style={styles.footerWarning}>
-            <Text style={styles.footerText}>
-              🚨 Gambling is subject to market risks. Please read all terms and conditions carefully.
-            </Text>
           </View>
         </Animated.View>
       </View>
@@ -132,21 +138,21 @@ export default function AgeVerificationModal({ visible, onAccept, onReject }: Ag
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.95)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   verificationModal: {
-    backgroundColor: '#0a0a0a',
-    width: '100%',
+    backgroundColor: "#0a0a0a",
+    width: "100%",
     maxWidth: 400,
     borderRadius: 20,
     padding: 25,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 2,
-    borderColor: '#FF6B6B',
-    shadowColor: '#FF6B6B',
+    borderColor: "#FF6B6B",
+    shadowColor: "#FF6B6B",
     shadowOffset: {
       width: 0,
       height: 0,
@@ -159,114 +165,114 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 15,
     borderRadius: 50,
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+    backgroundColor: "rgba(255, 107, 107, 0.1)",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FF6B6B',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FF6B6B",
+    textAlign: "center",
     marginBottom: 20,
   },
   warningContainer: {
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+    backgroundColor: "rgba(255, 107, 107, 0.1)",
     borderRadius: 12,
     padding: 15,
     marginBottom: 20,
-    width: '100%',
+    width: "100%",
     borderWidth: 1,
-    borderColor: '#FF6B6B',
+    borderColor: "#FF6B6B",
   },
   warningText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FF6B6B',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FF6B6B",
+    textAlign: "center",
     marginBottom: 5,
   },
   warningSubtext: {
     fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
-    fontStyle: 'italic',
+    color: "#999",
+    textAlign: "center",
+    fontStyle: "italic",
   },
   pointsContainer: {
-    width: '100%',
+    width: "100%",
     marginBottom: 20,
   },
   pointsTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#4A90E2',
+    fontWeight: "bold",
+    color: "#4A90E2",
     marginBottom: 10,
   },
   point: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     marginBottom: 8,
   },
   pointIcon: {
-    color: '#00FF88',
+    color: "#00FF88",
     fontSize: 14,
     marginRight: 8,
     marginTop: 2,
   },
   pointText: {
-    color: '#999',
+    color: "#999",
     fontSize: 12,
     flex: 1,
     lineHeight: 16,
   },
   confirmationContainer: {
-    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    backgroundColor: "rgba(74, 144, 226, 0.1)",
     borderRadius: 10,
     padding: 15,
     marginBottom: 25,
-    width: '100%',
+    width: "100%",
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: "#4A90E2",
   },
   confirmationText: {
-    color: '#4A90E2',
+    color: "#4A90E2",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   confirmationPoints: {
-    color: '#999',
+    color: "#999",
     fontSize: 11,
     lineHeight: 16,
-    textAlign: 'left',
+    textAlign: "left",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    width: '100%',
+    flexDirection: "row",
+    width: "100%",
     gap: 10,
     marginBottom: 20,
   },
   rejectButton: {
     flex: 1,
-    backgroundColor: '#333',
+    backgroundColor: "#333",
     paddingVertical: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#666',
+    borderColor: "#666",
   },
   rejectButtonText: {
-    color: '#999',
+    color: "#999",
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   acceptButton: {
     flex: 1,
-    backgroundColor: '#00FF88',
+    backgroundColor: "#00FF88",
     paddingVertical: 15,
     borderRadius: 10,
-    alignItems: 'center',
-    shadowColor: '#00FF88',
+    alignItems: "center",
+    shadowColor: "#00FF88",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -276,23 +282,23 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   acceptButtonText: {
-    color: '#000',
+    color: "#000",
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   footerWarning: {
-    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+    backgroundColor: "rgba(255, 193, 7, 0.1)",
     borderRadius: 8,
     padding: 12,
-    width: '100%',
+    width: "100%",
     borderWidth: 1,
-    borderColor: '#FFC107',
+    borderColor: "#FFC107",
   },
   footerText: {
-    color: '#FFC107',
+    color: "#FFC107",
     fontSize: 9,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 12,
   },
 });
