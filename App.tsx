@@ -784,13 +784,13 @@ export default function App() {
 
     console.log('Bet placed successfully! Success modal should be visible');
 
-    // Auto navigate to Home after 7 seconds
+    // Auto navigate to MyBet after 3 seconds
     setTimeout(() => {
-      console.log('Auto navigating to home');
+      console.log('Auto navigating to mybets');
       setShowBetSuccessState(false);
-      setActiveTabLocal('home');
-      setActiveTabState('home');
-    }, 7000);
+      setActiveTabLocal('mybets');
+      setActiveTabState('mybets');
+    }, 3000);
   };
 
   const handleBetPlace = (amount: number) => {
