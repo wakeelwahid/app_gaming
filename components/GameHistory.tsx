@@ -131,7 +131,8 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
     } else {
       return date.toLocaleDateString('hi-IN', { 
         day: 'numeric', 
-        month: 'short' 
+        month: 'short',
+        year: 'numeric'
       });
     }
   };
@@ -166,11 +167,10 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
 
   const calculateTotalStats = () => {
     const totalBets = filteredHistory.length;
-    const totalAmount = filteredHistory.reduce((sum, bet) => sum + (bet.amount || 0), 0);
     const totalWinnings = filteredHistory.reduce((sum, bet) => sum + (bet.winAmount || 0), 0);
     const wins = filteredHistory.filter(bet => bet.status === 'win').length;
     
-    return { totalBets, totalAmount, totalWinnings, wins };
+    return { totalBets, totalWinnings, wins };
   };
 
   const stats = calculateTotalStats();
@@ -201,7 +201,7 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>📊 Game History</Text>
-        <Text style={styles.headerSubtitle}>पिछले 7 दिन की Game History देखें</Text>
+        <Text style={styles.headerSubtitle}>पिछले 7 दिन की Game History देखो</Text>
       </View>
 
       {/* Game Filter Dropdown */}
@@ -230,15 +230,11 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <Text style={styles.statValue}>{stats.totalBets}</Text>
-          <Text style={styles.statLabel}>कुल Bets</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statValue}>₹{stats.totalAmount}</Text>
-          <Text style={styles.statLabel}>कुल Amount</Text>
+          <Text style={styles.statLabel}>कुल Games</Text>
         </View>
         <View style={styles.statCard}>
           <Text style={styles.statValue}>₹{stats.totalWinnings}</Text>
-          <Text style={styles.statLabel}>कुल Winnings</Text>
+          <Text style={styles.statLabel}>कुल Jeet</Text>
         </View>
         <View style={styles.statCard}>
           <Text style={styles.statValue}>{stats.wins}</Text>
@@ -263,7 +259,6 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
                   <View style={styles.betHeader}>
                     <View style={styles.gameInfo}>
                       <Text style={styles.gameName}>🎮 {bet.game}</Text>
-                      <Text style={styles.sessionTime}>⏰ {bet.sessionTime}</Text>
                     </View>
                     <View style={[styles.statusBadge, { backgroundColor: getStatusColor(bet.status) }]}>
                       <Text style={styles.statusText}>{getStatusText(bet.status)}</Text>
@@ -280,21 +275,12 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
                       <View style={styles.amountContainer}>
                         <Text style={styles.betAmount}>💰 ₹{bet.amount}</Text>
                         {bet.winAmount && (
-                          <Text style={styles.winAmount}>🏆 Win: ₹{bet.winAmount}</Text>
+                          <Text style={styles.winAmount}>🏆 Jeet: ₹{bet.winAmount}</Text>
                         )}
                         {bet.resultNumber && (
                           <Text style={styles.resultNumber}>📊 Result: {bet.resultNumber}</Text>
                         )}
                       </View>
-                    </View>
-
-                    <View style={styles.timeContainer}>
-                      <Text style={styles.betTime}>
-                        ⏰ {new Date(bet.timestamp).toLocaleTimeString('hi-IN', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </Text>
                     </View>
                   </View>
                 </View>
@@ -307,12 +293,12 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
             <Text style={styles.emptyTitle}>कोई Game History नहीं मिली</Text>
             <Text style={styles.emptyMessage}>
               {selectedGame === 'All Games' 
-                ? 'पिछले 7 दिनों में कोई game खेली नहीं गई'
-                : `${selectedGame} के लिए कोई game history नहीं मिली`
+                ? 'पिछले 7 दिनों में कोई game नहीं खेली गई'
+                : `${selectedGame} के लिए कोई history नहीं मिली`
               }
             </Text>
             <Text style={styles.emptySubMessage}>
-              🎮 पहले कोई game खेलें फिर यहां history देखें
+              🎮 पहले कोई game खेलो फिर यहां history देखो
             </Text>
           </View>
         )}
