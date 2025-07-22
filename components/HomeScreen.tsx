@@ -60,20 +60,20 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
         ))}
       </View>
 
-      {/* Current Time, KYC and Game Rules Section */}
+      {/* Game Rules, Time and KYC Section */}
       <View style={styles.timeKycContainer}>
-        <View style={styles.timeSection}>
+        <TouchableOpacity style={styles.gameRulesButton} onPress={() => Alert.alert('Game Rules', '🎯 सभी गेम्स के नियम:\n\n1. बेट लगाने से पहले समय चेक करें\n2. एक बार बेट लगने के बाद cancel नहीं हो सकता\n3. Result declare होने का wait करें\n4. Fair play का पालन करें\n5. जिम्मेदारी से खेलें\n\n✅ सभी गेम्स 100% fair हैं')}>
+          <Text style={styles.gameRulesText}>📋 Game Rules</Text>
+        </TouchableOpacity>
+        
+        <View style={styles.timeCenterSection}>
           <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
         </View>
-        <View style={styles.buttonGroup}>
-          <TouchableOpacity style={styles.gameRulesButton} onPress={() => Alert.alert('Game Rules', '🎯 सभी गेम्स के नियम:\n\n1. बेट लगाने से पहले समय चेक करें\n2. एक बार बेट लगने के बाद cancel नहीं हो सकता\n3. Result declare होने का wait करें\n4. Fair play का पालन करें\n5. जिम्मेदारी से खेलें\n\n✅ सभी गेम्स 100% fair हैं')}>
-            <Text style={styles.gameRulesText}>📋 Game Rules</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
-            <Text style={styles.kycButtonIcon}>🔐</Text>
-            <Text style={styles.kycButtonText}>Complete KYC</Text>
-          </TouchableOpacity>
-        </View>
+        
+        <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
+          <Text style={styles.kycButtonIcon}>🔐</Text>
+          <Text style={styles.kycButtonText}>Complete KYC</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Game Cards */}
@@ -233,24 +233,20 @@ const styles = StyleSheet.create({
     marginBottom: isSmallDevice ? 15 : 20,
     borderWidth: 1,
     borderColor: '#333',
-    flexDirection: isSmallDevice ? 'column' : 'row',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: isSmallDevice ? 10 : 0,
   },
-  timeSection: {
-    flex: isSmallDevice ? 0 : 1,
+  timeCenterSection: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   currentTime: {
     color: '#4A90E2',
     fontSize: isSmallDevice ? 14 : 16,
     fontWeight: 'bold',
-    textAlign: isSmallDevice ? 'center' : 'left',
-  },
-  buttonGroup: {
-    flexDirection: isSmallDevice ? 'column' : 'row',
-    gap: 8,
-    alignItems: 'center',
+    textAlign: 'center',
   },
   gameRulesButton: {
     backgroundColor: '#FF6B6B',
