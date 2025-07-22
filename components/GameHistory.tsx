@@ -110,11 +110,11 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return 'आज';
+      return 'Today';
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'कल';
+      return 'Yesterday';
     } else {
-      return date.toLocaleDateString('hi-IN', { 
+      return date.toLocaleDateString('en-US', { 
         day: 'numeric', 
         month: 'short'
       });
@@ -123,8 +123,8 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
 
   const getBetTypeText = (type: string) => {
     switch (type) {
-      case 'andar': return 'अंदर';
-      case 'bahar': return 'बाहर';
+      case 'andar': return 'Andar';
+      case 'bahar': return 'Bahar';
       default: return type;
     }
   };
@@ -158,9 +158,17 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
      
       </View>
 
-      {/* Game Filter Dropdown */}
+      {/* Enhanced Game Filter Section */}
       <View style={styles.filterContainer}>
-        <Text style={styles.filterLabel}>🎮 Game Select करें:</Text>
+        <View style={styles.filterHeader}>
+          <View style={styles.filterLabelContainer}>
+            <Text style={styles.filterIcon}>🎮</Text>
+            <Text style={styles.filterLabel}>Select Game</Text>
+          </View>
+          <Text style={styles.filterCount}>
+            {filteredHistory.length} {filteredHistory.length === 1 ? 'bet' : 'bets'}
+          </Text>
+        </View>
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={selectedGame}
@@ -222,15 +230,15 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>📊</Text>
-            <Text style={styles.emptyTitle}>कोई Game History नहीं मिली</Text>
+            <Text style={styles.emptyTitle}>No Game History Found</Text>
             <Text style={styles.emptyMessage}>
               {selectedGame === 'All Games' 
-                ? 'पिछले 7 दिनों में कोई game नहीं खेली गई'
-                : `${selectedGame} के लिए कोई history नहीं मिली`
+                ? 'No games played in the last 7 days'
+                : `No history found for ${selectedGame}`
               }
             </Text>
             <Text style={styles.emptySubMessage}>
-              🎮 पहले कोई game खेलो फिर यहां history देखो
+              🎮 Play some games first to see your history here
             </Text>
           </View>
         )}
@@ -263,21 +271,44 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     backgroundColor: '#1a1a1a',
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
+  filterHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  filterLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterIcon: {
+    fontSize: 14,
+    marginRight: 6,
+  },
   filterLabel: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#4A90E2',
     fontWeight: 'bold',
-    marginBottom: 10,
+  },
+  filterCount: {
+    fontSize: 11,
+    color: '#999',
+    backgroundColor: '#333',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
   },
   pickerContainer: {
     backgroundColor: '#333',
-    borderRadius: 10,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#4A90E2',
+    height: 40,
   },
   picker: {
     color: '#fff',
