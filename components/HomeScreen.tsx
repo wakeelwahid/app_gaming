@@ -25,28 +25,55 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
         </View>
       </ScrollView>
 
-      {/* Features Section */}
+      {/* Enhanced Colorful Features Section */}
       <View style={styles.featuresContainer}>
         {features.map((feature, index) => (
-          <View key={index} style={styles.featureCard}>
-            <View style={styles.featureIconContainer}>
+          <View key={index} style={[
+            styles.featureCard,
+            index === 0 && styles.feature24x7,
+            index === 1 && styles.feature5min,
+            index === 2 && styles.feature100safe
+          ]}>
+            <View style={[
+              styles.featureIconContainer,
+              index === 0 && styles.iconContainer24x7,
+              index === 1 && styles.iconContainer5min,
+              index === 2 && styles.iconContainer100safe
+            ]}>
               <Text style={styles.featureIcon}>{feature.icon}</Text>
             </View>
-            <Text style={styles.featureTitle}>{feature.title}</Text>
+            <Text style={[
+              styles.featureTitle,
+              index === 0 && styles.title24x7,
+              index === 1 && styles.title5min,
+              index === 2 && styles.title100safe
+            ]}>{feature.title}</Text>
             <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
+            {/* Colorful glow effect */}
+            <View style={[
+              styles.featureGlow,
+              index === 0 && styles.glow24x7,
+              index === 1 && styles.glow5min,
+              index === 2 && styles.glow100safe
+            ]} />
           </View>
         ))}
       </View>
 
-      {/* Current Time and KYC Section */}
+      {/* Current Time, KYC and Game Rules Section */}
       <View style={styles.timeKycContainer}>
         <View style={styles.timeSection}>
           <Text style={styles.currentTime}>🕐 12:28:27 PM</Text>
         </View>
-        <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
-          <Text style={styles.kycButtonIcon}>🔐</Text>
-          <Text style={styles.kycButtonText}>Complete KYC</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity style={styles.gameRulesButton} onPress={() => Alert.alert('Game Rules', '🎯 सभी गेम्स के नियम:\n\n1. बेट लगाने से पहले समय चेक करें\n2. एक बार बेट लगने के बाद cancel नहीं हो सकता\n3. Result declare होने का wait करें\n4. Fair play का पालन करें\n5. जिम्मेदारी से खेलें\n\n✅ सभी गेम्स 100% fair हैं')}>
+            <Text style={styles.gameRulesText}>📋 Game Rules</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
+            <Text style={styles.kycButtonIcon}>🔐</Text>
+            <Text style={styles.kycButtonText}>Complete KYC</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Game Cards */}
@@ -154,6 +181,51 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(74, 144, 226, 0.3)',
     zIndex: -1,
   },
+  // 24x7 Feature Styles
+  feature24x7: {
+    backgroundColor: '#1a1a2e',
+    borderColor: '#00FF88',
+  },
+  iconContainer24x7: {
+    backgroundColor: 'rgba(0, 255, 136, 0.15)',
+    borderColor: 'rgba(0, 255, 136, 0.4)',
+  },
+  title24x7: {
+    color: '#00FF88',
+  },
+  glow24x7: {
+    borderColor: 'rgba(0, 255, 136, 0.4)',
+  },
+  // 5 min Feature Styles
+  feature5min: {
+    backgroundColor: '#2e1a1a',
+    borderColor: '#FFD700',
+  },
+  iconContainer5min: {
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    borderColor: 'rgba(255, 215, 0, 0.4)',
+  },
+  title5min: {
+    color: '#FFD700',
+  },
+  glow5min: {
+    borderColor: 'rgba(255, 215, 0, 0.4)',
+  },
+  // 100% Safe Feature Styles
+  feature100safe: {
+    backgroundColor: '#1a2e1a',
+    borderColor: '#FF6B6B',
+  },
+  iconContainer100safe: {
+    backgroundColor: 'rgba(255, 107, 107, 0.15)',
+    borderColor: 'rgba(255, 107, 107, 0.4)',
+  },
+  title100safe: {
+    color: '#FF6B6B',
+  },
+  glow100safe: {
+    borderColor: 'rgba(255, 107, 107, 0.4)',
+  },
   timeKycContainer: {
     backgroundColor: '#1a1a1a',
     padding: isSmallDevice ? 12 : 15,
@@ -174,6 +246,28 @@ const styles = StyleSheet.create({
     fontSize: isSmallDevice ? 14 : 16,
     fontWeight: 'bold',
     textAlign: isSmallDevice ? 'center' : 'left',
+  },
+  buttonGroup: {
+    flexDirection: isSmallDevice ? 'column' : 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  gameRulesButton: {
+    backgroundColor: '#FF6B6B',
+    paddingHorizontal: isSmallDevice ? 10 : 12,
+    paddingVertical: isSmallDevice ? 6 : 8,
+    borderRadius: isSmallDevice ? 6 : 8,
+    minHeight: isSmallDevice ? 32 : 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FF8A8A',
+  },
+  gameRulesText: {
+    color: '#fff',
+    fontSize: isSmallDevice ? 9 : 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   kycButton: {
     backgroundColor: '#4A90E2',
