@@ -43,6 +43,25 @@ export default function BettingModal({
     return betList.reduce((total, bet) => total + bet.amount, 0);
   };
 
+  const getNumberButtonStyle = (number: number) => {
+    const hue = (number * 3.6) % 360;
+    const saturation = 70 + (number % 30);
+    const lightness = 40 + (number % 20);
+    return {
+      backgroundColor: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+      borderWidth: 2,
+      borderColor: `hsl(${hue + 30}, ${saturation - 10}%, ${lightness + 10}%)`,
+      shadowColor: `hsl(${hue}, ${saturation}%, ${lightness - 10}%)`,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 4,
+    };
+  };
+
   const renderNumbers = () => {
     const numbers = [];
     for (let i = 1; i <= 100; i++) {
@@ -53,6 +72,7 @@ export default function BettingModal({
           key={i}
           style={[
             styles.numberButton,
+            getNumberButtonStyle(i),
             isSelected && styles.selectedNumberButton
           ]}
           onPress={() => {
@@ -518,9 +538,7 @@ const styles = StyleSheet.create({
   numberButton: {
     width: '18%',
     aspectRatio: 1,
-    backgroundColor: '#1a2530',
     borderWidth: 2,
-    borderColor: '#2a4a5a',
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
