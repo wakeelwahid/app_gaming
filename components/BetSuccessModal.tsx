@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 interface BetSuccessModalProps {
   visible: boolean;
@@ -17,13 +18,14 @@ interface BetSuccessModalProps {
 export default function BetSuccessModal({ visible, betDetails, onClose, onNavigateToMyBets }: BetSuccessModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.8));
-  const [countdown, setCountdown] = React.useState(3);
+  const [countdown, setCountdown] = React.useState(7); // Changed to 7 seconds
+    const navigation = useNavigation(); // Initialize navigation
 
   React.useEffect(() => {
     if (visible) {
       console.log('BetSuccessModal became visible');
-      setCountdown(3);
-      
+      setCountdown(7); // Changed to 7 seconds
+
       // Animate in
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -38,13 +40,14 @@ export default function BetSuccessModal({ visible, betDetails, onClose, onNaviga
           useNativeDriver: false,
         }),
       ]).start();
-      
+
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
             console.log('BetSuccessModal auto-closing');
             clearInterval(timer);
             onClose();
+            navigation.navigate('Home'); // Navigate to Home screen
             return 0;
           }
           return prev - 1;
@@ -57,7 +60,7 @@ export default function BetSuccessModal({ visible, betDetails, onClose, onNaviga
       fadeAnim.setValue(0);
       scaleAnim.setValue(0.8);
     }
-  }, [visible, onClose]);
+  }, [visible, onClose, navigation]); // Added navigation to the dependency array
 
   if (!betDetails) return null;
 
