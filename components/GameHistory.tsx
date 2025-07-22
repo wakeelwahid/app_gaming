@@ -197,39 +197,46 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
       <ScrollView style={styles.historyContainer} showsVerticalScrollIndicator={false}>
         {groupedBets.length > 0 ? (
           groupedBets.map(([date, bets], dateIndex) => (
-            <View key={dateIndex} style={styles.dateSection}>
-              {/* Date Header */}
-              <View style={styles.dateHeader}>
-                <Text style={styles.dateTitle}>{date}</Text>
-                <Text style={styles.dateBetCount}>{bets.length} bets</Text>
+            <View key={dateIndex}>
+              <View style={styles.dateSection}>
+                {/* Date Header */}
+                <View style={styles.dateHeader}>
+                  <Text style={styles.dateTitle}>{date}</Text>
+                  <Text style={styles.dateBetCount}>{bets.length} bets</Text>
+                </View>
+
+                {/* Horizontal Scrollable Bets */}
+                <ScrollView 
+                  horizontal 
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.betsScrollContainer}
+                  contentContainerStyle={styles.betsScrollContent}
+                >
+                  {bets.map((bet, betIndex) => (
+                    <View key={betIndex} style={styles.betCard}>
+                      <View style={styles.gameNameContainer}>
+                        <Text style={styles.gameName}>🎮 {bet.game}</Text>
+                      </View>
+
+                      <View style={styles.betDetailsContainer}>
+                        <View style={styles.numberContainer}>
+                          <Text style={styles.betNumber}>{bet.number}</Text>
+                          <Text style={styles.betType}>{getBetTypeText(bet.type)}</Text>
+                        </View>
+
+                        <View style={styles.amountContainer}>
+                          <Text style={styles.betAmount}>₹{bet.amount}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  ))}
+                </ScrollView>
               </View>
-
-              {/* Horizontal Scrollable Bets */}
-              <ScrollView 
-                horizontal 
-                showsHorizontalScrollIndicator={false}
-                style={styles.betsScrollContainer}
-                contentContainerStyle={styles.betsScrollContent}
-              >
-                {bets.map((bet, betIndex) => (
-                  <View key={betIndex} style={styles.betCard}>
-                    <View style={styles.gameNameContainer}>
-                      <Text style={styles.gameName}>🎮 {bet.game}</Text>
-                    </View>
-
-                    <View style={styles.betDetailsContainer}>
-                      <View style={styles.numberContainer}>
-                        <Text style={styles.betNumber}>{bet.number}</Text>
-                        <Text style={styles.betType}>{getBetTypeText(bet.type)}</Text>
-                      </View>
-
-                      <View style={styles.amountContainer}>
-                        <Text style={styles.betAmount}>₹{bet.amount}</Text>
-                      </View>
-                    </View>
-                  </View>
-                ))}
-              </ScrollView>
+              
+              {/* Horizontal Divider Line - show between sections, not after last one */}
+              {dateIndex < groupedBets.length - 1 && (
+                <View style={styles.dateDivider} />
+              )}
             </View>
           ))
         ) : (
@@ -351,7 +358,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   dateSection: {
-    marginBottom: 25,
+    marginBottom: 15,
   },
   dateHeader: {
     flexDirection: 'row',
@@ -371,6 +378,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#555',
   },
+  dateDivider: {
+    height: 1,
+    backgroundColor: '#333',
+    marginVertical: 15,
+    marginHorizontal: 10,
+  },
   betsScrollContainer: {
     marginBottom: 10,
   },
@@ -380,21 +393,21 @@ const styles = StyleSheet.create({
   },
   betCard: {
     backgroundColor: '#1a1a1a',
-    borderRadius: 12,
-    padding: 15,
-    marginRight: 15,
+    borderRadius: 10,
+    padding: 12,
+    marginRight: 12,
     borderWidth: 1,
     borderColor: '#333',
-    minWidth: 140,
-    maxWidth: 160,
+    minWidth: 120,
+    maxWidth: 140,
   },
   gameNameContainer: {
-    marginBottom: 12,
+    marginBottom: 10,
     alignItems: 'center',
   },
   gameName: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: '600',
     color: '#fff',
     textAlign: 'center',
   },
@@ -403,28 +416,28 @@ const styles = StyleSheet.create({
   },
   numberContainer: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   betNumber: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFD700',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   betType: {
-    fontSize: 12,
+    fontSize: 9,
     color: '#4A90E2',
     backgroundColor: '#333',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
     fontWeight: 'bold',
   },
   amountContainer: {
     alignItems: 'center',
   },
   betAmount: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#00FF88',
   },
