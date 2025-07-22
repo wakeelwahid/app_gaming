@@ -976,6 +976,8 @@ export default function App() {
             onKYCPress={handleKYCPressState}
           />
         );
+      case 'game-history':
+        return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
         return (
           <View style={styles.walletContainer}>
@@ -1345,7 +1347,7 @@ export default function App() {
     if (key === 'transactions') {
       setActiveTabLocal('transactions');
     } else if (key === 'history') {
-      setActiveTabLocal('history');
+      setActiveTabLocal('game-history');
     } else if (key === 'refer') {
       setActiveTabLocal('refer');
     } else if (key === 'terms') {
@@ -1359,9 +1361,7 @@ export default function App() {
     } else if (key === 'logout') {
       // Handle logout logic
       console.log('Logout clicked');
-    } else if (key === 'game-history') {
-          setCurrentViewState('game-history');
-        }
+    }
   };
 
   return (
@@ -1375,14 +1375,7 @@ export default function App() {
           <KYCPage onBack={() => setShowKYCPageState(false)} />
         ) : (
           <>
-        {currentViewState === 'refund-policy' && (
-          <RefundPolicy />
-        )}
-
-        {currentViewState === 'game-history' && (
-          <GameHistory betHistory={betHistoryState} />
-        )}
-          {renderContent()}
+        {renderContent()}
                 </>
         )}
       </View>
