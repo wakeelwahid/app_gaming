@@ -158,33 +158,47 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
      
       </View>
 
-      {/* Enhanced Game Filter Section */}
+      {/* Redesigned Stylish Filter Section */}
       <View style={styles.filterContainer}>
-        <View style={styles.filterHeader}>
-          <View style={styles.filterLabelContainer}>
-            <Text style={styles.filterIcon}>🎮</Text>
-            <Text style={styles.filterLabel}>Select Game</Text>
+        <View style={styles.filterWrapper}>
+          {/* Game Filter */}
+          <View style={styles.filterSection}>
+            <Text style={styles.filterSectionTitle}>🎮 Games</Text>
+            <View style={styles.compactPickerContainer}>
+              <Picker
+                selectedValue={selectedGame}
+                onValueChange={(itemValue) => setSelectedGame(itemValue)}
+                style={styles.compactPicker}
+                dropdownIconColor="#4A90E2"
+              >
+                {getUniqueGames().map((game, index) => (
+                  <Picker.Item
+                    key={index}
+                    label={game}
+                    value={game}
+                    color="#fff"
+                  />
+                ))}
+              </Picker>
+            </View>
           </View>
-          <Text style={styles.filterCount}>
-            {filteredHistory.length} {filteredHistory.length === 1 ? 'bet' : 'bets'}
-          </Text>
-        </View>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedGame}
-            onValueChange={(itemValue) => setSelectedGame(itemValue)}
-            style={styles.picker}
-            dropdownIconColor="#4A90E2"
-          >
-            {getUniqueGames().map((game, index) => (
-              <Picker.Item
-                key={index}
-                label={game}
-                value={game}
-                color="#fff"
-              />
-            ))}
-          </Picker>
+
+          {/* Date Filter */}
+          <View style={styles.filterSection}>
+            <Text style={styles.filterSectionTitle}>📅 Period</Text>
+            <View style={styles.dateFilterContainer}>
+              <TouchableOpacity style={styles.dateFilterButton}>
+                <Text style={styles.dateFilterText}>Last 7 Days</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Filter Stats */}
+          <View style={styles.filterStatsContainer}>
+            <Text style={styles.filterStatsText}>
+              {filteredHistory.length} {filteredHistory.length === 1 ? 'bet' : 'bets'}
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -271,48 +285,75 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     backgroundColor: '#1a1a1a',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
-  filterHeader: {
+  filterWrapper: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    gap: 12,
   },
-  filterLabelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  filterSection: {
+    flex: 1,
   },
-  filterIcon: {
-    fontSize: 14,
-    marginRight: 6,
-  },
-  filterLabel: {
-    fontSize: 14,
+  filterSectionTitle: {
+    fontSize: 10,
     color: '#4A90E2',
     fontWeight: 'bold',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  filterCount: {
-    fontSize: 11,
-    color: '#999',
+  compactPickerContainer: {
     backgroundColor: '#333',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  pickerContainer: {
-    backgroundColor: '#333',
-    borderRadius: 8,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: '#4A90E2',
-    height: 40,
+    height: 32,
+    overflow: 'hidden',
   },
-  picker: {
+  compactPicker: {
     color: '#fff',
     backgroundColor: '#333',
+    fontSize: 12,
+    height: 32,
+  },
+  dateFilterContainer: {
+    height: 32,
+  },
+  dateFilterButton: {
+    backgroundColor: '#333',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dateFilterText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  filterStatsContainer: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    minWidth: 60,
+  },
+  filterStatsText: {
+    fontSize: 9,
+    color: '#999',
+    backgroundColor: '#333',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 8,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   historyContainer: {
     flex: 1,
