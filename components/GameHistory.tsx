@@ -155,7 +155,7 @@ export default function GameHistory({ betHistory = mockGameHistory }: GameHistor
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>📊 Game History</Text>
-        <Text style={styles.headerSubtitle}>पिछले 7 दिन की Game History देखो</Text>
+     
       </View>
 
       {/* Game Filter Dropdown */}
