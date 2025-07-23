@@ -22,6 +22,7 @@ import ReferPage from './components/ReferPage';
 import RefundPolicy from './components/RefundPolicy';
 import {
   GameHistory,
+  ResultsModal,
 } from './components';
 
 // Import API services
@@ -1006,6 +1007,7 @@ export default function App() {
             features={features}
             onPlayNow={handlePlayNow}
             isAuthenticated={isUserAuthenticated}
+            onViewResults={() => setActiveTabLocal('results')}
           />
         );
       case 'game-history':
@@ -1388,6 +1390,8 @@ export default function App() {
             onCompleteKYC={handleCompleteKYC}
           />
         );
+      case 'results':
+        return <ResultsModal visible={true} onClose={() => setActiveTabLocal('home')} />;
       case 'help':
         return (
           <View style={styles.tabContent}>
