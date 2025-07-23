@@ -9,9 +9,10 @@ interface HomeScreenProps {
   features: any[];
   onPlayNow: (game: any) => void;
   isAuthenticated: boolean;
+  onViewResults?: () => void;
 }
 
-export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated }: HomeScreenProps) {
+export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated, onViewResults }: HomeScreenProps) {
   const [showGameRules, setShowGameRules] = useState(false);
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -78,8 +79,10 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
         </View>
 
         <TouchableOpacity style={styles.viewResultButton} onPress={() => {
-          // Add your view result logic here
-          Alert.alert('Results', 'View Result functionality को implement करना होगा।');
+          // Navigate to results screen
+          if (typeof onViewResults === 'function') {
+            onViewResults();
+          }
         }}>
           <Text style={styles.viewResultButtonIcon}>📊</Text>
           <Text style={styles.viewResultButtonText}>View Result</Text>
@@ -94,19 +97,15 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
               key={game.id} 
               game={game} 
               onPlayNow={(selectedGame) => {
-                if (!isAuthenticated) {
-                  // Show login prompt when user tries to play without authentication
-                  Alert.alert(
-                    '🔐 Login Required',
-                    'Games खेलने के लिए पहले login करें!',
-                    [
-                      { text: 'Cancel', style: 'cancel' },
-                      { text: 'Login करें', onPress: () => onPlayNow(selectedGame) }
-                    ]
-                  );
-                } else {
-                  onPlayNow(selectedGame);
-                }
+                // Always show login prompt for Play Now button
+                Alert.alert(
+                  '🔐 Login Required',
+                  'Games खेलने के लिए पहले login करें!',
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Login करें', onPress: () => onPlayNow(selectedGame) }
+                  ]
+                );
               }} 
             />
           ))}

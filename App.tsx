@@ -23,6 +23,7 @@ import RefundPolicy from './components/RefundPolicy';
 import {
   GameHistory,
 } from './components';
+import GameResults from './components/GameResults';
 
 // Import API services
 import { userService } from './services/userService';
@@ -613,6 +614,7 @@ export default function App() {
   const [isAgeVerifiedState, setIsAgeVerifiedState] = React.useState(false);
   const [showKYCPageState, setShowKYCPageState] = React.useState(false);
   const [showRefundPolicyState, setShowRefundPolicyState] = React.useState(false);
+  const [showGameResultsState, setShowGameResultsState] = React.useState(false);
 
   const gameCards = GAME_CARDS;
   const features = FEATURES;
@@ -1006,6 +1008,7 @@ export default function App() {
             features={features}
             onPlayNow={handlePlayNow}
             isAuthenticated={isUserAuthenticated}
+            onViewResults={() => setShowGameResultsState(true)}
           />
         );
       case 'game-history':
@@ -1714,6 +1717,12 @@ export default function App() {
             setRedirectTimer(null);
           }
         }}
+      />
+
+      {/* Game Results Modal */}
+      <GameResults
+        visible={showGameResultsState}
+        onClose={() => setShowGameResultsState(false)}
       />
     </SafeAreaView>
   );
