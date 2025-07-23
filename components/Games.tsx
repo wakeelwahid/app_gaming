@@ -1,18 +1,17 @@
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Animated, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Animated, Dimensions } from 'react-native';
 import GameCard from './GameCard';
 
 interface GamesProps {
   gameCards: any[];
   onGameSelect: (game: any) => void;
-  isAuthenticated: boolean;
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isSmallDevice = SCREEN_WIDTH < 375;
 
-export default function Games({ gameCards, onGameSelect, isAuthenticated }: GamesProps) {
+export default function Games({ gameCards, onGameSelect }: GamesProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
@@ -61,21 +60,7 @@ export default function Games({ gameCards, onGameSelect, isAuthenticated }: Game
               <GameCard 
                 key={game.id} 
                 game={game} 
-                onPlayNow={(selectedGame) => {
-                  if (!isAuthenticated) {
-                    // Show login prompt when user tries to play without authentication
-                    Alert.alert(
-                      '🔐 Login Required',
-                      'Games खेलने के लिए पहले login करें!',
-                      [
-                        { text: 'Cancel', style: 'cancel' },
-                        { text: 'Login करें', onPress: () => onGameSelect(selectedGame) }
-                      ]
-                    );
-                  } else {
-                    onGameSelect(selectedGame);
-                  }
-                }} 
+                onPlayNow={onGameSelect} 
               />
             ))}
           </View>
