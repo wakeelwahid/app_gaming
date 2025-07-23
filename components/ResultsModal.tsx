@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
@@ -38,7 +37,7 @@ const mockResults: GameResult[] = [
   { id: '4', gameId: 4, gameName: 'Gali', result: '91', date: '2025-01-15', time: '10:30 PM' },
   { id: '5', gameId: 5, gameName: 'Disawer', result: '5', date: '2025-01-15', time: '02:30 AM' },
   { id: '6', gameId: 6, gameName: 'Diamond King', result: '34', date: '2025-01-15', time: '10:10 PM' },
-  
+
   // Previous days data
   { id: '7', gameId: 1, gameName: 'Jaipur King', result: '67', date: '2025-01-14', time: '04:50 PM' },
   { id: '8', gameId: 2, gameName: 'Faridabad', result: '12', date: '2025-01-14', time: '06:40 PM' },
@@ -46,7 +45,7 @@ const mockResults: GameResult[] = [
   { id: '10', gameId: 4, gameName: 'Gali', result: '33', date: '2025-01-14', time: '10:30 PM' },
   { id: '11', gameId: 5, gameName: 'Disawer', result: '76', date: '2025-01-14', time: '02:30 AM' },
   { id: '12', gameId: 6, gameName: 'Diamond King', result: '54', date: '2025-01-14', time: '10:10 PM' },
-  
+
   // More historical data (last 2 months)
   { id: '13', gameId: 1, gameName: 'Jaipur King', result: '21', date: '2025-01-13', time: '04:50 PM' },
   { id: '14', gameId: 2, gameName: 'Faridabad', result: '87', date: '2025-01-13', time: '06:40 PM' },
@@ -63,7 +62,7 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
   const [selectedMonth, setSelectedMonth] = useState<string>('January 2025');
   const [filteredResults, setFilteredResults] = useState<GameResult[]>([]);
   const [currentResults, setCurrentResults] = useState<GameResult[]>([]);
-  
+
   // Animation values
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -112,24 +111,25 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
 
   const filterResults = () => {
     let filtered = mockResults;
-    
+
     // Filter by game
     if (selectedGame !== 'All Games') {
       filtered = filtered.filter(result => result.gameName === selectedGame);
     }
-    
+
     // Filter by month (for simplicity, just showing current month data)
     if (selectedMonth === 'December 2024') {
       filtered = filtered.filter(result => result.date.includes('2024-12'));
     } else {
       filtered = filtered.filter(result => result.date.includes('2025-01'));
     }
-    
-    // Get current results (today's results)
+
+    // Get current results (today's results) - showing only one for testing
     const today = '2025-01-15';
     const todaysResults = mockResults.filter(result => result.date === today);
-    setCurrentResults(todaysResults);
-    
+    // Show only first result for testing
+    setCurrentResults(todaysResults.slice(0, 1));
+
     // Sort by date (newest first)
     filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     setFilteredResults(filtered);
@@ -278,7 +278,7 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
                   <Text style={styles.tableCellTime}>{result.time}</Text>
                 </Animated.View>
               ))}
-              
+
               {filteredResults.length === 0 && (
                 <View style={styles.emptyContainer}>
                   <Text style={styles.emptyText}>📊 No results found</Text>
