@@ -45,6 +45,10 @@ const isLargeDevice = SCREEN_WIDTH >= 768;
 export default function App() {
   // Auth state
   const { user, isAuthenticated, login, register, logout, updateProfile } = useAuth();
+  
+  // Force authentication state for testing (you can modify this)
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const [showAuthRequired, setShowAuthRequired] = useState(!isUserAuthenticated);
 
   // Wallet state
   const { wallet, winnings, bonus, addMoney, withdrawMoney } = useWallet();
@@ -644,6 +648,11 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
+    if (!isUserAuthenticated) {
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
     setSelectedGameState(game);
     setShowBettingModalState(true);
   };
@@ -698,6 +707,15 @@ export default function App() {
     console.log('Withdrawal request submitted for amount:', amount);
   };
   const handleMenuItemPress = (key: string) => {
+    // Allow access to these pages without authentication
+    const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
+    
+    if (!isUserAuthenticated && !publicPages.includes(key)) {
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
+    
     setActiveTabLocal(key);
   };
 
@@ -843,10 +861,17 @@ export default function App() {
     setShowAuthModalState(true);
   };
 
+  const handleAuthSuccess = (userData: any) => {
+    console.log('Auth success:', userData);
+    setIsUserAuthenticated(true);
+    setShowAuthRequired(false);
+    setShowAuthModalState(false);
+    Alert.alert('Welcome!', `Hello ${userData.name}! आपको app में access मिल गया है।`);
+  };
+
   const handleLogin = async () => {
     // Here you can make API call for login
-    // const result = await```text
-apiService.loginUser(phone, password);
+    // const result = await apiService.loginUser(phone, password);
     Alert.alert('Login', 'Login functionality to be implemented');
     setShowAuthModalState(false);
   };
@@ -971,6 +996,30 @@ apiService.loginUser(phone, password);
   };
 
   const renderContent = () => {
+    // Show authentication required message for protected content
+    if (!isUserAuthenticated && !['refer', 'terms', 'privacy', 'refund', 'help'].includes(activeTabLocal)) {
+      return (
+        <View style={styles.authRequiredContainer}>
+          <View style={styles.authRequiredCard}>
+            <Text style={styles.authRequiredIcon}>🔒</Text>
+            <Text style={styles.authRequiredTitle}>Login Required</Text>
+            <Text style={styles.authRequiredMessage}>
+              इस feature को access करने के लिए आपको login करना होगा।
+            </Text>
+            <TouchableOpacity 
+              style={styles.authRequiredButton}
+              onPress={() => {
+                setShowAuthRequired(true);
+                setShowAuthModalState(true);
+              }}
+            >
+              <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+    
     switch (activeTabLocal) {
       case 'home':
         return (
@@ -1349,6 +1398,16 @@ apiService.loginUser(phone, password);
 
   const handleHeaderMenuItemPress = (key: string) => {
     console.log('Header menu item pressed:', key);
+    
+    // Allow access to these pages without authentication
+    const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
+    
+    if (!isUserAuthenticated && !publicPages.includes(key)) {
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
+    
     if (key === 'transactions') {
       setActiveTabLocal('transactions');
     } else if (key === 'history') {
@@ -1365,7 +1424,10 @@ apiService.loginUser(phone, password);
       setActiveTabLocal('help');
     } else if (key === 'logout') {
       // Handle logout logic
-      console.log('Logout clicked');
+      setIsUserAuthenticated(false);
+      setShowAuthRequired(true);
+      setActiveTabLocal('home');
+      Alert.alert('Logged Out', 'आप successfully logout हो गए हैं।');
     }
   };
 
@@ -1482,19 +1544,29 @@ apiService.loginUser(phone, password);
 
       {/* Authentication Screen */}
       <Modal
-        visible={showAuthModalState}
+        visible={showAuthModalState || showAuthRequired}
         animationType="slide"
         transparent={false}
-        onRequestClose={() => setShowAuthModalState(false)}
+        onRequestClose={() => {
+          if (isUserAuthenticated) {
+            setShowAuthModalState(false);
+            setShowAuthRequired(false);
+          }
+        }}
       >
         <AuthScreen 
-          onAuthSuccess={(user) => {
-            console.log('Auth success:', user);
-            setShowAuthModalState(false);
-            // Here you can update user state or make API calls
-            Alert.alert('Welcome!', `Hello ${user.name}!`);
+          onAuthSuccess={handleAuthSuccess}
+          onClose={() => {
+            if (isUserAuthenticated) {
+              setShowAuthModalState(false);
+              setShowAuthRequired(false);
+            } else {
+              // If not authenticated, don't allow closing and redirect to public pages
+              setActiveTabLocal('help');
+              setShowAuthModalState(false);
+              setShowAuthRequired(false);
+            }
           }}
-          onClose={() => setShowAuthModalState(false)}
         />
       </Modal>
 
@@ -2533,5 +2605,61 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     lineHeight: 16,
+  },
+  
+  // Authentication Required Styles
+  authRequiredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#0a0a0a',
+  },
+  authRequiredCard: {
+    backgroundColor: '#1a1a1a',
+    padding: 30,
+    borderRadius: 20,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+    maxWidth: 350,
+    width: '100%',
+  },
+  authRequiredIcon: {
+    fontSize: 48,
+    marginBottom: 20,
+  },
+  authRequiredTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  authRequiredMessage: {
+    fontSize: 16,
+    color: '#ffffff',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 25,
+  },
+  authRequiredButton: {
+    backgroundColor: '#00FF88',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 12,
+    shadowColor: '#00FF88',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  authRequiredButtonText: {
+    color: '#000000',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

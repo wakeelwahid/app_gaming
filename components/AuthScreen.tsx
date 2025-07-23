@@ -65,7 +65,7 @@ export default function AuthScreen({ onAuthSuccess, onClose }: AuthScreenProps) 
       };
       
       onAuthSuccess(user);
-      Alert.alert('Success', 'Login successful!');
+      // Alert will be shown in parent component
     } catch (error) {
       Alert.alert('Error', 'Login failed. Please try again.');
     } finally {
@@ -110,7 +110,7 @@ export default function AuthScreen({ onAuthSuccess, onClose }: AuthScreenProps) 
       };
       
       onAuthSuccess(user);
-      Alert.alert('Success', 'Registration successful!');
+      // Alert will be shown in parent component
     } catch (error) {
       Alert.alert('Error', 'Registration failed. Please try again.');
     } finally {
