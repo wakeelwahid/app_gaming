@@ -8,11 +8,10 @@ interface HomeScreenProps {
   gameCards: any[];
   features: any[];
   onPlayNow: (game: any) => void;
-  onKYCPress: () => void;
   isAuthenticated: boolean;
 }
 
-export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress, isAuthenticated }: HomeScreenProps) {
+export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated }: HomeScreenProps) {
   const [showGameRules, setShowGameRules] = useState(false);
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -78,9 +77,12 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress,
           <Text style={styles.currentTime}>🕐12:28:27</Text>
         </View>
 
-        <TouchableOpacity style={styles.kycButton} onPress={onKYCPress}>
-          <Text style={styles.kycButtonIcon}>🔐</Text>
-          <Text style={styles.kycButtonText}>Complete KYC</Text>
+        <TouchableOpacity style={styles.viewResultButton} onPress={() => {
+          // Add your view result logic here
+          Alert.alert('Results', 'View Result functionality को implement करना होगा।');
+        }}>
+          <Text style={styles.viewResultButtonIcon}>📊</Text>
+          <Text style={styles.viewResultButtonText}>View Result</Text>
         </TouchableOpacity>
       </View>
 
@@ -322,8 +324,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  kycButton: {
-    backgroundColor: '#4A90E2',
+  viewResultButton: {
+    backgroundColor: '#FFD700',
     paddingHorizontal: isSmallDevice ? 12 : 15,
     paddingVertical: isSmallDevice ? 8 : 10,
     borderRadius: isSmallDevice ? 8 : 10,
@@ -332,11 +334,11 @@ const styles = StyleSheet.create({
     gap: 5,
     minHeight: isSmallDevice ? 35 : 40,
   },
-  kycButtonIcon: {
+  viewResultButtonIcon: {
     fontSize: isSmallDevice ? 12 : 14,
   },
-  kycButtonText: {
-    color: '#fff',
+  viewResultButtonText: {
+    color: '#000',
     fontSize: isSmallDevice ? 10 : 12,
     fontWeight: 'bold',
   },

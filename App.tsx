@@ -708,7 +708,7 @@ export default function App() {
   };
   const handleMenuItemPress = (key: string) => {
     // Allow access to these pages without authentication
-    const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
+    const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
     
     if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
@@ -868,6 +868,7 @@ export default function App() {
     setShowAuthModalState(false);
     setUserDataState(userData);
     Alert.alert('Welcome!', `Hello ${userData.name}! आपको app में access मिल गया है।`);
+    // User will stay on the same page they were trying to access
   };
 
   const handleLogin = async () => {
@@ -1004,7 +1005,6 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
-            onKYCPress={handleKYCPressState}
             isAuthenticated={isUserAuthenticated}
           />
         );
