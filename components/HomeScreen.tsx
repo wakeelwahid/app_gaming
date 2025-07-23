@@ -9,9 +9,10 @@ interface HomeScreenProps {
   features: any[];
   onPlayNow: (game: any) => void;
   isAuthenticated: boolean;
+  onViewResults?: () => void;
 }
 
-export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated }: HomeScreenProps) {
+export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated, onViewResults }: HomeScreenProps) {
   const [showGameRules, setShowGameRules] = useState(false);
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -77,10 +78,7 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
           <Text style={styles.currentTime}>🕐12:28:27</Text>
         </View>
 
-        <TouchableOpacity style={styles.viewResultButton} onPress={() => {
-          // Add your view result logic here
-          Alert.alert('Results', 'View Result functionality को implement करना होगा।');
-        }}>
+        <TouchableOpacity style={styles.viewResultButton} onPress={onViewResults}>
           <Text style={styles.viewResultButtonIcon}>📊</Text>
           <Text style={styles.viewResultButtonText}>View Result</Text>
         </TouchableOpacity>
@@ -362,5 +360,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4A90E2',
   },
-  
+
 });
