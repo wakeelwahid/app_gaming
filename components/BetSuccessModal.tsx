@@ -17,12 +17,12 @@ interface BetSuccessModalProps {
 export default function BetSuccessModal({ visible, betDetails, onClose, onNavigateToMyBets }: BetSuccessModalProps) {
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [scaleAnim] = React.useState(new Animated.Value(0.8));
-  const [countdown, setCountdown] = React.useState(3);
+  const [countdown, setCountdown] = React.useState(7);
 
   React.useEffect(() => {
     if (visible) {
       console.log('BetSuccessModal became visible');
-      setCountdown(3);
+      setCountdown(7);
       
       // Animate in
       Animated.parallel([
@@ -137,19 +137,16 @@ export default function BetSuccessModal({ visible, betDetails, onClose, onNaviga
               🎯 आपके bets MyBet section में दिखेंगे...
             </Text>
             <Text style={styles.countdownText}>
-              Auto-closing in {countdown} seconds...
+              {countdown} seconds में Home page पर redirect हो जाएंगे...
             </Text>
           </View>
 
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={() => {
             onClose();
-            if (onNavigateToMyBets) {
-              onNavigateToMyBets();
-            }
           }}>
-            <Text style={styles.closeButtonText}>View My Bets</Text>
-            <Ionicons name="arrow-forward" size={16} color="#0a0a0a" />
+            <Text style={styles.closeButtonText}>Continue to Home</Text>
+            <Ionicons name="home" size={16} color="#0a0a0a" />
           </TouchableOpacity>
         </Animated.View>
       </View>

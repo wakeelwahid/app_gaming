@@ -599,8 +599,9 @@ export default function App() {
     kycStatus: 'VERIFIED' as 'VERIFIED' | 'PENDING' | 'REJECTED'
   });
 
-  const [lastBetDetailsState, setLastBetDetailsState] = React.useState<any>(null);
-  const [showBetSuccessState, setShowBetSuccessState] = React.useState(false);
+  const [showBetSuccessState, setShowBetSuccessState] = useState(false);
+  const [lastBetDetailsState, setLastBetDetailsState] = useState(null);
+  const [redirectTimer, setRedirectTimer] = useState(null);
   const [placedBetsState, setPlacedBetsState] = React.useState<any[]>([]);
 
   const [showAgeVerificationState, setShowAgeVerificationState] = React.useState(false);
@@ -782,15 +783,17 @@ export default function App() {
     setShowBettingModalState(false);
     setShowBetSuccessState(true);
 
-    console.log('Bet placed successfully! Success modal should be visible');
+    console.log('Bet placed successfully, success modal should be visible');
 
-    // Auto navigate to MyBet after 3 seconds
-    setTimeout(() => {
-      console.log('Auto navigating to mybets');
+    // Auto navigate to Home after 7 seconds
+    const timer = setTimeout(() => {
+      console.log('Auto navigating to home page');
       setShowBetSuccessState(false);
-      setActiveTabLocal('mybets');
-      setActiveTabState('mybets');
-    }, 3000);
+      setActiveTabLocal('home');
+      setActiveTabState('home');
+    }, 7000);
+
+    setRedirectTimer(timer);
   };
 
   const handleBetPlace = (amount: number) => {
@@ -1653,6 +1656,19 @@ export default function App() {
         visible={showAgeVerificationState}
         onAccept={handleAgeVerificationAcceptState}
         onReject={handleAgeVerificationReject}
+      />
+      <BetSuccessModal
+        visible={showBetSuccessState}
+        betDetails={lastBetDetailsState}
+        onClose={() => {
+          setShowBetSuccessState(false);
+          setActiveTabLocal('home');
+          setActiveTabState('home');
+          if (redirectTimer) {
+            clearTimeout(redirectTimer);
+            setRedirectTimer(null);
+          }
+        }}
       />
     </SafeAreaView>
   );

@@ -330,6 +330,8 @@ export default function BettingModal({
                     if (betList.length > 0) {
                       console.log('Calling onPlaceBets...');
                       onPlaceBets();
+                      // Close betting modal immediately after placing bet
+                      onClose();
                     } else {
                       Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
                     }
