@@ -9,9 +9,10 @@ interface HomeScreenProps {
   features: any[];
   onPlayNow: (game: any) => void;
   onKYCPress: () => void;
+  isAuthenticated: boolean;
 }
 
-export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress }: HomeScreenProps) {
+export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress, isAuthenticated }: HomeScreenProps) {
   const [showGameRules, setShowGameRules] = useState(false);
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -86,13 +87,23 @@ export default function HomeScreen({ gameCards, features, onPlayNow, onKYCPress 
       {/* Game Cards */}
       <View style={styles.gamesContainer}>
         <View style={styles.gameRow}>
-          {gameCards.map((game) => (
-            <GameCard key={game.id} game={game} onPlayNow={onPlayNow} />
-          ))}
+          {isAuthenticated ? (
+            gameCards.map((game) => (
+              <GameCard key={game.id} game={game} onPlayNow={onPlayNow} />
+            ))
+          ) : (
+            <View style={styles.authPromptContainer}>
+              <Text style={styles.authPromptTitle}>🎮 Games Available</Text>
+              <Text style={styles.authPromptMessage}>
+                Login करके exciting games खेलें और पैसे जीतें!
+              </Text>
+              {/* You can add a preview or placeholder content here */}
+            </View>
+          )}
         </View>
       </View>
       <View style={styles.bottomSpacing} />
-      
+
       {/* Game Rules Modal */}
       <GameRulesModal 
         visible={showGameRules} 
@@ -332,5 +343,75 @@ const styles = StyleSheet.create({
   },
   bottomSpacing: {
     height: isSmallDevice ? 80 : 100,
+  },
+  gameRulesModal: {
+    backgroundColor: '#1a1a1a',
+    width: '95%',
+    maxHeight: '80%',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  authPromptContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 15,
+    marginVertical: 20,
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+    alignItems: 'center',
+  },
+  authPromptTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 10,
+  },
+  authPromptMessage: {
+    fontSize: 16,
+    color: '#ffffff',
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 22,
+  },
+  gamePreviewGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  gamePreviewCard: {
+    width: '48%',
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+    position: 'relative',
+    opacity: 0.6,
+  },
+  gamePreviewIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  gamePreviewTitle: {
+    fontSize: 12,
+    color: '#ffffff',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  lockOverlay: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockIcon: {
+    fontSize: 16,
   },
 });

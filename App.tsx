@@ -997,30 +997,6 @@ export default function App() {
   };
 
   const renderContent = () => {
-    // Show authentication required message for protected content
-    if (!isUserAuthenticated && !['refer', 'terms', 'privacy', 'refund', 'help'].includes(activeTabLocal)) {
-      return (
-        <View style={styles.authRequiredContainer}>
-          <View style={styles.authRequiredCard}>
-            <Text style={styles.authRequiredIcon}>🔒</Text>
-            <Text style={styles.authRequiredTitle}>Login Required</Text>
-            <Text style={styles.authRequiredMessage}>
-              इस feature को access करने के लिए आपको login करना होगा।
-            </Text>
-            <TouchableOpacity 
-              style={styles.authRequiredButton}
-              onPress={() => {
-                setShowAuthRequired(true);
-                setShowAuthModalState(true);
-              }}
-            >
-              <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
-    }
-    
     switch (activeTabLocal) {
       case 'home':
         return (
@@ -1029,11 +1005,34 @@ export default function App() {
             features={features}
             onPlayNow={handlePlayNow}
             onKYCPress={handleKYCPressState}
+            isAuthenticated={isUserAuthenticated}
           />
         );
       case 'game-history':
         return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
+        if (!isUserAuthenticated) {
+          return (
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  Wallet access करने के लिए आपको login करना होगा।
+                </Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    setShowAuthRequired(true);
+                    setShowAuthModalState(true);
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }
         return (
           <View style={styles.walletContainer}>
             {/* Main Balance Display */}
@@ -1110,9 +1109,52 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-
+        if (!isUserAuthenticated) {
+          return (
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  My Bets देखने के लिए आपको login करना होगा।
+                </Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    setShowAuthRequired(true);
+                    setShowAuthModalState(true);
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }
         return <MyBet placedBets={placedBetsState} />;
       case 'transactions':
+        if (!isUserAuthenticated) {
+          return (
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  Transactions देखने के लिए आपको login करना होगा।
+                </Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    setShowAuthRequired(true);
+                    setShowAuthModalState(true);
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }
         return <Transaction />;
       case 'refer':
         return <ReferPage userData={userDataState} />;
@@ -1288,6 +1330,28 @@ export default function App() {
           </ScrollView>
         );
       case 'games':
+        if (!isUserAuthenticated) {
+          return (
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  Games खेलने के लिए आपको login करना होगा।
+                </Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    setShowAuthRequired(true);
+                    setShowAuthModalState(true);
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }
         return (
           <Games
             gameCards={gameCards}
@@ -1295,6 +1359,28 @@ export default function App() {
           />
         );
       case 'profile':
+        if (!isUserAuthenticated) {
+          return (
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  Profile access करने के लिए आपको login करना होगा।
+                </Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    setShowAuthRequired(true);
+                    setShowAuthModalState(true);
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }
         return (
           <Profile
             userData={userDataState}
