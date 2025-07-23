@@ -1636,8 +1636,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: isSmallDevice ? 6 : 8,
     borderWidth: 1,
-    borderColor:```text
-'#4A90E2',
+    borderColor: '#4A90E2',
     minHeight: isSmallDevice ? 45 : 50,
   },
   actionButtonIcon: {
