@@ -35,6 +35,7 @@ import { GAME_CARDS, FEATURES } from './constants/gameData';
 // Import hooks
 import { useAuth } from './hooks/useAuth';
 import { useWallet } from './hooks/useWallet';
+import AuthScreen from './components/AuthScreen';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isSmallDevice = SCREEN_WIDTH < 375;
@@ -844,7 +845,8 @@ export default function App() {
 
   const handleLogin = async () => {
     // Here you can make API call for login
-    // const result = await apiService.loginUser(phone, password);
+    // const result = await```text
+apiService.loginUser(phone, password);
     Alert.alert('Login', 'Login functionality to be implemented');
     setShowAuthModalState(false);
   };
@@ -1478,135 +1480,22 @@ export default function App() {
         </View>
       </Modal>
 
-      {/* Authentication Modal */}
+      {/* Authentication Screen */}
       <Modal
         visible={showAuthModalState}
         animationType="slide"
-        transparent={true}
+        transparent={false}
         onRequestClose={() => setShowAuthModalState(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.authModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
-                {authModeState === 'login' ? '🔐 Login' : '📝 Register'}
-              </Text>
-              <TouchableOpacity onPress={() => setShowAuthModalState(false)}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.authModalContent}>
-              {authModeState === 'login' ? (
-                <View style={styles.formContainer}>
-                  <Text style={styles.formTitle}>Login to Your Account</Text>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Mobile Number</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="+91 98765 43210"
-                      placeholderTextColor="#999"
-                      keyboardType="phone-pad"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Password</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Enter your password"
-                      placeholderTextColor="#999"
-                      secureTextEntry={true}
-                    />
-                  </View>
-
-                  <TouchableOpacity style={styles.submitButton} onPress={handleLogin}>
-                    <Text style={styles.submitButtonText}>Login</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity onPress={() => setAuthModeState('register')}>
-                    <Text style={styles.switchModeText}>
-                      Don't have an account? Register here
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.formContainer}>
-                  <Text style={styles.formTitle}>Create New Account</Text>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Username *</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Enter username"
-                      placeholderTextColor="#999"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Mobile Number *</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="+91 98765 43210"
-                      placeholderTextColor="#999"
-                      keyboardType="phone-pad"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Email (Optional)</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Enter email address"
-                      placeholderTextColor="#999"
-                      keyboardType="email-address"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Password *</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Create password"
-                      placeholderTextColor="#999"
-                      secureTextEntry={true}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Confirm Password *</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Confirm password"
-                      placeholderTextColor="#999"
-                      secureTextEntry={true}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Referral Code (Optional)</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Enter referral code"
-                      placeholderTextColor="#999"
-                    />
-                  </View>
-
-                  <TouchableOpacity style={styles.submitButton} onPress={handleRegister}>
-                    <Text style={styles.submitButtonText}>Register</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity onPress={() => setAuthModeState('login')}>
-                    <Text style={styles.switchModeText}>
-                      Already have an account? Login here
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          </View>
-        </View>
+        <AuthScreen 
+          onAuthSuccess={(user) => {
+            console.log('Auth success:', user);
+            setShowAuthModalState(false);
+            // Here you can update user state or make API calls
+            Alert.alert('Welcome!', `Hello ${user.name}!`);
+          }}
+          onClose={() => setShowAuthModalState(false)}
+        />
       </Modal>
 
       {/* Wallet Operations Component */}
@@ -1747,7 +1636,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: isSmallDevice ? 6 : 8,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor:```text
+'#4A90E2',
     minHeight: isSmallDevice ? 45 : 50,
   },
   actionButtonIcon: {

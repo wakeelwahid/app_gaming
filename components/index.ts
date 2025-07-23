@@ -16,3 +16,4 @@ export { default as ReferPage } from './ReferPage';
 export { default as RefundPolicy } from './RefundPolicy';
 export { default as GameHistory } from './GameHistory';
 export { default as GameRulesModal } from './GameRulesModal';
+export { default as AuthScreen } from './AuthScreen';
