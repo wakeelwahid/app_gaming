@@ -720,6 +720,11 @@ export default function App() {
   };
 
   const handleGameSelect = (game: any) => {
+    if (!isUserAuthenticated) {
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
     setSelectedGameLocal(game);
     setBetListState([]); // Clear any previous selections
     setShowBettingModalLocal(true);
@@ -1356,6 +1361,7 @@ export default function App() {
           <Games
             gameCards={gameCards}
             onGameSelect={handleGameSelect}
+            isAuthenticated={isUserAuthenticated}
           />
         );
       case 'profile':
