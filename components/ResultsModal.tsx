@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
@@ -13,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 interface ResultsModalProps {
   visible: boolean;
@@ -68,98 +67,38 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0)).current;
-  const bounceAnim = useRef(new Animated.Value(0)).current;
-  const sparkleAnim = useRef(new Animated.Value(0)).current;
-  const confettiAnim = useRef(new Animated.Value(0)).current;
-  const congratsAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
-      // Start multiple animations when modal opens
+      // Start animations when modal opens
       Animated.parallel([
-        // Pulse animation for winning number
         Animated.loop(
           Animated.sequence([
             Animated.timing(pulseAnim, {
-              toValue: 1.3,
-              duration: 800,
+              toValue: 1.2,
+              duration: 1000,
               useNativeDriver: false,
             }),
             Animated.timing(pulseAnim, {
               toValue: 1,
-              duration: 800,
+              duration: 1000,
               useNativeDriver: false,
             }),
           ])
         ),
-        // Rotation animation
         Animated.loop(
           Animated.timing(rotateAnim, {
             toValue: 1,
-            duration: 4000,
+            duration: 3000,
             useNativeDriver: false,
           })
         ),
-        // Scale animation for modal
         Animated.spring(scaleAnim, {
           toValue: 1,
           tension: 50,
           friction: 8,
           useNativeDriver: false,
         }),
-        // Bounce animation for flowers
-        Animated.loop(
-          Animated.sequence([
-            Animated.timing(bounceAnim, {
-              toValue: 1,
-              duration: 1200,
-              useNativeDriver: false,
-            }),
-            Animated.timing(bounceAnim, {
-              toValue: 0,
-              duration: 1200,
-              useNativeDriver: false,
-            }),
-          ])
-        ),
-        // Sparkle animation
-        Animated.loop(
-          Animated.timing(sparkleAnim, {
-            toValue: 1,
-            duration: 1500,
-            useNativeDriver: false,
-          })
-        ),
-        // Confetti animation
-        Animated.loop(
-          Animated.sequence([
-            Animated.timing(confettiAnim, {
-              toValue: 1,
-              duration: 2000,
-              useNativeDriver: false,
-            }),
-            Animated.timing(confettiAnim, {
-              toValue: 0,
-              duration: 1000,
-              useNativeDriver: false,
-            }),
-          ])
-        ),
-        // Congratulations text animation
-        Animated.loop(
-          Animated.sequence([
-            Animated.timing(congratsAnim, {
-              toValue: 1.1,
-              duration: 1000,
-              useNativeDriver: false,
-            }),
-            Animated.timing(congratsAnim, {
-              toValue: 1,
-              duration: 1000,
-              useNativeDriver: false,
-            }),
-          ])
-        ),
       ]).start();
     } else {
       scaleAnim.setValue(0);
@@ -227,21 +166,6 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
     outputRange: ['0deg', '360deg'],
   });
 
-  const bounceInterpolate = bounceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -15],
-  });
-
-  const sparkleOpacity = sparkleAnim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0.3, 1, 0.3],
-  });
-
-  const confettiTranslate = confettiAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-50, height],
-  });
-
   return (
     <Modal
       visible={visible}
@@ -250,53 +174,28 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        {/* Animated Background Effects */}
-        <Animated.View style={[styles.confettiContainer, { transform: [{ translateY: confettiTranslate }] }]}>
-          <Text style={styles.confetti}>🎊</Text>
-          <Text style={styles.confetti}>🎉</Text>
-          <Text style={styles.confetti}>✨</Text>
-          <Text style={styles.confetti}>🌟</Text>
-          <Text style={styles.confetti}>💫</Text>
-        </Animated.View>
-
         <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleAnim }] }]}>
           {/* Header */}
           <View style={styles.header}>
-            <Animated.Text style={[styles.headerTitle, { transform: [{ scale: congratsAnim }] }]}>
-              🏆 CONGRATULATIONS! 🏆
-            </Animated.Text>
+            <Text style={styles.headerTitle}>🏆 Winning Results</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
 
-          {/* Congratulations Banner */}
-          <View style={styles.congratsBanner}>
-            <Animated.View style={[styles.sparkleRow, { opacity: sparkleOpacity }]}>
-              <Text style={styles.sparkleText}>✨ WINNER ✨</Text>
-            </Animated.View>
-            <Text style={styles.congratsText}>आपका भाग्यशाली नंबर!</Text>
-          </View>
-
-          {/* Current Winning Numbers - Centered */}
+          {/* Current Winning Numbers */}
           <View style={styles.currentResultsContainer}>
-            <Text style={styles.sectionTitle}>🎯 TODAY'S WINNING NUMBER</Text>
-            
-            {/* Flower decorations */}
-            <Animated.View style={[styles.flowerDecorations, { transform: [{ translateY: bounceInterpolate }] }]}>
-              <Text style={styles.flower}>🌸</Text>
-              <Text style={styles.flower}>🌺</Text>
-              <Text style={styles.flower}>🌻</Text>
-              <Text style={styles.flower}>🌹</Text>
-              <Text style={styles.flower}>🌷</Text>
-            </Animated.View>
-
-            <View style={styles.centeredWinningNumber}>
+            <Text style={styles.sectionTitle}>🎯 Current Winning Numbers</Text>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              style={styles.currentResultsScroll}
+            >
               {currentResults.map((result, index) => (
                 <Animated.View
                   key={result.id}
                   style={[
-                    styles.centeredResultCircle,
+                    styles.currentResultCircle,
                     {
                       backgroundColor: getGameColor(result.gameName),
                       transform: [
@@ -306,21 +205,12 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
                     }
                   ]}
                 >
-                  <Text style={styles.centeredResultNumber}>{result.result}</Text>
-                  <Text style={styles.centeredResultGame}>{result.gameName}</Text>
-                  <Text style={styles.centeredResultTime}>{result.time}</Text>
+                  <Text style={styles.currentResultNumber}>{result.result}</Text>
+                  <Text style={styles.currentResultGame}>{result.gameName}</Text>
+                  <Text style={styles.currentResultTime}>{result.time}</Text>
                 </Animated.View>
               ))}
-            </View>
-
-            {/* More flower decorations */}
-            <Animated.View style={[styles.flowerDecorations, { transform: [{ translateY: bounceInterpolate }] }]}>
-              <Text style={styles.flower}>💐</Text>
-              <Text style={styles.flower}>🌼</Text>
-              <Text style={styles.flower}>🥀</Text>
-              <Text style={styles.flower}>🏵️</Text>
-              <Text style={styles.flower}>🌿</Text>
-            </Animated.View>
+            </ScrollView>
           </View>
 
           {/* Filters */}
@@ -406,141 +296,83 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  confettiContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    zIndex: 1,
-  },
-  confetti: {
-    fontSize: 30,
-    textAlign: 'center',
   },
   modalContainer: {
     width: width * 0.95,
     height: '90%',
     backgroundColor: '#0a0a0a',
-    borderRadius: 25,
-    borderWidth: 3,
-    borderColor: '#FFD700',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#4A90E2',
     overflow: 'hidden',
-    elevation: 20,
   },
   header: {
-    background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-    backgroundColor: '#FFD700',
+    backgroundColor: '#1a1a1a',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    borderBottomWidth: 3,
-    borderBottomColor: '#FFA500',
+    borderBottomWidth: 2,
+    borderBottomColor: '#4A90E2',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#000',
-    textAlign: 'center',
-    flex: 1,
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#4A90E2',
   },
   closeButton: {
-    padding: 8,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 20,
-  },
-  congratsBanner: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFD700',
-  },
-  sparkleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  sparkleText: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: '#FFD700',
-    textAlign: 'center',
-  },
-  congratsText: {
-    fontSize: 14,
-    color: '#00FF88',
-    fontWeight: '600',
+    padding: 5,
   },
   currentResultsContainer: {
     backgroundColor: '#1a1a1a',
-    padding: 20,
-    borderBottomWidth: 2,
+    padding: 15,
+    borderBottomWidth: 1,
     borderBottomColor: '#333',
-    alignItems: 'center',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#4A90E2',
     marginBottom: 15,
     textAlign: 'center',
   },
-  flowerDecorations: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginVertical: 10,
+  currentResultsScroll: {
+    maxHeight: 120,
   },
-  flower: {
-    fontSize: 25,
-    textAlign: 'center',
-  },
-  centeredWinningNumber: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 20,
-  },
-  centeredResultCircle: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+  currentResultCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 15,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.8,
-    shadowRadius: 15,
-    borderWidth: 5,
-    borderColor: '#FFD700',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    borderWidth: 3,
+    borderColor: '#fff',
   },
-  centeredResultNumber: {
-    fontSize: 40,
-    fontWeight: '900',
+  currentResultNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#000',
-    textShadowColor: '#fff',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 5,
   },
-  centeredResultGame: {
-    fontSize: 12,
+  currentResultGame: {
+    fontSize: 8,
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
-    marginTop: 5,
+    marginTop: 2,
   },
-  centeredResultTime: {
-    fontSize: 10,
+  currentResultTime: {
+    fontSize: 7,
     color: '#000',
     opacity: 0.8,
-    fontWeight: '600',
   },
   filtersContainer: {
     backgroundColor: '#1a1a1a',
