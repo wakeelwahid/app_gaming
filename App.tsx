@@ -48,7 +48,7 @@ export default function App() {
   
   // Force authentication state for testing (you can modify this)
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
-  const [showAuthRequired, setShowAuthRequired] = useState(!isUserAuthenticated);
+  const [showAuthRequired, setShowAuthRequired] = useState(false);
 
   // Wallet state
   const { wallet, winnings, bonus, addMoney, withdrawMoney } = useWallet();
@@ -866,6 +866,7 @@ export default function App() {
     setIsUserAuthenticated(true);
     setShowAuthRequired(false);
     setShowAuthModalState(false);
+    setUserDataState(userData);
     Alert.alert('Welcome!', `Hello ${userData.name}! आपको app में access मिल गया है।`);
   };
 
@@ -1544,11 +1545,15 @@ export default function App() {
 
       {/* Authentication Screen */}
       <Modal
-        visible={showAuthModalState || showAuthRequired}
+        visible={showAuthModalState && showAuthRequired}
         animationType="slide"
         transparent={false}
         onRequestClose={() => {
           if (isUserAuthenticated) {
+            setShowAuthModalState(false);
+            setShowAuthRequired(false);
+          } else {
+            // If not authenticated, allow closing but stay on current page
             setShowAuthModalState(false);
             setShowAuthRequired(false);
           }
@@ -1557,15 +1562,8 @@ export default function App() {
         <AuthScreen 
           onAuthSuccess={handleAuthSuccess}
           onClose={() => {
-            if (isUserAuthenticated) {
-              setShowAuthModalState(false);
-              setShowAuthRequired(false);
-            } else {
-              // If not authenticated, don't allow closing and redirect to public pages
-              setActiveTabLocal('help');
-              setShowAuthModalState(false);
-              setShowAuthRequired(false);
-            }
+            setShowAuthModalState(false);
+            setShowAuthRequired(false);
           }}
         />
       </Modal>
