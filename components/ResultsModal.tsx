@@ -186,11 +186,7 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
           {/* Current Winning Numbers */}
           <View style={styles.currentResultsContainer}>
             <Text style={styles.sectionTitle}>🎯 Current Winning Numbers</Text>
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              style={styles.currentResultsScroll}
-            >
+            <View style={styles.currentResultsWrapper}>
               {currentResults.map((result, index) => (
                 <Animated.View
                   key={result.id}
@@ -210,7 +206,7 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
                   <Text style={styles.currentResultTime}>{result.time}</Text>
                 </Animated.View>
               ))}
-            </ScrollView>
+            </View>
           </View>
 
           {/* Filters */}
@@ -339,8 +335,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-  currentResultsScroll: {
-    maxHeight: 120,
+  currentResultsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    minHeight: 120,
   },
   currentResultCircle: {
     width: 100,
