@@ -849,6 +849,7 @@ export default function App() {
   };
 
   const removeBet = (betId: number) => {
+```python
     const bet = betListState.find(b => b.id === betId);
     if (bet) {
       const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
@@ -1042,10 +1043,7 @@ export default function App() {
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
+                  onPress={() => setShowAuthModalState(true)}
                 >
                   <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
                 </TouchableOpacity>
@@ -1140,10 +1138,7 @@ export default function App() {
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
+                  onPress={() => setShowAuthModalState(true)}
                 >
                   <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
                 </TouchableOpacity>
@@ -1164,10 +1159,7 @@ export default function App() {
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
+                  onPress={() => setShowAuthModalState(true)}
                 >
                   <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
                 </TouchableOpacity>
@@ -1361,10 +1353,7 @@ export default function App() {
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
+                  onPress={() => setShowAuthModalState(true)}
                 >
                   <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
                 </TouchableOpacity>
@@ -1390,10 +1379,7 @@ export default function App() {
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
+                  onPress={() => setShowAuthModalState(true)}
                 >
                   <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
                 </TouchableOpacity>
@@ -1420,10 +1406,7 @@ export default function App() {
               </Text>
               <TouchableOpacity 
                 style={styles.authRequiredButton}
-                onPress={() => {
-                  setShowAuthRequired(true);
-                  setShowAuthModalState(true);
-                }}
+                onPress={() => setShowAuthModalState(true)}
               >
                 <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
               </TouchableOpacity>
@@ -1653,7 +1636,8 @@ export default function App() {
                 placeholder="Enter amount"
                 placeholderTextColor="#999"
                 value={customAmountState}
-                onChangeText={setCustomAmountState}
+                onChange```python
+Text={setCustomAmountState}
                 keyboardType="numeric"
               />
               <TouchableOpacity
@@ -2710,8 +2694,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   lastUpdatedText: {
-    color: '#4A90E2',
-    fontSize: 14,
+    color: '#4A90E2',    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 5,
   },
