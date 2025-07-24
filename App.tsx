@@ -1642,7 +1642,8 @@ export default function App() {
                     Alert.alert('Invalid Amount', 'Minimum bet amount is ₹10');
                   }
                 }}
-              >
+              ```text
+
                 <Text style={styles.customAmountButtonText}>Place Custom Bet</Text>
               </TouchableOpacity>
             </View>
