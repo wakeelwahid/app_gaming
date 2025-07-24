@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   keyboardAvoidingView: {
     width: '100%',
     maxWidth: isSmallDevice ? 340 : 380,
-    maxHeight: SCREEN_HEIGHT * 0.65,
+    maxHeight: SCREEN_HEIGHT * 0.85,
   },
   modalContainer: {
     backgroundColor: 'rgba(10, 10, 10, 0.95)',
@@ -371,9 +371,11 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
+    maxHeight: SCREEN_HEIGHT * 0.7,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 30,
+    flexGrow: 1,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -403,7 +405,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   formContainer: {
-    padding: 15,
+    padding: 12,
   },
   formTitle: {
     fontSize: 14,
@@ -413,7 +415,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   inputContainer: {
-    marginBottom: 12,
+    marginBottom: 10,
   },
   inputLabel: {
     fontSize: 12,
