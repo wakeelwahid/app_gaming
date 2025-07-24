@@ -126,16 +126,47 @@ class UserService {
     }
   }
 
+  // Authentication status check
+  async checkAuthStatus(): Promise<ApiResponse<{ user: UserProfile }>> {
+    try {
+      // Check if we have stored user data
+      if (typeof localStorage !== 'undefined') {
+        const userData = localStorage.getItem('user_data');
+        const authToken = localStorage.getItem('authToken');
+        
+        if (userData && authToken) {
+          return {
+            success: true,
+            data: { user: JSON.parse(userData) }
+          };
+        }
+      }
+      
+      return { success: false, error: 'No authentication found' };
+    } catch (error) {
+      return { success: false, error: 'Auth check failed' };
+    }
+  }
+
   // Profile APIs
   async getProfile(): Promise<ApiResponse<UserProfile>> {
+    if (!this.getToken()) {
+      return { success: false, error: 'Authentication required' };
+    }
     return this.makeRequest<UserProfile>('/profile');
   }
 
   async updateProfile(profileData: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
+    if (!this.getToken()) {
+      return { success: false, error: 'Authentication required' };
+    }
     return this.makeRequest<UserProfile>('/profile', 'PUT', profileData);
   }
 
   async changePassword(currentPassword: string, newPassword: string): Promise<ApiResponse<{ success: boolean }>> {
+    if (!this.getToken()) {
+      return { success: false, error: 'Authentication required' };
+    }
     return this.makeRequest<{ success: boolean }>('/change-password', 'POST', {
       currentPassword,
       newPassword,

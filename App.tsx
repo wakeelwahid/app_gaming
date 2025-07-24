@@ -863,13 +863,30 @@ export default function App() {
   };
 
   const handleAuthSuccess = (userData: any) => {
-    console.log('Auth success:', userData);
-    setIsUserAuthenticated(true);
+    // Validate user data before setting
+    if (!userData || !userData.id || !userData.phone) {
+      Alert.alert('Error', 'Invalid user data received');
+      return;
+    }
+
+    setUser(userData);
     setShowAuthRequired(false);
     setShowAuthModalState(false);
-    setUserDataState(userData);
-    Alert.alert('Welcome!', `Hello ${userData.name}! आपको app में access मिल गया है।`);
-    // User will stay on the same page they were trying to access
+
+    // Show welcome message for new users
+    if (userData.isNewUser) {
+      Alert.alert(
+        '🎉 Welcome!',
+        `${userData.name}, आपका account successfully create हो गया!\n\n🎁 Welcome bonus: ₹100\n📱 Complete KYC to unlock all features`,
+        [{ text: 'शुरू करें', style: 'default' }]
+      );
+    } else {
+      Alert.alert(
+        '✅ Login Successful',
+        `Welcome back, ${userData.name}!`,
+        [{ text: 'Continue', style: 'default' }]
+      );
+    }
   };
 
   const handleLogin = async () => {
@@ -1625,7 +1642,8 @@ export default function App() {
                     Alert.alert('Invalid Amount', 'Minimum bet amount is ₹10');
                   }
                 }}
-              >
+              ```text
+
                 <Text style={styles.customAmountButtonText}>Place Custom Bet</Text>
               </TouchableOpacity>
             </View>

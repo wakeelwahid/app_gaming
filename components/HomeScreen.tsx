@@ -96,11 +96,19 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
                   // Show login prompt when user tries to play without authentication
                   Alert.alert(
                     '🔐 Login Required',
-                    'Games खेलने के लिए पहले login करें!',
+                    'Games खेलने के लिए पहले login करना जरूरी है!\n\n• Secure gameplay के लिए\n• आपके winnings protect करने के लिए\n• Fair play ensure करने के लिए',
                     [
                       { text: 'Cancel', style: 'cancel' },
-                      { text: 'Login करें', onPress: () => onPlayNow(selectedGame) }
-                    ]
+                      { 
+                        text: '🚀 Login करें', 
+                        onPress: () => onPlayNow(selectedGame),
+                        style: 'default'
+                      }
+                    ],
+                    { 
+                      cancelable: true,
+                      userInterfaceStyle: 'dark'
+                    }
                   );
                 } else {
                   onPlayNow(selectedGame);
