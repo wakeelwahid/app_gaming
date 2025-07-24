@@ -28,6 +28,26 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
+  
+  // Reset form data when modal opens or closes
+  React.useEffect(() => {
+    if (visible) {
+      setLoginData({
+        phone: '',
+        password: '',
+      });
+      setRegisterData({
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        referralCode: '',
+      });
+      setLoading(false);
+      setIsLogin(true); // Default to login tab
+    }
+  }, [visible]);
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -205,25 +225,36 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 
                 <TouchableOpacity
                   style={styles.testLoginButton}
-                  onPress={() => {
+                  onPress={async () => {
+                    setLoading(true);
+                    
+                    // Simulate loading delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
                     const randomPhone = Math.floor(7000000000 + Math.random() * 3000000000).toString();
                     const testUser = {
                       id: Date.now().toString(),
                       name: 'Test User',
                       phone: randomPhone,
                       email: 'test@example.com',
-                      kycStatus: 'PENDING',
+                      kycStatus: 'PENDING' as const,
                       referralCode: 'TEST' + Math.random().toString(36).substr(2, 6).toUpperCase(),
                       walletBalance: 5000,
                       isVerified: true,
                       joinedAt: new Date().toISOString()
                     };
+                    
+                    setLoading(false);
+                    
                     // Close modal and redirect to home
                     onAuthSuccess(testUser);
                     onClose();
                   }}
+                  disabled={loading}
                 >
-                  <Text style={styles.testLoginText}>🎮 Quick Test Login</Text>
+                  <Text style={styles.testLoginText}>
+                    {loading ? 'Test Login हो रहा है...' : '🎮 Quick Test Login'}
+                  </Text>
                 </TouchableOpacity>
               </View>
               ) : (

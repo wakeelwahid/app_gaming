@@ -880,6 +880,9 @@ export default function App() {
       return;
     }
 
+    console.log('Auth success with user data:', userData);
+
+    // Update auth states
     setUser(userData);
     setShowAuthRequired(false);
     setShowAuthModalState(false);
@@ -1600,9 +1603,14 @@ export default function App() {
     } else if (key === 'logout') {
       // Handle logout logic
       logout();
-      setShowAuthRequired(true);
+      
+      // Clear all user-related states
+      setShowAuthRequired(false);
       setActiveTabLocal('home');
-      Alert.alert('Logged Out', 'आप successfully logout हो गए हैं।');
+      setActiveTabState('home');
+      
+      // Show logout success message
+      Alert.alert('✅ Logout Successful', 'आप successfully logout हो गए हैं। अब आप फिर से login कर सकते हैं।');
     }
   };
 

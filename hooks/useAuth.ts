@@ -144,8 +144,13 @@ export const useAuth = () => {
     try {
       // Clear all stored data
       await AsyncStorage.multiRemove(['user_data', 'auth_token']);
+      
+      // Reset all states to initial values
       setUser(null);
       setIsAuthenticated(false);
+      setIsLoading(false);
+      
+      console.log('Logout successful - all states cleared');
     } catch (error) {
       console.error('Logout error:', error);
     }
