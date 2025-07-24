@@ -201,6 +201,34 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
                     Password भूल गए?
                   </Text>
                 </TouchableOpacity>
+
+                {/* Test Login Button */}
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>OR</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.testLoginButton}
+                  onPress={() => {
+                    const randomPhone = Math.floor(7000000000 + Math.random() * 3000000000).toString();
+                    const testUser = {
+                      id: Date.now().toString(),
+                      name: 'Test User',
+                      phone: randomPhone,
+                      email: 'test@example.com',
+                      kycStatus: 'PENDING',
+                      referralCode: 'TEST' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                      walletBalance: 5000,
+                      isVerified: true,
+                      joinedAt: new Date().toISOString()
+                    };
+                    onAuthSuccess(testUser);
+                  }}
+                >
+                  <Text style={styles.testLoginText}>🎮 Quick Test Login</Text>
+                </TouchableOpacity>
               </View>
               ) : (
               <View style={styles.formContainer}>

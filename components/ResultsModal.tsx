@@ -192,7 +192,7 @@ export default function ResultsModal({ visible, onClose, isAuthenticated = false
                   style={styles.authRequiredCloseButton} 
                   onPress={onClose}
                 >
-                  <Ionicons name="close" size={20} color="#999" />
+                  <Ionicons name="close" size={24} color="#fff" />
                 </TouchableOpacity>
                 <Text style={styles.authRequiredIcon}>🔒</Text>
                 <Text style={styles.authRequiredTitle}>Login Required</Text>
