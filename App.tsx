@@ -883,6 +883,10 @@ export default function App() {
     setUser(userData);
     setShowAuthRequired(false);
     setShowAuthModalState(false);
+    
+    // Redirect to home page
+    setActiveTabLocal('home');
+    setActiveTabState('home');
 
     // Show welcome message for new users
     if (userData.isNewUser) {

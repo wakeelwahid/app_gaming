@@ -61,7 +61,9 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
       const result = await login(loginData);
 
       if (result.success && result.user) {
+        // Close modal and redirect to home
         onAuthSuccess(result.user);
+        onClose();
       } else {
         Alert.alert('Error', result.error || 'Login failed. Please try again.');
       }
@@ -99,7 +101,9 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 
       if (result.success && result.user) {
         const userWithNewFlag = { ...result.user, isNewUser: true };
+        // Close modal and redirect to home
         onAuthSuccess(userWithNewFlag);
+        onClose();
       } else {
         Alert.alert('Error', result.error || 'Registration failed. Please try again.');
       }
@@ -224,7 +228,9 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
                       isVerified: true,
                       joinedAt: new Date().toISOString()
                     };
+                    // Close modal and redirect to home
                     onAuthSuccess(testUser);
+                    onClose();
                   }}
                 >
                   <Text style={styles.testLoginText}>🎮 Quick Test Login</Text>
