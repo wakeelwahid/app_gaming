@@ -46,16 +46,6 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
   });
 
   const handleLogin = async () => {
-    if (!loginData.phone || !loginData.password) {
-      Alert.alert('Error', 'कृपया सभी फील्ड भरें');
-      return;
-    }
-
-    if (loginData.phone.length !== 10) {
-      Alert.alert('Error', 'कृपया वैध मोबाइल नंबर डालें');
-      return;
-    }
-
     setLoading(true);
     try {
       const result = await login(loginData);
@@ -65,10 +55,10 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
         onAuthSuccess(result.user);
         onClose();
       } else {
-        Alert.alert('Error', result.error || 'Login failed. Please try again.');
+        Alert.alert('❌ Login Error', result.error || 'Login failed. Please try again.');
       }
     } catch (error) {
-      Alert.alert('Error', 'Login failed. Please try again.');
+      Alert.alert('❌ Error', 'Network error. कृपया अपना internet connection check करें।');
     } finally {
       setLoading(false);
     }
@@ -497,5 +487,35 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: 'center',
     lineHeight: 16,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#333333',
+  },
+  dividerText: {
+    color: '#666666',
+    fontSize: 12,
+    paddingHorizontal: 15,
+    fontWeight: '600',
+  },
+  testLoginButton: {
+    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  testLoginText: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

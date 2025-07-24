@@ -10,16 +10,22 @@ export const useAuth = () => {
 
   // Login validation function
   const validateCredentials = (credentials: any) => {
-    if (!credentials.phone || !credentials.password) {
-      return { valid: false, error: 'Phone और Password दोनों required हैं' };
+    if (!credentials.phone || credentials.phone.trim() === '') {
+      return { valid: false, error: '📱 Mobile number जरूरी है' };
     }
     
-    if (credentials.phone.length !== 10) {
-      return { valid: false, error: 'Phone number 10 digits का होना चाहिए' };
+    if (!credentials.password || credentials.password.trim() === '') {
+      return { valid: false, error: '🔒 Password जरूरी है' };
     }
     
-    if (credentials.password.length < 6) {
-      return { valid: false, error: 'Password कम से कम 6 characters का होना चाहिए' };
+    // Remove any spaces and check if it's numeric
+    const cleanPhone = credentials.phone.replace(/\s/g, '');
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      return { valid: false, error: '📱 10 digit का valid mobile number डालें' };
+    }
+    
+    if (credentials.password.length < 4) {
+      return { valid: false, error: '🔒 Password कम से कम 4 characters का होना चाहिए' };
     }
     
     return { valid: true };
@@ -57,20 +63,22 @@ export const useAuth = () => {
       // Validate credentials first
       const validation = validateCredentials(credentials);
       if (!validation.valid) {
+        setIsLoading(false);
         return { success: false, error: validation.error };
       }
       
-      // Mock successful login for demo
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Mock API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // For demo purposes, accept any 10-digit phone with password length >= 6
       const mockUser = {
         id: Date.now().toString(),
-        name: 'Demo User',
+        name: `User ${credentials.phone.slice(-4)}`,
         phone: credentials.phone,
-        email: 'demo@example.com',
-        kycStatus: 'PENDING',
+        email: `user${credentials.phone.slice(-4)}@example.com`,
+        kycStatus: 'PENDING' as const,
         referralCode: 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-        walletBalance: 1000,
+        walletBalance: Math.floor(Math.random() * 5000) + 1000,
         isVerified: true,
         joinedAt: new Date().toISOString()
       };
@@ -84,7 +92,8 @@ export const useAuth = () => {
       return { success: true, user: mockUser };
       
     } catch (error) {
-      return { success: false, error: 'Login failed. Please try again.' };
+      console.error('Login error:', error);
+      return { success: false, error: 'Login में problem हुई। कृपया फिर से try करें।' };
     } finally {
       setIsLoading(false);
     }
