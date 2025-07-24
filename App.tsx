@@ -47,8 +47,7 @@ export default function App() {
   // Auth state
   const { user, isAuthenticated, login, register, logout, updateProfile } = useAuth();
 
-  // Force authentication state for testing (you can modify this)
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  // Use proper authentication state from useAuth hook
   const [showAuthRequired, setShowAuthRequired] = useState(false);
 
   // Wallet state
@@ -649,7 +648,7 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    if (!isUserAuthenticated) {
+    if (!isAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -721,6 +720,11 @@ export default function App() {
   };
 
   const handleGameSelect = (game: any) => {
+    if (!isAuthenticated || !user) {
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
     setSelectedGameLocal(game);
     setBetListState([]); // Clear any previous selections
     setShowBettingModalLocal(true);
@@ -751,6 +755,13 @@ export default function App() {
 
   const handlePlaceBets = () => {
     console.log('handlePlaceBets called with betList:', betListState);
+
+    if (!isAuthenticated || !user) {
+      Alert.alert('Login Required', 'Bet place करने के लिए आपको login करना होगा।');
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
 
     if (betListState.length === 0) {
       Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
@@ -870,7 +881,6 @@ export default function App() {
     }
 
     setUser(userData);
-    setIsUserAuthenticated(true);
     setShowAuthRequired(false);
     setShowAuthModalState(false);
 
@@ -905,6 +915,12 @@ export default function App() {
   };
 
   const handleAddCash = async (amount: number) => {
+    if (!isAuthenticated || !user) {
+      Alert.alert('Login Required', 'Money add करने के लिए आपको login करना होगा।');
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
     // Here you can make API call to add money
     // const result = await apiService.addMoney(amount);
     setShowAddCashModalState(false);
@@ -913,6 +929,12 @@ export default function App() {
   };
 
   const handleWithdraw = async (amount: number) => {
+    if (!isAuthenticated || !user) {
+      Alert.alert('Login Required', 'Money withdraw करने के लिए आपको login करना होगा।');
+      setShowAuthRequired(true);
+      setShowAuthModalState(true);
+      return;
+    }
     // For demo purposes, allow withdrawal regardless of wallet balance
     // In production, you would validate wallet balance properly
 
@@ -1024,21 +1046,27 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
-            isAuthenticated={isUserAuthenticated}
+            isAuthenticated={isAuthenticated}
             onViewResults={() => setActiveTabLocal('results')}
           />
         );
       case 'game-history':
         return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredCloseButton} 
+                  onPress={() => setActiveTabLocal('home')}
+                >
+                  <Ionicons name="close" size={20} color="#999" />
+                </TouchableOpacity>
+                <Text style={styles.authRequiredIcon}>💰</Text>
+                <Text style={styles.authRequiredTitle}>Wallet Access Required</Text>
                 <Text style={styles.authRequiredMessage}>
-                  Wallet access करने के लिए आपको login करना होगा।
+                  अपने wallet को access करने के लिए आपको login करना होगा। Login करने के बाद आप अपना balance check कर सकते हैं, money add कर सकते हैं और withdraw कर सकते हैं।
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
@@ -1350,14 +1378,20 @@ export default function App() {
           </ScrollView>
         );
       case 'games':
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredCloseButton} 
+                  onPress={() => setActiveTabLocal('home')}
+                >
+                  <Ionicons name="close" size={20} color="#999" />
+                </TouchableOpacity>
+                <Text style={styles.authRequiredIcon}>🎮</Text>
+                <Text style={styles.authRequiredTitle}>Games Access Required</Text>
                 <Text style={styles.authRequiredMessage}>
-                  Games खेलने के लिए आपको login करना होगा।
+                  Games खेलने के लिए आपको login करना होगा। Login करने के बाद आप सभी games खेल सकते हैं और bets लगा सकते हैं।
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
@@ -1379,14 +1413,20 @@ export default function App() {
           />
         );
       case 'profile':
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredCloseButton} 
+                  onPress={() => setActiveTabLocal('home')}
+                >
+                  <Ionicons name="close" size={20} color="#999" />
+                </TouchableOpacity>
+                <Text style={styles.authRequiredIcon}>👤</Text>
+                <Text style={styles.authRequiredTitle}>Profile Access Required</Text>
                 <Text style={styles.authRequiredMessage}>
-                  Profile access करने के लिए आपको login करना होगा।
+                  अपनी profile को देखने और edit करने के लिए आपको login करना होगा। आप अपनी details update कर सकते हैं और KYC complete कर सकते हैं।
                 </Text>
                 <TouchableOpacity 
                   style={styles.authRequiredButton}
@@ -1555,7 +1595,7 @@ export default function App() {
       setActiveTabLocal('help');
     } else if (key === 'logout') {
       // Handle logout logic
-      setIsUserAuthenticated(false);
+      logout();
       setShowAuthRequired(true);
       setActiveTabLocal('home');
       Alert.alert('Logged Out', 'आप successfully logout हो गए हैं।');
@@ -1567,7 +1607,12 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header Component */}
-      <Header wallet={wallet} onMenuItemPress={handleHeaderMenuItemPress} />
+      <Header 
+        wallet={wallet} 
+        onMenuItemPress={handleHeaderMenuItemPress}
+        isAuthenticated={isAuthenticated}
+        user={user}
+      />
 
       {/* Content */}
       <View style={[styles.content, !isAgeVerifiedState && styles.blurredContent]}>
@@ -2739,6 +2784,16 @@ const styles = StyleSheet.create({
     borderColor: '#4A90E2',
     maxWidth: 350,
     width: '100%',
+    position: 'relative',
+  },
+  authRequiredCloseButton: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    zIndex: 1,
   },
   authRequiredIcon: {
     fontSize: 48,

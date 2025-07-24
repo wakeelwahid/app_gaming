@@ -18,3 +18,4 @@ export { default as GameHistory } from './GameHistory';
 export { default as GameRulesModal } from './GameRulesModal';
 export { default as AuthScreen } from './AuthScreen';
 export { default as ResultsModal } from './ResultsModal';
+export { default as SecureWrapper } from './SecureWrapper';

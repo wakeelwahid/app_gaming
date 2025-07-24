@@ -183,7 +183,11 @@ export const useAuth = () => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        await checkAuthStatus();
+        const result = await checkAuthStatus();
+        if (result.success && result.user) {
+          setUser(result.user);
+          setIsAuthenticated(true);
+        }
       } catch (error) {
         console.error('Auth initialization error:', error);
       } finally {

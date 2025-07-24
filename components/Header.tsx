@@ -8,9 +8,11 @@ const isSmallDevice = SCREEN_WIDTH < 375;
 interface HeaderProps {
   wallet: string;
   onMenuItemPress?: (key: string) => void;
+  isAuthenticated?: boolean;
+  user?: any;
 }
 
-export default function Header({ wallet, onMenuItemPress }: HeaderProps) {
+export default function Header({ wallet, onMenuItemPress, isAuthenticated, user }: HeaderProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const profileMenuItems = [
