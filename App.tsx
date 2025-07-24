@@ -46,7 +46,7 @@ const isLargeDevice = SCREEN_WIDTH >= 768;
 export default function App() {
   // Auth state
   const { user, isAuthenticated, login, register, logout, updateProfile } = useAuth();
-  
+
   // Force authentication state for testing (you can modify this)
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [showAuthRequired, setShowAuthRequired] = useState(false);
@@ -710,13 +710,13 @@ export default function App() {
   const handleMenuItemPress = (key: string) => {
     // Allow access to these pages without authentication
     const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
-    
+
     if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
     }
-    
+
     setActiveTabLocal(key);
   };
 
@@ -1489,16 +1489,16 @@ export default function App() {
 
   const handleHeaderMenuItemPress = (key: string) => {
     console.log('Header menu item pressed:', key);
-    
+
     // Allow access to these pages without authentication
     const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
-    
+
     if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
     }
-    
+
     if (key === 'transactions') {
       setActiveTabLocal('transactions');
     } else if (key === 'history') {
@@ -1642,8 +1642,7 @@ export default function App() {
           if (isUserAuthenticated) {
             setShowAuthModalState(false);
             setShowAuthRequired(false);
-          } else {
-            // If not authenticated, allow closing but stay on current page
+          } else {            // If not authenticated, allow closing but stay on current page
             setShowAuthModalState(false);
             setShowAuthRequired(false);
           }
@@ -2694,7 +2693,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
   },
-  
+
   // Authentication Required Styles
   authRequiredContainer: {
     flex: 1,
