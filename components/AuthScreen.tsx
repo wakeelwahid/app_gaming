@@ -128,7 +128,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
     <Modal
       visible={visible}
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
@@ -142,7 +142,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
                 {isLogin ? '🔐 Login करें' : '📝 Register करें'}
               </Text>
               <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Ionicons name="close" size={18} color="#ffffff" />
+                <Ionicons name="close" size={20} color="#ffffff" />
               </TouchableOpacity>
             </View>
             
@@ -321,155 +321,159 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   keyboardAvoidingView: {
     width: '100%',
-    maxWidth: isSmallDevice ? 340 : 380,
-    maxHeight: SCREEN_HEIGHT * 0.85,
+    maxWidth: isSmallDevice ? 350 : 400,
+    maxHeight: SCREEN_HEIGHT * 0.8,
   },
   modalContainer: {
-    backgroundColor: '#0a0a0a',
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: '#4A90E2',
+    backgroundColor: 'rgba(10, 10, 10, 0.95)',
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#00FF88',
     overflow: 'hidden',
-    shadowColor: '#4A90E2',
+    shadowColor: '#00FF88',
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 15,
     },
-    shadowOpacity: 0.4,
-    shadowRadius: 25,
-    elevation: 25,
+    shadowOpacity: 0.3,
+    shadowRadius: 35,
+    elevation: 30,
+    backdropFilter: 'blur(10px)',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#1a1a1a',
-    borderBottomWidth: 2,
-    borderBottomColor: '#4A90E2',
+    padding: 20,
+    backgroundColor: 'rgba(26, 26, 26, 0.9)',
+    borderBottomWidth: 1,
+    borderBottomColor: '#00FF88',
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
-    color: '#4A90E2',
+    color: '#00FF88',
     flex: 1,
   },
   closeButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#333333',
+    padding: 10,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 107, 107, 0.2)',
+    borderWidth: 1,
+    borderColor: '#FF6B6B',
   },
   scrollContainer: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 15,
+    paddingBottom: 20,
   },
   tabContainer: {
     flexDirection: 'row',
-    margin: 12,
-    backgroundColor: '#1a1a1a',
-    borderRadius: 10,
-    padding: 3,
+    margin: 15,
+    backgroundColor: 'rgba(26, 26, 26, 0.8)',
+    borderRadius: 15,
+    padding: 4,
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: '#00FF88',
   },
   tab: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 12,
   },
   activeTab: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#00FF88',
   },
   tabText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#999999',
   },
   activeTabText: {
-    color: '#ffffff',
+    color: '#000000',
+    fontWeight: '700',
   },
   formContainer: {
-    padding: 12,
+    padding: 20,
   },
   formTitle: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   inputContainer: {
-    marginBottom: 12,
+    marginBottom: 15,
   },
   inputLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
-    color: '#4A90E2',
-    marginBottom: 5,
+    color: '#00FF88',
+    marginBottom: 8,
   },
   textInput: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: 'rgba(26, 26, 26, 0.8)',
     borderWidth: 1,
     borderColor: '#333333',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 11,
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    fontSize: 14,
     color: '#ffffff',
-    minHeight: 38,
+    minHeight: 45,
   },
   authButton: {
-    backgroundColor: '#00ff88',
-    paddingVertical: 12,
-    borderRadius: 10,
+    backgroundColor: '#00FF88',
+    paddingVertical: 15,
+    borderRadius: 15,
     alignItems: 'center',
-    marginTop: 6,
-    shadowColor: '#00ff88',
+    marginTop: 10,
+    shadowColor: '#00FF88',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 6,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 12,
   },
   authButtonDisabled: {
     opacity: 0.6,
   },
   authButtonText: {
     color: '#000000',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '700',
   },
   forgotPassword: {
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 15,
   },
   forgotPasswordText: {
     color: '#4A90E2',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
   termsContainer: {
-    marginTop: 12,
+    marginTop: 15,
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
   },
   termsText: {
-    color: '#666666',
-    fontSize: 9,
+    color: '#999999',
+    fontSize: 11,
     textAlign: 'center',
-    lineHeight: 12,
+    lineHeight: 16,
   },
 });

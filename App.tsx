@@ -1634,28 +1634,14 @@ export default function App() {
       </Modal>
 
       {/* Authentication Screen */}
-      <Modal
+      <AuthScreen 
         visible={showAuthModalState && showAuthRequired}
-        animationType="slide"
-        transparent={false}
-        onRequestClose={() => {
-          if (isUserAuthenticated) {
-            setShowAuthModalState(false);
-            setShowAuthRequired(false);
-          } else {            // If not authenticated, allow closing but stay on current page
-            setShowAuthModalState(false);
-            setShowAuthRequired(false);
-          }
+        onAuthSuccess={handleAuthSuccess}
+        onClose={() => {
+          setShowAuthModalState(false);
+          setShowAuthRequired(false);
         }}
-      >
-        <AuthScreen 
-          onAuthSuccess={handleAuthSuccess}
-          onClose={() => {
-            setShowAuthModalState(false);
-            setShowAuthRequired(false);
-          }}
-        />
-      </Modal>
+      />
 
       {/* Wallet Operations Component */}
       <WalletOperations
