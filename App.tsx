@@ -649,7 +649,7 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    if (!isAuthenticated) {
+    if (!isUserAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -1024,7 +1024,7 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={isUserAuthenticated}
             onViewResults={() => setActiveTabLocal('results')}
           />
         );

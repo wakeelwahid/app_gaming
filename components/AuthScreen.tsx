@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -29,7 +28,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
-  
+
   // Login form state
   const [loginData, setLoginData] = useState({
     phone: '',
@@ -60,7 +59,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
     setLoading(true);
     try {
       const result = await login(loginData);
-      
+
       if (result.success && result.user) {
         onAuthSuccess(result.user);
       } else {
@@ -97,7 +96,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
     setLoading(true);
     try {
       const result = await register(registerData);
-      
+
       if (result.success && result.user) {
         const userWithNewFlag = { ...result.user, isNewUser: true };
         onAuthSuccess(userWithNewFlag);
@@ -132,7 +131,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
                 <Ionicons name="close" size={20} color="#ffffff" />
               </TouchableOpacity>
             </View>
-            
+
             <ScrollView 
               style={styles.scrollContainer} 
               showsVerticalScrollIndicator={false}
@@ -161,7 +160,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
               {isLogin ? (
               <View style={styles.formContainer}>
                 <Text style={styles.formTitle}>अपने Account में Login करें</Text>
-                
+
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>📱 Mobile Number</Text>
                   <TextInput
@@ -206,7 +205,7 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
               ) : (
               <View style={styles.formContainer}>
                 <Text style={styles.formTitle}>नया Account बनाएं</Text>
-                
+
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>👤 Full Name *</Text>
                   <TextInput
