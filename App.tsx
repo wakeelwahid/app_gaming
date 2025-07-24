@@ -649,7 +649,7 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    if (!isAuthenticated) {
+    if (!isUserAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -711,7 +711,7 @@ export default function App() {
     // Allow access to these pages without authentication
     const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
 
-    if (!isAuthenticated && !publicPages.includes(key)) {
+    if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -870,7 +870,6 @@ export default function App() {
     }
 
     setUser(userData);
-    setIsUserAuthenticated(true);
     setShowAuthRequired(false);
     setShowAuthModalState(false);
 
@@ -1024,14 +1023,14 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
-            isAuthenticated={isAuthenticated}
+            isAuthenticated={isUserAuthenticated}
             onViewResults={() => setActiveTabLocal('results')}
           />
         );
       case 'game-history':
         return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
-        if (!isAuthenticated) {
+        if (!isUserAuthenticated) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1129,7 +1128,7 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-        if (!isAuthenticated) {
+        if (!isUserAuthenticated) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1153,7 +1152,7 @@ export default function App() {
         }
         return <MyBet placedBets={placedBetsState} />;
       case 'transactions':
-        if (!isAuthenticated) {
+        if (!isUserAuthenticated) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1350,7 +1349,7 @@ export default function App() {
           </ScrollView>
         );
       case 'games':
-        if (!isAuthenticated) {
+        if (!isUserAuthenticated) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1379,7 +1378,7 @@ export default function App() {
           />
         );
       case 'profile':
-        if (!isAuthenticated) {
+        if (!isUserAuthenticated) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1511,7 +1510,7 @@ export default function App() {
     // Allow access to these pages without authentication
     const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
 
-    if (!isAuthenticated && !publicPages.includes(key)) {
+    if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -1645,7 +1644,7 @@ export default function App() {
                 }}
               >
                 <Text style={styles.customAmountButtonText}>Place Custom Bet</Text>
-                            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

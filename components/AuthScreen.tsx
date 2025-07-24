@@ -14,7 +14,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../hooks/useAuth';
 
 interface AuthScreenProps {
   onAuthSuccess: (user: any) => void;
@@ -28,7 +27,6 @@ const isSmallDevice = SCREEN_WIDTH < 375;
 export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScreenProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { login, register } = useAuth();
   
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -59,13 +57,21 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 
     setLoading(true);
     try {
-      const result = await login(loginData);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      if (result.success && result.user) {
-        onAuthSuccess(result.user);
-      } else {
-        Alert.alert('Error', result.error || 'Login failed. Please try again.');
-      }
+      // Mock successful login
+      const user = {
+        id: '1',
+        name: 'Test User',
+        phone: loginData.phone,
+        email: 'test@example.com',
+        kycStatus: 'PENDING',
+        referralCode: 'REF123'
+      };
+      
+      onAuthSuccess(user);
+      // Alert will be shown in parent component
     } catch (error) {
       Alert.alert('Error', 'Login failed. Please try again.');
     } finally {
@@ -96,14 +102,21 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 
     setLoading(true);
     try {
-      const result = await register(registerData);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      if (result.success && result.user) {
-        const userWithNewFlag = { ...result.user, isNewUser: true };
-        onAuthSuccess(userWithNewFlag);
-      } else {
-        Alert.alert('Error', result.error || 'Registration failed. Please try again.');
-      }
+      // Mock successful registration
+      const user = {
+        id: '1',
+        name: registerData.name,
+        phone: registerData.phone,
+        email: registerData.email,
+        kycStatus: 'PENDING',
+        referralCode: 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase()
+      };
+      
+      onAuthSuccess(user);
+      // Alert will be shown in parent component
     } catch (error) {
       Alert.alert('Error', 'Registration failed. Please try again.');
     } finally {
