@@ -188,6 +188,12 @@ export default function ResultsModal({ visible, onClose, isAuthenticated = false
             
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
+                <TouchableOpacity 
+                  style={styles.authRequiredCloseButton} 
+                  onPress={onClose}
+                >
+                  <Ionicons name="close" size={20} color="#999" />
+                </TouchableOpacity>
                 <Text style={styles.authRequiredIcon}>🔒</Text>
                 <Text style={styles.authRequiredTitle}>Login Required</Text>
                 <Text style={styles.authRequiredMessage}>
@@ -554,6 +560,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 10,
+    position: 'relative',
+  },
+  authRequiredCloseButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 5,
+    zIndex: 1,
   },
   authRequiredIcon: {
     fontSize: 48,
