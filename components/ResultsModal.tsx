@@ -17,6 +17,8 @@ const { width } = Dimensions.get('window');
 interface ResultsModalProps {
   visible: boolean;
   onClose: () => void;
+  isAuthenticated?: boolean;
+  onAuthRequired?: () => void;
 }
 
 interface GameResult {
@@ -57,7 +59,7 @@ const mockResults: GameResult[] = [
   { id: '20', gameId: 5, gameName: 'Disawer', result: '95', date: '2025-01-10', time: '02:30 AM' },
 ];
 
-export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
+export default function ResultsModal({ visible, onClose, isAuthenticated = false, onAuthRequired }: ResultsModalProps) {
   const [selectedGame, setSelectedGame] = useState<string>('All Games');
   const [selectedMonth, setSelectedMonth] = useState<string>('January 2025');
   const [filteredResults, setFilteredResults] = useState<GameResult[]>([]);
@@ -165,6 +167,48 @@ export default function ResultsModal({ visible, onClose }: ResultsModalProps) {
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
+
+  // Auth required view
+  if (!isAuthenticated) {
+    return (
+      <Modal
+        visible={visible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={onClose}
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleAnim }] }]}>
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>🏆 Winning Results</Text>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  Results देखने के लिए आपको login करना होगा
+                </Text>
+                <TouchableOpacity
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    onClose();
+                    onAuthRequired && onAuthRequired();
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🔐 Login करें</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
+    );
+  }
 
   return (
     <Modal
@@ -488,5 +532,64 @@ const styles = StyleSheet.create({
   emptySubText: {
     fontSize: 12,
     color: '#999',
+  },
+  authRequiredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  authRequiredCard: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 15,
+    padding: 30,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  authRequiredIcon: {
+    fontSize: 48,
+    marginBottom: 15,
+  },
+  authRequiredTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  authRequiredMessage: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
+    marginBottom: 25,
+    lineHeight: 22,
+  },
+  authRequiredButton: {
+    backgroundColor: '#4A90E2',
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+    borderRadius: 25,
+    shadowColor: '#4A90E2',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  authRequiredButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

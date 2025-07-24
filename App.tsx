@@ -1409,7 +1409,29 @@ export default function App() {
           />
         );
       case 'results':
-        return <ResultsModal visible={true} onClose={() => setActiveTabLocal('home')} />;
+      if (!isAuthenticated) {
+        return (
+          <View style={styles.authRequiredContainer}>
+            <View style={styles.authRequiredCard}>
+              <Text style={styles.authRequiredIcon}>🔒</Text>
+              <Text style={styles.authRequiredTitle}>Login Required</Text>
+              <Text style={styles.authRequiredMessage}>
+                Results देखने के लिए आपको login करना होगा।
+              </Text>
+              <TouchableOpacity 
+                style={styles.authRequiredButton}
+                onPress={() => {
+                  setShowAuthRequired(true);
+                  setShowAuthModalState(true);
+                }}
+              >
+                <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      }
+      return <ResultsModal visible={true} onClose={() => setActiveTabLocal('home')} />;
       case 'help':
         return (
           <View style={styles.tabContent}>
@@ -1539,6 +1561,8 @@ export default function App() {
       Alert.alert('Logged Out', 'आप successfully logout हो गए हैं।');
     }
   };
+
+  const [showResultsModal, setShowResultsModal] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
