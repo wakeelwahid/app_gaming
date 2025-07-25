@@ -87,7 +87,7 @@ Web Bundling failed 261ms index.ts (118 modules)
   545 |       {/* Betting Modal */}
   546 |       <Modal
 
-> electronic-store@1.0.0 start
+> dreambig@1.0.0 start
 > expo start
 
 Starting project at /home/runner/workspace

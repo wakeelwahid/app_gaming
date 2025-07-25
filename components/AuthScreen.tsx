@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,9 +11,9 @@ import {
   Platform,
   Modal,
   Dimensions,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../hooks/useAuth';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../hooks/useAuth";
 
 interface AuthScreenProps {
   onAuthSuccess: (user: any) => void;
@@ -21,28 +21,32 @@ interface AuthScreenProps {
   visible: boolean;
 }
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const isSmallDevice = SCREEN_WIDTH < 375;
 
-export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScreenProps) {
+export default function AuthScreen({
+  onAuthSuccess,
+  onClose,
+  visible,
+}: AuthScreenProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
-  
+
   // Reset form data when modal opens or closes
   React.useEffect(() => {
     if (visible) {
       setLoginData({
-        phone: '',
-        password: '',
+        phone: "",
+        password: "",
       });
       setRegisterData({
-        name: '',
-        phone: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        referralCode: '',
+        name: "",
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        referralCode: "",
       });
       setLoading(false);
       setIsLogin(true); // Default to login tab
@@ -51,18 +55,18 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 
   // Login form state
   const [loginData, setLoginData] = useState({
-    phone: '',
-    password: '',
+    phone: "",
+    password: "",
   });
 
   // Register form state
   const [registerData, setRegisterData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    referralCode: '',
+    name: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    referralCode: "",
   });
 
   const handleLogin = async () => {
@@ -78,33 +82,44 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
           onAuthSuccess(result.user);
         }, 100);
       } else {
-        Alert.alert('❌ Login Error', result.error || 'Login failed. Please try again.');
+        Alert.alert(
+          "❌ Login Error",
+          result.error || "Login failed. Please try again."
+        );
       }
     } catch (error) {
-      Alert.alert('❌ Error', 'Network error. कृपया अपना internet connection check करें।');
+      Alert.alert(
+        "❌ Error",
+        "Network error. कृपया अपना internet connection check करें।"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleRegister = async () => {
-    if (!registerData.name || !registerData.phone || !registerData.password || !registerData.confirmPassword) {
-      Alert.alert('Error', 'कृपया सभी आवश्यक फील्ड भरें');
+    if (
+      !registerData.name ||
+      !registerData.phone ||
+      !registerData.password ||
+      !registerData.confirmPassword
+    ) {
+      Alert.alert("Error", "कृपया सभी आवश्यक फील्ड भरें");
       return;
     }
 
     if (registerData.phone.length !== 10) {
-      Alert.alert('Error', 'कृपया वैध मोबाइल नंबर डालें');
+      Alert.alert("Error", "कृपया वैध मोबाइल नंबर डालें");
       return;
     }
 
     if (registerData.password !== registerData.confirmPassword) {
-      Alert.alert('Error', 'Password match नहीं कर रहा');
+      Alert.alert("Error", "Password match नहीं कर रहा");
       return;
     }
 
     if (registerData.password.length < 6) {
-      Alert.alert('Error', 'Password कम से कम 6 characters का होना चाहिए');
+      Alert.alert("Error", "Password कम से कम 6 characters का होना चाहिए");
       return;
     }
 
@@ -121,10 +136,13 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
           onAuthSuccess(userWithNewFlag);
         }, 100);
       } else {
-        Alert.alert('Error', result.error || 'Registration failed. Please try again.');
+        Alert.alert(
+          "Error",
+          result.error || "Registration failed. Please try again."
+        );
       }
     } catch (error) {
-      Alert.alert('Error', 'Registration failed. Please try again.');
+      Alert.alert("Error", "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -138,228 +156,219 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <KeyboardAvoidingView 
-          style={styles.keyboardAvoidingView} 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <View style={styles.modalContainer}>
             <View style={styles.header}>
               <Text style={styles.title}>
-                {isLogin ? '🔐 Login करें' : '📝 Register करें'}
+                {isLogin ? "🔐 Login करें" : "📝 Register करें"}
               </Text>
               <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                 <Ionicons name="close" size={20} color="#ffffff" />
               </TouchableOpacity>
             </View>
 
-            <ScrollView 
-              style={styles.scrollContainer} 
+            <ScrollView
+              style={styles.scrollContainer}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollContent}
             >
-
               <View style={styles.tabContainer}>
-              <TouchableOpacity
-                style={[styles.tab, isLogin && styles.activeTab]}
-                onPress={() => setIsLogin(true)}
-              >
-                <Text style={[styles.tabText, isLogin && styles.activeTabText]}>
-                  Login
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.tab, !isLogin && styles.activeTab]}
-                onPress={() => setIsLogin(false)}
-              >
-                <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>
-                  Register
-                </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={[styles.tab, isLogin && styles.activeTab]}
+                  onPress={() => setIsLogin(true)}
+                >
+                  <Text
+                    style={[styles.tabText, isLogin && styles.activeTabText]}
+                  >
+                    Login
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.tab, !isLogin && styles.activeTab]}
+                  onPress={() => setIsLogin(false)}
+                >
+                  <Text
+                    style={[styles.tabText, !isLogin && styles.activeTabText]}
+                  >
+                    Register
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               {isLogin ? (
-              <View style={styles.formContainer}>
-                <Text style={styles.formTitle}>अपने Account में Login करें</Text>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>📱 Mobile Number</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="10 digit mobile number"
-                    placeholderTextColor="#666"
-                    value={loginData.phone}
-                    onChangeText={(text) => setLoginData({...loginData, phone: text})}
-                    keyboardType="numeric"
-                    maxLength={10}
-                  />
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>🔒 Password</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Enter your password"
-                    placeholderTextColor="#666"
-                    value={loginData.password}
-                    onChangeText={(text) => setLoginData({...loginData, password: text})}
-                    secureTextEntry
-                  />
-                </View>
-
-                <TouchableOpacity
-                  style={[styles.authButton, loading && styles.authButtonDisabled]}
-                  onPress={handleLogin}
-                  disabled={loading}
-                >
-                  <Text style={styles.authButtonText}>
-                    {loading ? 'Login हो रहा है...' : '🚀 Login करें'}
+                <View style={styles.formContainer}>
+                  <Text style={styles.formTitle}>
+                    अपने Account में Login करें
                   </Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity style={styles.forgotPassword}>
-                  <Text style={styles.forgotPasswordText}>
-                    Password भूल गए?
-                  </Text>
-                </TouchableOpacity>
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>📱 Mobile Number</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="10 digit mobile number"
+                      placeholderTextColor="#666"
+                      value={loginData.phone}
+                      onChangeText={(text) =>
+                        setLoginData({ ...loginData, phone: text })
+                      }
+                      keyboardType="numeric"
+                      maxLength={10}
+                    />
+                  </View>
 
-                {/* Test Login Button */}
-                <View style={styles.divider}>
-                  <View style={styles.dividerLine} />
-                  <Text style={styles.dividerText}>OR</Text>
-                  <View style={styles.dividerLine} />
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>🔒 Password</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter your password"
+                      placeholderTextColor="#666"
+                      value={loginData.password}
+                      onChangeText={(text) =>
+                        setLoginData({ ...loginData, password: text })
+                      }
+                      secureTextEntry
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.authButton,
+                      loading && styles.authButtonDisabled,
+                    ]}
+                    onPress={handleLogin}
+                    disabled={loading}
+                  >
+                    <Text style={styles.authButtonText}>
+                      {loading ? "Login हो रहा है..." : "🚀 Login करें"}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.forgotPassword}>
+                    <Text style={styles.forgotPasswordText}>
+                      Password भूल गए?
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity
-                  style={styles.testLoginButton}
-                  onPress={async () => {
-                    setLoading(true);
-                    
-                    // Simulate loading delay
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    
-                    const randomPhone = Math.floor(7000000000 + Math.random() * 3000000000).toString();
-                    const testUser = {
-                      id: Date.now().toString(),
-                      name: 'Test User',
-                      phone: randomPhone,
-                      email: 'test@example.com',
-                      kycStatus: 'PENDING' as const,
-                      referralCode: 'TEST' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                      walletBalance: 5000,
-                      isVerified: true,
-                      joinedAt: new Date().toISOString()
-                    };
-                    
-                    setLoading(false);
-                    
-                    // First close the modal
-                    onClose();
-                    // Then trigger auth success which should redirect to home
-                    setTimeout(() => {
-                      onAuthSuccess(testUser);
-                    }, 100);
-                  }}
-                  disabled={loading}
-                >
-                  <Text style={styles.testLoginText}>
-                    {loading ? 'Test Login हो रहा है...' : '🎮 Quick Test Login'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
               ) : (
-              <View style={styles.formContainer}>
-                <Text style={styles.formTitle}>नया Account बनाएं</Text>
+                <View style={styles.formContainer}>
+                  <Text style={styles.formTitle}>नया Account बनाएं</Text>
 
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>👤 Full Name *</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Enter your full name"
-                    placeholderTextColor="#666"
-                    value={registerData.name}
-                    onChangeText={(text) => setRegisterData({...registerData, name: text})}
-                  />
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>👤 Full Name *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter your full name"
+                      placeholderTextColor="#666"
+                      value={registerData.name}
+                      onChangeText={(text) =>
+                        setRegisterData({ ...registerData, name: text })
+                      }
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>📱 Mobile Number *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="10 digit mobile number"
+                      placeholderTextColor="#666"
+                      value={registerData.phone}
+                      onChangeText={(text) =>
+                        setRegisterData({ ...registerData, phone: text })
+                      }
+                      keyboardType="numeric"
+                      maxLength={10}
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>📧 Email (Optional)</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter your email"
+                      placeholderTextColor="#666"
+                      value={registerData.email}
+                      onChangeText={(text) =>
+                        setRegisterData({ ...registerData, email: text })
+                      }
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>🔒 Password *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Minimum 6 characters"
+                      placeholderTextColor="#666"
+                      value={registerData.password}
+                      onChangeText={(text) =>
+                        setRegisterData({ ...registerData, password: text })
+                      }
+                      secureTextEntry
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>🔒 Confirm Password *</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Re-enter your password"
+                      placeholderTextColor="#666"
+                      value={registerData.confirmPassword}
+                      onChangeText={(text) =>
+                        setRegisterData({
+                          ...registerData,
+                          confirmPassword: text,
+                        })
+                      }
+                      secureTextEntry
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>
+                      🎁 Referral Code (Optional)
+                    </Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter referral code"
+                      placeholderTextColor="#666"
+                      value={registerData.referralCode}
+                      onChangeText={(text) =>
+                        setRegisterData({
+                          ...registerData,
+                          referralCode: text.toUpperCase(),
+                        })
+                      }
+                      autoCapitalize="characters"
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.authButton,
+                      loading && styles.authButtonDisabled,
+                    ]}
+                    onPress={handleRegister}
+                    disabled={loading}
+                  >
+                    <Text style={styles.authButtonText}>
+                      {loading ? "Account बन रहा है..." : "✨ Account बनाएं"}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <View style={styles.termsContainer}>
+                    <Text style={styles.termsText}>
+                      By registering, you agree to our Terms & Conditions
+                    </Text>
+                  </View>
                 </View>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>📱 Mobile Number *</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="10 digit mobile number"
-                    placeholderTextColor="#666"
-                    value={registerData.phone}
-                    onChangeText={(text) => setRegisterData({...registerData, phone: text})}
-                    keyboardType="numeric"
-                    maxLength={10}
-                  />
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>📧 Email (Optional)</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Enter your email"
-                    placeholderTextColor="#666"
-                    value={registerData.email}
-                    onChangeText={(text) => setRegisterData({...registerData, email: text})}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                  />
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>🔒 Password *</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Minimum 6 characters"
-                    placeholderTextColor="#666"
-                    value={registerData.password}
-                    onChangeText={(text) => setRegisterData({...registerData, password: text})}
-                    secureTextEntry
-                  />
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>🔒 Confirm Password *</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Re-enter your password"
-                    placeholderTextColor="#666"
-                    value={registerData.confirmPassword}
-                    onChangeText={(text) => setRegisterData({...registerData, confirmPassword: text})}
-                    secureTextEntry
-                  />
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>🎁 Referral Code (Optional)</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Enter referral code"
-                    placeholderTextColor="#666"
-                    value={registerData.referralCode}
-                    onChangeText={(text) => setRegisterData({...registerData, referralCode: text.toUpperCase()})}
-                    autoCapitalize="characters"
-                  />
-                </View>
-
-                <TouchableOpacity
-                  style={[styles.authButton, loading && styles.authButtonDisabled]}
-                  onPress={handleRegister}
-                  disabled={loading}
-                >
-                  <Text style={styles.authButtonText}>
-                    {loading ? 'Account बन रहा है...' : '✨ Account बनाएं'}
-                  </Text>
-                </TouchableOpacity>
-
-                <View style={styles.termsContainer}>
-                  <Text style={styles.termsText}>
-                    By registering, you agree to our Terms & Conditions
-                  </Text>
-                </View>
-              </View>
-            )}
+              )}
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
@@ -371,23 +380,23 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   keyboardAvoidingView: {
-    width: '100%',
+    width: "100%",
     maxWidth: isSmallDevice ? 340 : 380,
     maxHeight: SCREEN_HEIGHT * 0.85,
   },
   modalContainer: {
-    backgroundColor: 'rgba(10, 10, 10, 0.95)',
+    backgroundColor: "rgba(10, 10, 10, 0.95)",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#00FF88',
-    overflow: 'hidden',
-    shadowColor: '#00FF88',
+    borderColor: "#00FF88",
+    overflow: "hidden",
+    shadowColor: "#00FF88",
     shadowOffset: {
       width: 0,
       height: 8,
@@ -395,29 +404,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 20,
-    backdropFilter: 'blur(10px)',
+    // backdropFilter: 'blur(10px)',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 15,
-    backgroundColor: 'rgba(26, 26, 26, 0.9)',
+    backgroundColor: "rgba(26, 26, 26, 0.9)",
     borderBottomWidth: 1,
-    borderBottomColor: '#00FF88',
+    borderBottomColor: "#00FF88",
   },
   title: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#00FF88',
+    fontWeight: "700",
+    color: "#00FF88",
     flex: 1,
   },
   closeButton: {
     padding: 10,
     borderRadius: 25,
-    backgroundColor: 'rgba(255, 107, 107, 0.2)',
+    backgroundColor: "rgba(255, 107, 107, 0.2)",
     borderWidth: 1,
-    borderColor: '#FF6B6B',
+    borderColor: "#FF6B6B",
   },
   scrollContainer: {
     flex: 1,
@@ -428,40 +437,40 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   tabContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     margin: 12,
-    backgroundColor: 'rgba(26, 26, 26, 0.8)',
+    backgroundColor: "rgba(26, 26, 26, 0.8)",
     borderRadius: 12,
     padding: 3,
     borderWidth: 1,
-    borderColor: '#00FF88',
+    borderColor: "#00FF88",
   },
   tab: {
     flex: 1,
     paddingVertical: 10,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 10,
   },
   activeTab: {
-    backgroundColor: '#00FF88',
+    backgroundColor: "#00FF88",
   },
   tabText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#999999',
+    fontWeight: "600",
+    color: "#999999",
   },
   activeTabText: {
-    color: '#000000',
-    fontWeight: '700',
+    color: "#000000",
+    fontWeight: "700",
   },
   formContainer: {
     padding: 12,
   },
   formTitle: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "600",
+    color: "#ffffff",
+    textAlign: "center",
     marginBottom: 15,
   },
   inputContainer: {
@@ -469,28 +478,28 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#00FF88',
+    fontWeight: "600",
+    color: "#00FF88",
     marginBottom: 8,
   },
   textInput: {
-    backgroundColor: 'rgba(26, 26, 26, 0.8)',
+    backgroundColor: "rgba(26, 26, 26, 0.8)",
     borderWidth: 1,
-    borderColor: '#333333',
+    borderColor: "#333333",
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 13,
-    color: '#ffffff',
+    color: "#ffffff",
     minHeight: 40,
   },
   authButton: {
-    backgroundColor: '#00FF88',
+    backgroundColor: "#00FF88",
     paddingVertical: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 8,
-    shadowColor: '#00FF88',
+    shadowColor: "#00FF88",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -503,59 +512,54 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   authButtonText: {
-    color: '#000000',
+    color: "#000000",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   forgotPassword: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   forgotPasswordText: {
-    color: '#4A90E2',
+    color: "#4A90E2",
     fontSize: 12,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
   termsContainer: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 10,
   },
   termsText: {
-    color: '#999999',
+    color: "#999999",
     fontSize: 11,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 16,
   },
   divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 15,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#333333',
+    backgroundColor: "#333333",
   },
   dividerText: {
-    color: '#666666',
+    color: "#666666",
     fontSize: 12,
     paddingHorizontal: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   testLoginButton: {
-    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    backgroundColor: "rgba(74, 144, 226, 0.1)",
     borderWidth: 1,
-    borderColor: '#4A90E2',
+    borderColor: "#4A90E2",
     paddingVertical: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 5,
-  },
-  testLoginText: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: '600',
   },
 });
