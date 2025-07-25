@@ -853,7 +853,7 @@ export default function App() {
     const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
 
     if (currentWallet >= amount) {
-      //setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+      //setWallet(`Rs.${(currentWallet - amount).toFixed(2)}`);
 
       const newBet = {
         id: Date.now(),
@@ -885,7 +885,7 @@ export default function App() {
     const bet = betListState.find(b => b.id === betId);
     if (bet) {
       const currentWallet = parseFloat(wallet.replace('₹', '').replace(',', ''));
-      //setWallet(`₹${(currentWallet + bet.amount).toFixed(2)}`);
+      //setWallet(`Rs.${(currentWallet + bet.amount).toFixed(2)}`);
       setBetListState(betListState.filter(b => b.id !== betId));
     }
   };
@@ -988,7 +988,7 @@ export default function App() {
     if (currentWallet >= amount) {
       // Here you can make API call to withdraw money
       // const result = await apiService.withdrawMoney(amount);
-      // setWallet(`₹${(currentWallet - amount).toFixed(2)}`);
+      // setWallet(`Rs.${(currentWallet - amount).toFixed(2)}`);
     }
   };
 
