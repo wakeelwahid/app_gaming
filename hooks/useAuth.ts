@@ -8,6 +8,15 @@ export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Ensure authentication state is properly synchronized
+  useEffect(() => {
+    if (user && user.id) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, [user]);
+
   // Login validation function
   const validateCredentials = (credentials: any) => {
     if (!credentials.phone || credentials.phone.trim() === '') {
@@ -87,8 +96,11 @@ export const useAuth = () => {
       await AsyncStorage.setItem('user_data', JSON.stringify(mockUser));
       await AsyncStorage.setItem('auth_token', 'demo_token_' + Date.now());
       
+      // Ensure both states are updated properly
       setUser(mockUser);
       setIsAuthenticated(true);
+      
+      console.log('User authenticated successfully:', mockUser.name);
       return { success: true, user: mockUser };
       
     } catch (error) {
@@ -129,8 +141,11 @@ export const useAuth = () => {
       await AsyncStorage.setItem('user_data', JSON.stringify(newUser));
       await AsyncStorage.setItem('auth_token', 'demo_token_' + Date.now());
       
+      // Ensure both states are updated properly
       setUser(newUser);
       setIsAuthenticated(true);
+      
+      console.log('User registered and authenticated successfully:', newUser.name);
       return { success: true, user: newUser };
       
     } catch (error) {

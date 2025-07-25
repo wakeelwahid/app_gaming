@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import GameCard from './GameCard';
-import GameRulesModal from './GameRulesModal';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import GameCard from './GameCard';
+import AuthStatus from './AuthStatus';
 
 interface HomeScreenProps {
   gameCards: any[];
   features: any[];
   onPlayNow: (game: any) => void;
   isAuthenticated: boolean;
+  user?: any;
   onViewResults?: () => void;
+  onNavigate?: (screen: string) => void;
 }
 
-export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated, onViewResults }: HomeScreenProps) {
+export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated, user, onViewResults, onNavigate }: HomeScreenProps) {
   const [showGameRules, setShowGameRules] = useState(false);
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -103,6 +105,14 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
         visible={showGameRules} 
         onClose={() => setShowGameRules(false)} 
       />
+        {/* Authentication Status - Show when user is logged in */}
+        {isAuthenticated && user && onNavigate && (
+          <AuthStatus
+            isAuthenticated={isAuthenticated}
+            user={user}
+            onNavigate={onNavigate}
+          />
+        )}
     </ScrollView>
   );
 }

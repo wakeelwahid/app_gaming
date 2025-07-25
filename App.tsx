@@ -49,9 +49,20 @@ export default function App() {
 
   // Use proper authentication state from useAuth hook
   const [showAuthRequired, setShowAuthRequired] = useState(false);
+  const [isAuthenticatedState, setIsAuthenticatedState] = useState(false);
 
-  // Wallet state
+  // Wallet state  
   const { wallet, winnings, bonus, addMoney, withdrawMoney } = useWallet();
+
+  // Sync authentication states
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setIsAuthenticatedState(true);
+      setShowAuthRequired(false);
+    } else {
+      setIsAuthenticatedState(false);
+    }
+  }, [isAuthenticated, user]);
 
   const [winningsState, setWinningsState] = useState('₹0.00');
   const [showBettingModalState, setShowBettingModalState] = useState(false);
@@ -648,7 +659,7 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -710,13 +721,15 @@ export default function App() {
     // Allow access to these pages without authentication
     const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
 
-    if (!isAuthenticated && !publicPages.includes(key)) {
+    if ((!isAuthenticated || !user) && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
     }
 
+    // User is authenticated, allow access to all components
     setActiveTabLocal(key);
+    setActiveTabState(key);
   };
 
   const handleGameSelect = (game: any) => {
@@ -726,8 +739,10 @@ export default function App() {
       return;
     }
     setSelectedGameLocal(game);
+    setSelectedGameState(game); // Also set the state game
     setBetListState([]); // Clear any previous selections
     setShowBettingModalLocal(true);
+    setShowBettingModalState(true);
   };
 
   const handleNumberSelect = (number: any, type: string, amount: number) => {
@@ -875,44 +890,42 @@ export default function App() {
 
   const handleAuthSuccess = (userData: any) => {
     // Validate user data before setting
-    if (!userData || !userData.id || !userData.phone) {
+    if (!userData || !userData.phone) {
       Alert.alert('Error', 'Invalid user data received');
       return;
     }
 
     console.log('Auth success with user data:', userData);
 
-    // Update auth states and redirect to home
+    // Update all auth states for full app access
     setUserDataState(userData);
     setIsAuthenticatedState(true);
-    setActiveTabLocal('home'); // Force redirect to home page
-    
-    // Show success message
-    Alert.alert('✅ Success', `Welcome ${userData.name}! आप successfully login हो गए हैं।`);
-    
-    // Update auth states
-    setUser(userData);
+    setUser(userData); // This updates the useAuth hook state
     setShowAuthRequired(false);
     setShowAuthModalState(false);
     
-    // Redirect to home page
+    // Force redirect to home page
     setActiveTabLocal('home');
     setActiveTabState('home');
 
-    // Show welcome message for new users
-    if (userData.isNewUser) {
-      Alert.alert(
-        '🎉 Welcome!',
-        `${userData.name}, आपका account successfully create हो गया!\n\n🎁 Welcome bonus: ₹100\n📱 Complete KYC to unlock all features`,
-        [{ text: 'शुरू करें', style: 'default' }]
-      );
-    } else {
-      Alert.alert(
-        '✅ Login Successful',
-        `Welcome back, ${userData.name}!`,
-        [{ text: 'Continue', style: 'default' }]
-      );
-    }
+    // Show success message
+    setTimeout(() => {
+      if (userData.isNewUser) {
+        Alert.alert(
+          '🎉 Welcome!',
+          `${userData.name}, आपका account successfully create हो गया!\n\n🎁 Welcome bonus: ₹100\n📱 सभी features अब unlock हैं!`,
+          [{ text: 'शुरू करें', style: 'default' }]
+        );
+      } else {
+        Alert.alert(
+          '✅ Login Successful',
+          `Welcome back, ${userData.name}!\n\n🎮 अब आप सभी games और features access कर सकते हैं!`,
+          [{ text: 'Continue', style: 'default' }]
+        );
+      }
+    }, 500);
+
+    console.log('Authentication completed - user now has full app access');
   };
 
   const handleLogin = async () => {
@@ -1062,7 +1075,12 @@ export default function App() {
             features={features}
             onPlayNow={handlePlayNow}
             isAuthenticated={isAuthenticated}
+            user={user}
             onViewResults={() => setActiveTabLocal('results')}
+            onNavigate={(screen) => {
+              setActiveTabLocal(screen);
+              setActiveTabState(screen);
+            }}
           />
         );
       case 'game-history':
@@ -1588,7 +1606,7 @@ export default function App() {
     // Allow access to these pages without authentication
     const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
 
-    if (!isAuthenticated && !publicPages.includes(key)) {
+    if ((!isAuthenticated || !user) && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
