@@ -295,7 +295,7 @@ export default function BettingModal({
             <Text style={[
               styles.andarBaharText,
               isSelected && styles.selectedAndarText
-            ]}>🟢 Andar {i}</Text>
+            ]}>{i}</Text>
             
             {isSelected && (
               <Animated.View style={[
@@ -362,7 +362,7 @@ export default function BettingModal({
             <Text style={[
               styles.andarBaharText,
               isSelected && styles.selectedBaharText
-            ]}>🔴 Bahar {i}</Text>
+            ]}>{i}</Text>
             
             {isSelected && (
               <Animated.View style={[
@@ -396,32 +396,7 @@ export default function BettingModal({
           })
         }
       ]}>
-        {/* Animated particles in background */}
-        <Animated.View style={[
-          styles.backgroundParticles,
-          {
-            transform: [{
-              translateY: particleAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, -50]
-              })
-            }]
-          }
-        ]}>
-          {[...Array(20)].map((_, i) => (
-            <View
-              key={i}
-              style={[
-                styles.backgroundParticle,
-                {
-                  left: Math.random() * width,
-                  top: Math.random() * height,
-                  opacity: Math.random() * 0.6,
-                }
-              ]}
-            />
-          ))}
-        </Animated.View>
+        
 
         <Animated.View style={[
           styles.bettingModal,
@@ -598,7 +573,7 @@ export default function BettingModal({
                         })
                       }]
                     }
-                  ]}>🟢 Select Andar Numbers (0-9)</Animated.Text>
+                  ]}>🟢 Andar (0-9)</Animated.Text>
                   <View style={styles.andarBaharGrid}>
                     {renderAndarNumbers()}
                   </View>
@@ -617,7 +592,7 @@ export default function BettingModal({
                         })
                       }]
                     }
-                  ]}>🔴 Select Bahar Numbers (0-9)</Animated.Text>
+                  ]}>🔴 Bahar (0-9)</Animated.Text>
                   <View style={styles.andarBaharGrid}>
                     {renderBaharNumbers()}
                   </View>
@@ -1322,7 +1297,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: '#00ff88',
+    borderColor: '#FF6B6B',
   },
   confirmButtonGradient: {
     position: 'absolute',
@@ -1330,14 +1305,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, #00ff88 0%, #00cc6a 50%, #00ff88 100%)',
+    background: 'linear-gradient(135deg, #FF6B6B 0%, #FF5252 50%, #FF6B6B 100%)',
   },
   confirmButtonText: {
-    color: '#000000',
+    color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '900',
     zIndex: 1,
-    textShadowColor: 'rgba(255, 255, 255, 0.3)',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
