@@ -1807,7 +1807,6 @@ export default function App() {
         onUtrChange={setUtrNumberState}
         onConfirmPayment={handleUTRConfirmationState}
         onWithdrawRequest={handleWithdraw}
-        onCompleteKYC={handleKYCPressState}
       />
 
       {/* Payment Success Component */}
