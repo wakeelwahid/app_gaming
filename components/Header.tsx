@@ -31,15 +31,6 @@ const getCurrentIndianTime = () => {
 
 export default function Header({ wallet, onMenuItemPress, isAuthenticated, user }: HeaderProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [currentTime, setCurrentTime] = useState(getCurrentIndianTime());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(getCurrentIndianTime());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   const profileMenuItems = [
     { icon: 'swap-horizontal', title: 'Transactions', key: 'transactions' },
@@ -82,15 +73,6 @@ export default function Header({ wallet, onMenuItemPress, isAuthenticated, user 
           <View style={styles.walletContainer}>
             <Ionicons name="wallet" size={20} color="#00FF88" />
             <Text style={styles.walletAmount}>{wallet}</Text>
-          </View>
-
-          {/* Live Indian Time */}
-          <View style={styles.timeContainer}>
-            <View style={styles.timeDisplay}>
-              <Ionicons name="time-outline" size={16} color="#00ff88" />
-              <Text style={styles.liveTimeText}>{currentTime}</Text>
-            </View>
-            <Text style={styles.timeLabel}>🇮🇳 IST Live</Text>
           </View>
         </View>
       </View>
@@ -275,33 +257,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 12,
     zIndex: 1,
-  },
-  timeContainer: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#00ff88',
-    minWidth: 140,
-  },
-  timeDisplay: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  liveTimeText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  timeLabel: {
-    color: '#00ff88',
-    fontSize: 10,
-    fontWeight: '600',
-    marginTop: 2,
-    textAlign: 'center',
   },
 });
