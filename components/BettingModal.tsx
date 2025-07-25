@@ -255,7 +255,7 @@ export default function BettingModal({
         <Animated.View
           key={numberKey}
           style={[
-            styles.andarBaharContainer,
+            styles.andarBaharItemContainer,
             { transform: [{ scale: isSelected ? 1.05 : 1 }] }
           ]}
         >
@@ -322,7 +322,7 @@ export default function BettingModal({
         <Animated.View
           key={numberKey}
           style={[
-            styles.andarBaharContainer,
+            styles.andarBaharItemContainer,
             { transform: [{ scale: isSelected ? 1.05 : 1 }] }
           ]}
         >
@@ -574,7 +574,7 @@ export default function BettingModal({
                       }]
                     }
                   ]}>🟢 Andar (0-9)</Animated.Text>
-                  <View style={styles.andarBaharGrid}>
+                  <View style={styles.andarBaharHorizontalGrid}>
                     {renderAndarNumbers()}
                   </View>
                 </>
@@ -593,7 +593,7 @@ export default function BettingModal({
                       }]
                     }
                   ]}>🔴 Bahar (0-9)</Animated.Text>
-                  <View style={styles.andarBaharGrid}>
+                  <View style={styles.andarBaharHorizontalGrid}>
                     {renderBaharNumbers()}
                   </View>
                 </>
@@ -1049,10 +1049,22 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 10,
   },
+  andarBaharHorizontalGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
   andarBaharContainer: {
     width: '100%',
     height: 50,
     marginBottom: 8,
+  },
+  andarBaharItemContainer: {
+    minWidth: 60,
+    maxWidth: 'max-content',
+    height: 60,
+    marginBottom: 12,
   },
   andarBaharButton: {
     width: '100%',
@@ -1063,6 +1075,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderWidth: 2,
+    minWidth: 60,
+    paddingHorizontal: 8,
   },
   andarButton: {
     backgroundColor: '#0f2419',
