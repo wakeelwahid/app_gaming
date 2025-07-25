@@ -71,9 +71,12 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
       const result = await login(loginData);
 
       if (result.success && result.user) {
-        // Close modal and redirect to home
-        onAuthSuccess(result.user);
+        // First close the modal
         onClose();
+        // Then trigger auth success which should redirect to home
+        setTimeout(() => {
+          onAuthSuccess(result.user);
+        }, 100);
       } else {
         Alert.alert('❌ Login Error', result.error || 'Login failed. Please try again.');
       }
@@ -111,9 +114,12 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
 
       if (result.success && result.user) {
         const userWithNewFlag = { ...result.user, isNewUser: true };
-        // Close modal and redirect to home
-        onAuthSuccess(userWithNewFlag);
+        // First close the modal
         onClose();
+        // Then trigger auth success which should redirect to home
+        setTimeout(() => {
+          onAuthSuccess(userWithNewFlag);
+        }, 100);
       } else {
         Alert.alert('Error', result.error || 'Registration failed. Please try again.');
       }
@@ -246,9 +252,12 @@ export default function AuthScreen({ onAuthSuccess, onClose, visible }: AuthScre
                     
                     setLoading(false);
                     
-                    // Close modal and redirect to home
-                    onAuthSuccess(testUser);
+                    // First close the modal
                     onClose();
+                    // Then trigger auth success which should redirect to home
+                    setTimeout(() => {
+                      onAuthSuccess(testUser);
+                    }, 100);
                   }}
                   disabled={loading}
                 >

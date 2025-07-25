@@ -882,6 +882,14 @@ export default function App() {
 
     console.log('Auth success with user data:', userData);
 
+    // Update auth states and redirect to home
+    setUserDataState(userData);
+    setIsAuthenticatedState(true);
+    setActiveTabLocal('home'); // Force redirect to home page
+    
+    // Show success message
+    Alert.alert('✅ Success', `Welcome ${userData.name}! आप successfully login हो गए हैं।`);
+    
     // Update auth states
     setUser(userData);
     setShowAuthRequired(false);
