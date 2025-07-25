@@ -1610,8 +1610,7 @@ export default function App() {
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>🚧 Coming Soon</Text>
-            <Text stylethe previous turn.
-style={styles.comingSoonText}>यह फीचर जल्द हीआएगा</Text>
+            <Text style={styles.comingSoonText}>यह फीचर जल्द हीआएगा</Text>
           </View>
         );
     }
