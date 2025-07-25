@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import GameCard from './GameCard';
 import AuthStatus from './AuthStatus';
+import GameRulesModal from './GameRulesModal';
+import { Dimensions } from 'react-native';
 
 interface HomeScreenProps {
   gameCards: any[];
@@ -116,8 +118,6 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
     </ScrollView>
   );
 }
-
-import { Dimensions } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isSmallDevice = SCREEN_WIDTH < 375;
