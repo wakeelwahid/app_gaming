@@ -1,789 +1,766 @@
-import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Alert,
+  Animated,
+  Dimensions,
+  Easing,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface BettingModalProps {
   visible: boolean;
-  selectedGame: any;
-  currentBetType: string;
-  betList: any[];
   onClose: () => void;
-  onBetTypeChange: (type: string) => void;
-  onNumberSelect: (number: any, type: string, amount: number) => void;
-  onRemoveBet: (betId: number) => void;
-  onPlaceBets: () => void;
+  game: any;
+  onPlaceBet: (numbers: number[], amount: number) => void;
+  isAuthenticated: boolean;
 }
 
 export default function BettingModal({
   visible,
-  selectedGame,
-  currentBetType,
-  betList,
   onClose,
-  onBetTypeChange,
-  onNumberSelect,
-  onRemoveBet,
-  onPlaceBets
+  game,
+  onPlaceBet,
+  isAuthenticated
 }: BettingModalProps) {
-  const [showAmountPopup, setShowAmountPopup] = React.useState(false);
-  const [selectedNumber, setSelectedNumber] = React.useState<any>(null);
-  const [selectedType, setSelectedType] = React.useState<string>('');
-  const [customAmount, setCustomAmount] = React.useState<string>('');
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+  const [selectedNumberType, setSelectedNumberType] = useState<'number' | 'andar' | 'bahar'>('number');
+  const [betAmount, setBetAmount] = useState('');
+  const [activeTab, setActiveTab] = useState<'numbers' | 'andar' | 'bahar'>('numbers');
 
-  // Clear states when modal opens/closes
-  React.useEffect(() => {
-    if (!visible) {
-      setShowAmountPopup(false);
-      setSelectedNumber(null);
-      setSelectedType('');
-      setCustomAmount('');
+  // Animation references
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.3)).current;
+  const numberAnims = useRef(Array.from({ length: 100 }, () => new Animated.Value(0))).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (visible) {
+      // Reset animations
+      slideAnim.setValue(SCREEN_HEIGHT);
+      fadeAnim.setValue(0);
+      scaleAnim.setValue(0.3);
+      numberAnims.forEach(anim => anim.setValue(0));
+
+      // Start entrance animations
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 400,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 8,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      // Staggered number animations
+      const numberAnimations = numberAnims.map((anim, index) =>
+        Animated.timing(anim, {
+          toValue: 1,
+          duration: 300,
+          delay: index * 20,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        })
+      );
+
+      Animated.stagger(10, numberAnimations).start();
+
+      // Continuous pulse animation
+      const pulseLoop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.1,
+            duration: 1000,
+            easing: Easing.inOut(Easing.sine),
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.inOut(Easing.sine),
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      pulseLoop.start();
+
+      return () => pulseLoop.stop();
     }
   }, [visible]);
 
-  const getTotalBetAmount = () => {
-    return betList.reduce((total, bet) => total + bet.amount, 0);
+  const closeModal = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: SCREEN_HEIGHT,
+        duration: 300,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+      setSelectedNumbers([]);
+      setBetAmount('');
+    });
   };
 
-  const getNumberButtonStyle = (number: number) => {
-    // Create professional gradient colors
-    const baseHue = (number * 137.5) % 360; // Golden ratio approximation for better distribution
-    const isEven = number % 2 === 0;
-    const isPrime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97].includes(number);
+  const toggleNumber = (number: number) => {
+    const animIndex = number - 1;
+    
+    Animated.sequence([
+      Animated.timing(numberAnims[animIndex], {
+        toValue: 1.3,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(numberAnims[animIndex], {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
 
-    let backgroundColor, borderColor, shadowColor;
+    setSelectedNumbers(prev => {
+      if (prev.includes(number)) {
+        return prev.filter(n => n !== number);
+      } else {
+        return [...prev, number];
+      }
+    });
+  };
 
-    if (isPrime) {
-      // Prime numbers get gold theme
-      backgroundColor = '#1a1611';
-      borderColor = '#d4af37';
-      shadowColor = '#d4af37';
-    } else if (isEven) {
-      // Even numbers get blue theme
-      backgroundColor = '#0f1419';
-      borderColor = '#4a9eff';
-      shadowColor = '#4a9eff';
-    } else {
-      // Odd numbers get purple theme
-      backgroundColor = '#16111a';
-      borderColor = '#8b5cf6';
-      shadowColor = '#8b5cf6';
+  const handlePlaceBet = () => {
+    if (!isAuthenticated) {
+      Alert.alert('Login Required', 'Please login to place bets');
+      return;
     }
 
-    return {
-      backgroundColor,
-      borderWidth: 1.5,
-      borderColor,
-      shadowColor,
-      shadowOffset: {
-        width: 0,
-        height: 3,
-      },
-      shadowOpacity: 0.4,
-      shadowRadius: 6,
-      elevation: 6,
-    };
-  };
-
-  const getNumberTextColor = (number: number) => {
-    const isPrime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97].includes(number);
-    const isEven = number % 2 === 0;
-
-    if (isPrime) return '#ffd700';
-    if (isEven) return '#60a5fa';
-    return '#a78bfa';
-  };
-
-  const renderNumbers = () => {
-    const numbers = [];
-    for (let i = 1; i <= 100; i++) {
-      const bet = betList.find(b => b.number === i && b.type === 'numbers');
-      const isSelected = !!bet;
-      numbers.push(
-        <TouchableOpacity
-          key={i}
-          style={[
-            styles.numberButton,
-            getNumberButtonStyle(i),
-            isSelected && styles.selectedNumberButton
-          ]}
-          onPress={() => {
-            if (isSelected) {
-              onRemoveBet(bet.id);
-            } else {
-              setSelectedNumber(i);
-              setSelectedType('numbers');
-              setShowAmountPopup(true);
-            }
-          }}
-        >
-          <Text style={[
-            styles.numberText,
-            { color: getNumberTextColor(i) },
-            isSelected && styles.selectedNumberText
-          ]}>{i}</Text>
-          {isSelected && (
-            <View style={styles.betAmountBadge}>
-              <Text style={styles.betAmountBadgeText}>₹{bet.amount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      );
+    if (selectedNumbers.length === 0) {
+      Alert.alert('Error', 'Please select at least one number');
+      return;
     }
-    return numbers;
+
+    if (!betAmount || parseFloat(betAmount) <= 0) {
+      Alert.alert('Error', 'Please enter a valid bet amount');
+      return;
+    }
+
+    onPlaceBet(selectedNumbers, parseFloat(betAmount));
+    closeModal();
   };
 
-  const renderAndarNumbers = () => {
-    const numbers = [];
-    for (let i = 0; i <= 9; i++) {
-      const numberKey = `Andar ${i}`;
-      const bet = betList.find(b => b.number === numberKey && b.type === 'andar');
-      const isSelected = !!bet;
-      numbers.push(
-        <TouchableOpacity
-          key={numberKey}
-          style={[
-            styles.andarBaharButton,
-            styles.andarButton,
-            isSelected && styles.selectedAndarButton
-          ]}
-          onPress={() => {
-            if (isSelected) {
-              onRemoveBet(bet.id);
-            } else {
-              setSelectedNumber(numberKey);
-              setSelectedType('andar');
-              setShowAmountPopup(true);
-            }
-          }}
-        >
-          <Text style={[
-            styles.andarBaharText,
-            isSelected && styles.selectedAndarText
-          ]}>Andar {i}</Text>
-          {isSelected && (
-            <View style={styles.betAmountBadgeSmall}>
-              <Text style={styles.betAmountBadgeTextSmall}>₹{bet.amount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      );
-    }
-    return numbers;
+  const renderNumberGrid = () => {
+    const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
+    
+    return (
+      <View style={styles.numbersGrid}>
+        {numbers.map((number, index) => {
+          const isSelected = selectedNumbers.includes(number);
+          const animatedStyle = {
+            transform: [
+              { scale: numberAnims[index] },
+              isSelected ? { scale: pulseAnim } : { scale: 1 }
+            ],
+          };
+
+          return (
+            <Animated.View key={number} style={animatedStyle}>
+              <TouchableOpacity
+                style={[
+                  styles.numberButton,
+                  isSelected && styles.selectedNumberButton,
+                ]}
+                onPress={() => toggleNumber(number)}
+                activeOpacity={0.7}
+              >
+                {isSelected ? (
+                  <LinearGradient
+                    colors={['#FF6B6B', '#FF8E53', '#FF6B6B']}
+                    style={styles.gradientButton}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Text style={styles.selectedNumberText}>{number}</Text>
+                  </LinearGradient>
+                ) : (
+                  <LinearGradient
+                    colors={['#2a2a2a', '#1a1a1a']}
+                    style={styles.gradientButton}
+                  >
+                    <Text style={styles.numberText}>{number}</Text>
+                  </LinearGradient>
+                )}
+              </TouchableOpacity>
+            </Animated.View>
+          );
+        })}
+      </View>
+    );
   };
 
-  const renderBaharNumbers = () => {
-    const numbers = [];
-    for (let i = 0; i <= 9; i++) {
-      const numberKey = `Bahar ${i}`;
-      const bet = betList.find(b => b.number === numberKey && b.type === 'bahar');
-      const isSelected = !!bet;
-      numbers.push(
-        <TouchableOpacity
-          key={numberKey}
-          style={[
-            styles.andarBaharButton,
-            styles.baharButton,
-            isSelected && styles.selectedBaharButton
-          ]}
-          onPress={() => {
-            if (isSelected) {
-              onRemoveBet(bet.id);
-            } else {
-              setSelectedNumber(numberKey);
-              setSelectedType('bahar');
-              setShowAmountPopup(true);
-            }
-          }}
-        >
-          <Text style={[
-            styles.andarBaharText,
-            isSelected && styles.selectedBaharText
-          ]}>Bahar {i}</Text>
-          {isSelected && (
-            <View style={styles.betAmountBadgeSmall}>
-              <Text style={styles.betAmountBadgeTextSmall}>₹{bet.amount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      );
-    }
-    return numbers;
-  };
+  const renderTabButton = (tab: 'numbers' | 'andar' | 'bahar', label: string, icon: string, color: string) => (
+    <TouchableOpacity
+      style={[
+        styles.tabButton,
+        activeTab === tab && styles.activeTabButton,
+        { borderColor: color }
+      ]}
+      onPress={() => setActiveTab(tab)}
+    >
+      <View style={[styles.tabIconContainer, { backgroundColor: color + '20' }]}>
+        <Text style={[styles.tabIcon, { color }]}>{icon}</Text>
+      </View>
+      <Text style={[
+        styles.tabLabel,
+        activeTab === tab ? { color } : styles.inactiveTabLabel
+      ]}>
+        {label}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <Modal
-      visible={visible}
-      animationType="slide"
+      animationType="none"
       transparent={true}
-      onRequestClose={onClose}
+      visible={visible}
+      onRequestClose={closeModal}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.bettingModal}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>
-              {selectedGame?.title} - Select Numbers
-            </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeIconContainer}>
-              <Ionicons name="close" size={24} color="#ffffff" />
+      <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+        <Animated.View 
+          style={[
+            styles.modalContainer,
+            {
+              transform: [
+                { translateY: slideAnim },
+                { scale: scaleAnim }
+              ]
+            }
+          ]}
+        >
+          {/* Header with gradient */}
+          <LinearGradient
+            colors={['#1a1a1a', '#2a2a2a']}
+            style={styles.header}
+          >
+            <View style={styles.headerContent}>
+              <View style={styles.headerLeft}>
+                <LinearGradient
+                  colors={['#4A90E2', '#357ABD']}
+                  style={styles.gameIconContainer}
+                >
+                  <Text style={styles.gameIcon}>🎯</Text>
+                </LinearGradient>
+                <View>
+                  <Text style={styles.modalTitle}>{game?.name || 'Disawer'} - Select Numbers</Text>
+                  <Text style={styles.modalSubtitle}>Choose your lucky numbers</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                <LinearGradient
+                  colors={['#FF6B6B', '#FF8E53']}
+                  style={styles.closeButtonGradient}
+                >
+                  <Ionicons name="close" size={20} color="#fff" />
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+
+          {/* Tabs */}
+          <View style={styles.tabsContainer}>
+            {renderTabButton('numbers', 'Numbers (1-100)', '🎲', '#FF6B6B')}
+            {renderTabButton('andar', 'Andar (0-9)', '🟢', '#00FF88')}
+            {renderTabButton('bahar', 'Bahar (0-9)', '🔴', '#FFD700')}
+          </View>
+
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            {activeTab === 'numbers' && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <LinearGradient
+                    colors={['#FF6B6B', '#FF8E53']}
+                    style={styles.sectionIconContainer}
+                  >
+                    <Text style={styles.sectionIcon}>🎯</Text>
+                  </LinearGradient>
+                  <Text style={styles.sectionTitle}>Select Numbers (1-100)</Text>
+                </View>
+                {renderNumberGrid()}
+              </View>
+            )}
+
+            {activeTab === 'andar' && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <LinearGradient
+                    colors={['#00FF88', '#00CC6F']}
+                    style={styles.sectionIconContainer}
+                  >
+                    <Text style={styles.sectionIcon}>🟢</Text>
+                  </LinearGradient>
+                  <Text style={styles.sectionTitle}>Andar (0-9)</Text>
+                </View>
+                <View style={styles.andarBaharGrid}>
+                  {Array.from({ length: 10 }, (_, i) => i).map((number) => (
+                    <TouchableOpacity
+                      key={`andar-${number}`}
+                      style={[
+                        styles.andarBaharButton,
+                        selectedNumbers.includes(number) && styles.selectedAndarBaharButton,
+                      ]}
+                      onPress={() => toggleNumber(number)}
+                    >
+                      <LinearGradient
+                        colors={selectedNumbers.includes(number) 
+                          ? ['#00FF88', '#00CC6F'] 
+                          : ['#2a2a2a', '#1a1a1a']
+                        }
+                        style={styles.gradientButton}
+                      >
+                        <Text style={[
+                          styles.andarBaharText,
+                          selectedNumbers.includes(number) && styles.selectedAndarBaharText
+                        ]}>
+                          {number}
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {activeTab === 'bahar' && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <LinearGradient
+                    colors={['#FFD700', '#FFC107']}
+                    style={styles.sectionIconContainer}
+                  >
+                    <Text style={styles.sectionIcon}>🔴</Text>
+                  </LinearGradient>
+                  <Text style={styles.sectionTitle}>Bahar (0-9)</Text>
+                </View>
+                <View style={styles.andarBaharGrid}>
+                  {Array.from({ length: 10 }, (_, i) => i).map((number) => (
+                    <TouchableOpacity
+                      key={`bahar-${number}`}
+                      style={[
+                        styles.andarBaharButton,
+                        selectedNumbers.includes(number) && styles.selectedAndarBaharButton,
+                      ]}
+                      onPress={() => toggleNumber(number)}
+                    >
+                      <LinearGradient
+                        colors={selectedNumbers.includes(number) 
+                          ? ['#FFD700', '#FFC107'] 
+                          : ['#2a2a2a', '#1a1a1a']
+                        }
+                        style={styles.gradientButton}
+                      >
+                        <Text style={[
+                          styles.andarBaharText,
+                          selectedNumbers.includes(number) && styles.selectedAndarBaharText
+                        ]}>
+                          {number}
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Bet Amount Section */}
+            <View style={styles.betSection}>
+              <LinearGradient
+                colors={['#1a1a1a', '#2a2a2a']}
+                style={styles.betContainer}
+              >
+                <View style={styles.betHeader}>
+                  <Text style={styles.betTitle}>💰 Bet Amount</Text>
+                  <Text style={styles.selectedCount}>
+                    {selectedNumbers.length} number{selectedNumbers.length !== 1 ? 's' : ''} selected
+                  </Text>
+                </View>
+                
+                <View style={styles.betInputContainer}>
+                  <TextInput
+                    style={styles.betInput}
+                    value={betAmount}
+                    onChangeText={setBetAmount}
+                    placeholder="Enter amount..."
+                    placeholderTextColor="#666"
+                    keyboardType="numeric"
+                  />
+                  <Text style={styles.rupeeSymbol}>₹</Text>
+                </View>
+
+                <View style={styles.quickAmounts}>
+                  {[10, 50, 100, 500].map(amount => (
+                    <TouchableOpacity
+                      key={amount}
+                      style={styles.quickAmountButton}
+                      onPress={() => setBetAmount(amount.toString())}
+                    >
+                      <LinearGradient
+                        colors={['#4A90E2', '#357ABD']}
+                        style={styles.quickAmountGradient}
+                      >
+                        <Text style={styles.quickAmountText}>₹{amount}</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </LinearGradient>
+            </View>
+          </ScrollView>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[
+                styles.placeBetButton,
+                (!selectedNumbers.length || !betAmount) && styles.disabledButton
+              ]} 
+              onPress={handlePlaceBet}
+              disabled={!selectedNumbers.length || !betAmount}
+            >
+              <LinearGradient
+                colors={selectedNumbers.length && betAmount 
+                  ? ['#00FF88', '#00CC6F'] 
+                  : ['#666', '#555']
+                }
+                style={styles.placeBetGradient}
+              >
+                <Text style={styles.placeBetText}>
+                  🎯 Place Bet {betAmount && `(₹${betAmount})`}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
-
-          <View style={styles.modalContent}>
-            <View style={styles.bettingTabs}>
-              <TouchableOpacity 
-                style={[styles.tab, currentBetType === 'numbers' && styles.activeTab]}
-                onPress={() => onBetTypeChange('numbers')}
-              >
-                <Text style={[styles.tabText, currentBetType === 'numbers' && styles.activeTabText]}>
-                  🎯 Numbers (1-100)
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.tab, currentBetType === 'andar' && styles.activeTab]}
-                onPress={() => onBetTypeChange('andar')}
-              >
-                <Text style={[styles.tabText, currentBetType === 'andar' && styles.activeTabText]}>
-                  🟢 Andar (0-9)
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.tab, currentBetType === 'bahar' && styles.activeTab]}
-                onPress={() => onBetTypeChange('bahar')}
-              >
-                <Text style={[styles.tabText, currentBetType === 'bahar' && styles.activeTabText]}>
-                  🔴 Bahar (0-9)
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.contentScrollView} showsVerticalScrollIndicator={false}>
-
-            {betList.length > 0 && (
-              <View style={styles.selectionSummary}>
-                <Text style={styles.summaryTitle}>
-                  Total Bets ({betList.length}):
-                </Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View style={styles.selectedNumbersList}>
-                    {betList.map((bet, index) => {
-                      const chipStyle = bet.type === 'andar' ? styles.andarChip : 
-                                      bet.type === 'bahar' ? styles.baharChip : 
-                                      styles.selectedChip;
-                      return (
-                        <View key={index} style={chipStyle}>
-                          <Text style={styles.selectedChipText}>{bet.number}</Text>
-                          <Text style={styles.selectedChipAmount}>₹{bet.amount}</Text>
-                        </View>
-                      );
-                    })}
-                  </View>
-                </ScrollView>
-                <View style={styles.totalAmountDisplay}>
-                  <Text style={styles.totalAmountText}>
-                    Total Bet Amount: ₹{getTotalBetAmount()}
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {currentBetType === 'numbers' && (
-                <>
-                  <Text style={styles.sectionTitle}>🎯 Select Numbers (1-100)</Text>
-                  <View style={styles.numbersContainer}>
-                    <ScrollView style={styles.numbersScrollContainer} showsVerticalScrollIndicator={false}>
-                      <View style={styles.numbersGrid}>
-                        {renderNumbers()}
-                      </View>
-                    </ScrollView>
-                  </View>
-                </>
-              )}
-
-            {currentBetType === 'andar' && (
-              <>
-                <Text style={styles.sectionTitle}>🟢 Select Andar Numbers (0-9)</Text>
-                <View style={styles.andarBaharGrid}>
-                  {renderAndarNumbers()}
-                </View>
-              </>
-            )}
-
-            {currentBetType === 'bahar' && (
-              <>
-                <Text style={styles.sectionTitle}>🔴 Select Bahar Numbers (0-9)</Text>
-                <View style={styles.andarBaharGrid}>
-                  {renderBaharNumbers()}
-                </View>
-              </>
-            )}
-
-            </ScrollView>
-
-            {/* Fixed Bottom Section - Only Place Bet Button */}
-            {betList.length > 0 && (
-              <View style={styles.fixedBottomSection}>
-                <TouchableOpacity 
-                  style={styles.placeBetButton}
-                  onPress={() => {
-                    console.log('Place bet button pressed, bet list:', betList);
-                    console.log('Total amount:', getTotalBetAmount());
-                    if (betList.length > 0) {
-                      console.log('Calling onPlaceBets...');
-                      onPlaceBets();
-                      // Close betting modal immediately after placing bet
-                      onClose();
-                    } else {
-                      Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
-                    }
-                  }}
-                >
-                  <Text style={styles.placeBetButtonText}>
-                    🎯 Place All Bets (₹{getTotalBetAmount()})
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        </View>
-      </View>
-
-      {/* Amount Selection Popup */}
-      <Modal
-        visible={showAmountPopup}
-        animationType="fade"
-        transparent={true}
-        onRequestClose={() => setShowAmountPopup(false)}
-      >
-        <View style={styles.popupOverlay}>
-          <View style={styles.amountPopup}>
-            <View style={styles.popupHeader}>
-              <Text style={styles.popupTitle}>
-                Bet Amount - {selectedNumber}
-              </Text>
-              <TouchableOpacity onPress={() => setShowAmountPopup(false)} style={styles.popupCloseIcon}>
-                <Ionicons name="close" size={20} color="#ffffff" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.popupContent}>
-              <Text style={styles.amountLabel}>Quick Select:</Text>
-              <View style={styles.quickAmountGrid}>
-                {[10, 50, 100, 200, 500, 1000].map((amount) => (
-                  <TouchableOpacity
-                    key={amount}
-                    style={styles.quickAmountButton}
-                    onPress={() => {
-                      onNumberSelect(selectedNumber, selectedType, amount);
-                      setShowAmountPopup(false);
-                    }}
-                  >
-                    <Text style={styles.quickAmountText}>₹{amount}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <Text style={styles.amountLabel}>Custom Amount (₹10 - ₹5000):</Text>
-              <TextInput
-                style={styles.customAmountInput}
-                placeholder="Enter amount"
-                placeholderTextColor="#666666"
-                value={customAmount}
-                onChangeText={setCustomAmount}
-                keyboardType="numeric"
-              />
-
-              <TouchableOpacity 
-                style={styles.confirmButton}
-                onPress={() => {
-                  const amount = parseInt(customAmount);
-                  if (amount >= 10 && amount <= 5000) {
-                    onNumberSelect(selectedNumber, selectedType, amount);
-                    setCustomAmount('');
-                    setShowAmountPopup(false);
-                  } else {
-                    Alert.alert('Invalid Amount', 'Please enter amount between ₹10 and ₹5000');
-                  }
-                }}
-              >
-                <Text style={styles.confirmButtonText}>Confirm Bet</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        </Animated.View>
+      </Animated.View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
+  overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'flex-end',
   },
-  bettingModal: {
-    backgroundColor: '#0a0a0a',
-    width: '95%',
-    maxHeight: '90%',
-    borderRadius: 20,
+  modalContainer: {
+    backgroundColor: '#000',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    maxHeight: SCREEN_HEIGHT * 0.9,
     borderWidth: 2,
-    borderColor: '#1a1a1a',
-    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)',
+    borderColor: '#333',
   },
-  modalHeader: {
+  header: {
+    borderTopLeftRadius: 23,
+    borderTopRightRadius: 23,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-    backgroundColor: '#111111',
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  gameIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 15,
+  },
+  gameIcon: {
+    fontSize: 24,
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#ffffff',
-    flex: 1,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 2,
   },
-  closeIconContainer: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#1a1a1a',
-  },
-  modalContent: {
-    flex: 1,
-    padding: 20,
-  },
-  contentScrollView: {
-    flex: 1,
-  },
-  numbersContainer: {
-    flex: 1,
-    maxHeight: 300,
-  },
-  bettingTabs: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    backgroundColor: '#111111',
-    borderRadius: 12,
-    padding: 4,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  activeTab: {
-    backgroundColor: '#1a1a1a',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-  },
-  tabText: {
-    color: '#666666',
+  modalSubtitle: {
     fontSize: 12,
-    fontWeight: '600',
+    color: '#999',
+  },
+  closeButton: {
+    padding: 5,
+  },
+  closeButtonGradient: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    gap: 10,
+  },
+  tabButton: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#333',
+  },
+  activeTabButton: {
+    backgroundColor: '#2a2a2a',
+  },
+  tabIconContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 5,
+  },
+  tabIcon: {
+    fontSize: 16,
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
-  activeTabText: {
-    color: '#ffffff',
+  inactiveTabLabel: {
+    color: '#999',
   },
-  selectionSummary: {
-    backgroundColor: '#111111',
-    padding: 16,
-    borderRadius: 12,
+  content: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  section: {
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#1a1a1a',
   },
-  summaryTitle: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  selectedNumbersList: {
+  sectionHeader: {
     flexDirection: 'row',
-    gap: 8,
-  },
-  selectedChip: {
-    backgroundColor: '#1a1a1a',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#333333',
+    marginBottom: 15,
   },
-  andarChip: {
-    backgroundColor: '#0f2419',
-    borderColor: '#00ff88',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+  sectionIconContainer: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
     alignItems: 'center',
-    borderWidth: 1,
+    justifyContent: 'center',
+    marginRight: 10,
   },
-  baharChip: {
-    backgroundColor: '#241f0f',
-    borderColor: '#ff6b6b',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  selectedChipText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  selectedChipAmount: {
-    color: '#cccccc',
-    fontSize: 10,
-  },
-  totalAmountDisplay: {
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  totalAmountText: {
-    color: '#00ff88',
-    fontSize: 16,
-    fontWeight: '700',
+  sectionIcon: {
+    fontSize: 18,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#ffffff',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  numbersScrollContainer: {
-    flex: 1,
-  },
-  fixedBottomSection: {
-    backgroundColor: '#0a0a0a',
-    borderTopWidth: 1,
-    borderTopColor: '#1a1a1a',
-    padding: 16,
-    marginHorizontal: -20,
-    marginBottom: -20,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   numbersGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     gap: 8,
+    justifyContent: 'space-between',
+  },
+  numberButton: {
+    width: (SCREEN_WIDTH - 60) / 5 - 6,
+    height: 45,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  selectedNumberButton: {
+    transform: [{ scale: 1.05 }],
+  },
+  gradientButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+  },
+  numberText: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  selectedNumberText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   andarBaharGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     gap: 10,
-  },
-  numberButton: {
-    width: '18%',
-    aspectRatio: 1,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-    position: 'relative',
-  },
-  selectedNumberButton: {
-    backgroundColor: '#00ff88',
-    borderColor: '#00ff88',
-    borderWidth: 2,
-    boxShadow: '0 0 20px rgba(0, 255, 136, 0.5)',
-    transform: [{ scale: 1.05 }],
-  },
-  numberText: {
-    fontSize: 16,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  selectedNumberText: {
-    color: '#000000',
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  betAmountBadge: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    backgroundColor: '#00ff88',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#000000',
-  },
-  betAmountBadgeText: {
-    color: '#000000',
-    fontSize: 8,
-    fontWeight: '700',
-  },
-  betAmountBadgeSmall: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#000000',
-    borderRadius: 6,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-  },
-  betAmountBadgeTextSmall: {
-    color: '#ffffff',
-    fontSize: 8,
-    fontWeight: '600',
+    justifyContent: 'space-between',
   },
   andarBaharButton: {
-    width: '48%',
-    height: 60,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    position: 'relative',
-    borderWidth: 1.5,
+    width: (SCREEN_WIDTH - 70) / 5 - 4,
+    height: 50,
+    borderRadius: 15,
   },
-  andarButton: {
-    backgroundColor: '#0f2419',
-    borderColor: '#00ff88',
-  },
-  baharButton: {
-    backgroundColor: '#241f0f',
-    borderColor: '#ff6b6b',
-  },
-  selectedAndarButton: {
-    backgroundColor: '#00ff88',
-    borderColor: '#00ff88',
-    borderWidth: 2,
-    boxShadow: '0 0 20px rgba(0, 255, 136, 0.5)',
-  },
-  selectedBaharButton: {
-    backgroundColor: '#ff6b6b',
-    borderColor: '#ff6b6b',
-    borderWidth: 2,
-    boxShadow: '0 0 20px rgba(255, 107, 107, 0.5)',
+  selectedAndarBaharButton: {
+    transform: [{ scale: 1.1 }],
   },
   andarBaharText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  selectedAndarText: {
-    color: '#000000',
+    color: '#4A90E2',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: 'bold',
   },
-  selectedBaharText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '700',
+  selectedAndarBaharText: {
+    color: '#fff',
   },
-  placeBetButton: {
-    backgroundColor: '#00ff88',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    boxShadow: '0 8px 24px rgba(0, 255, 136, 0.3)',
-  },
-  placeBetButtonText: {
-    color: '#000000',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  popupOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  amountPopup: {
-    backgroundColor: '#111111',
-    width: '90%',
-    maxWidth: 400,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#1a1a1a',
-  },
-  popupHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  popupTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
-    flex: 1,
-  },
-  popupCloseIcon: {
-    padding: 8,
-    borderRadius: 16,
-    backgroundColor: '#1a1a1a',
-  },
-  popupContent: {
-    padding: 20,
-  },
-  amountLabel: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  quickAmountGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  betSection: {
     marginBottom: 20,
-    gap: 8,
+  },
+  betContainer: {
+    borderRadius: 15,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  betHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  betTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  selectedCount: {
+    fontSize: 12,
+    color: '#4A90E2',
+    fontWeight: 'bold',
+  },
+  betInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2a2a2a',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+    marginBottom: 15,
+  },
+  betInput: {
+    flex: 1,
+    padding: 15,
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  rupeeSymbol: {
+    color: '#4A90E2',
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingRight: 15,
+  },
+  quickAmounts: {
+    flexDirection: 'row',
+    gap: 10,
   },
   quickAmountButton: {
-    width: '30%',
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 12,
-    borderRadius: 8,
+    flex: 1,
+    height: 40,
+    borderRadius: 10,
+  },
+  quickAmountGradient: {
+    flex: 1,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#333333',
+    justifyContent: 'center',
+    borderRadius: 10,
   },
   quickAmountText: {
-    color: '#00ff88',
-    fontSize: 14,
-    fontWeight: '600',
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
-  customAmountInput: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 1,
-    borderColor: '#333333',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: '#ffffff',
-    fontSize: 16,
-    marginBottom: 20,
+  footer: {
+    flexDirection: 'row',
+    padding: 20,
+    gap: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#333',
   },
-  confirmButton: {
-    backgroundColor: '#00ff88',
-    paddingVertical: 16,
+  cancelButton: {
+    flex: 1,
+    backgroundColor: '#2a2a2a',
+    padding: 15,
     borderRadius: 12,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#666',
   },
-  confirmButtonText: {
-    color: '#000000',
-    fontSize: 16,
-    fontWeight: '700',
+  cancelButtonText: {
+    color: '#999',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  placeBetButton: {
+    flex: 2,
+    borderRadius: 12,
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  placeBetGradient: {
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeBetText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
