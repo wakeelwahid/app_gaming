@@ -107,14 +107,6 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
         visible={showGameRules} 
         onClose={() => setShowGameRules(false)} 
       />
-        {/* Authentication Status - Show when user is logged in */}
-        {isAuthenticated && user && onNavigate && (
-          <AuthStatus
-            isAuthenticated={isAuthenticated}
-            user={user}
-            onNavigate={onNavigate}
-          />
-        )}
     </ScrollView>
   );
 }
