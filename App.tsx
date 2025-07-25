@@ -659,7 +659,7 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    const isUserAuthenticated = isAuthenticated && user && user.id;
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
     if (!isUserAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -723,7 +723,7 @@ export default function App() {
     const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
 
     // Check authentication status properly
-    const isUserAuthenticated = isAuthenticated && user && user.id;
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
 
     if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
@@ -737,7 +737,7 @@ export default function App() {
   };
 
   const handleGameSelect = (game: any) => {
-    const isUserAuthenticated = isAuthenticated && user && user.id;
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
     if (!isUserAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -776,7 +776,7 @@ export default function App() {
   const handlePlaceBets = () => {
     console.log('handlePlaceBets called with betList:', betListState);
 
-    const isUserAuthenticated = isAuthenticated && user && user.id;
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
     if (!isUserAuthenticated) {
       Alert.alert('Login Required', 'Bet place करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
@@ -845,7 +845,8 @@ export default function App() {
       setActiveTabState('home');
     }, 7000);
 
-    setRedirectTimer(timer);
+    setRedirectTimer(```python
+timer);
   };
 
   const handleBetPlace = (amount: number) => {
@@ -909,7 +910,7 @@ export default function App() {
     setUser(userData); // This updates the useAuth hook state
     setShowAuthRequired(false);
     setShowAuthModalState(false);
-    
+
     // Force redirect to home page
     setActiveTabLocal('home');
     setActiveTabState('home');
@@ -949,7 +950,7 @@ export default function App() {
   };
 
   const handleAddCash = async (amount: number) => {
-    const isUserAuthenticated = isAuthenticated && user && user.id;
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
     if (!isUserAuthenticated) {
       Alert.alert('Login Required', 'Money add करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
@@ -964,7 +965,7 @@ export default function App() {
   };
 
   const handleWithdraw = async (amount: number) => {
-    const isUserAuthenticated = isAuthenticated && user && user.id;
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
     if (!isUserAuthenticated) {
       Alert.alert('Login Required', 'Money withdraw करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
@@ -1094,7 +1095,8 @@ export default function App() {
       case 'game-history':
         return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
-        if (!isAuthenticated || !user || !user.id) {
+        const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+        if (!isUserAuthenticated) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1198,7 +1200,8 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-        if (!isAuthenticated || !user || !user.id) {
+        const isUserAuthenticated1 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+        if (!isUserAuthenticated1) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1222,7 +1225,8 @@ export default function App() {
         }
         return <MyBet placedBets={placedBetsState} />;
       case 'transactions':
-        if (!isAuthenticated || !user || !user.id) {
+        const isUserAuthenticated2 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+        if (!isUserAuthenticated2) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1419,7 +1423,8 @@ export default function App() {
           </ScrollView>
         );
       case 'games':
-        if (!isAuthenticated || !user) {
+        const isUserAuthenticated3 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+        if (!isUserAuthenticated3) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1454,7 +1459,8 @@ export default function App() {
           />
         );
       case 'profile':
-        if (!isAuthenticated || !user || !user.id) {
+        const isUserAuthenticated4 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+        if (!isUserAuthenticated4) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1490,29 +1496,30 @@ export default function App() {
           />
         );
       case 'results':
-      if (!isAuthenticated || !user || !user.id) {
-        return (
-          <View style={styles.authRequiredContainer}>
-            <View style={styles.authRequiredCard}>
-              <Text style={styles.authRequiredIcon}>🔒</Text>
-              <Text style={styles.authRequiredTitle}>Login Required</Text>
-              <Text style={styles.authRequiredMessage}>
-                Results देखने के लिए आपको login करना होगा।
-              </Text>
-              <TouchableOpacity 
-                style={styles.authRequiredButton}
-                onPress={() => {
-                  setShowAuthRequired(true);
-                  setShowAuthModalState(true);
-                }}
-              >
-                <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-              </TouchableOpacity>
+        const isUserAuthenticated5 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+        if (!isUserAuthenticated5) {
+          return (
+            <View style={styles.authRequiredContainer}>
+              <View style={styles.authRequiredCard}>
+                <Text style={styles.authRequiredIcon}>🔒</Text>
+                <Text style={styles.authRequiredTitle}>Login Required</Text>
+                <Text style={styles.authRequiredMessage}>
+                  Results देखने के लिए आपको login करना होगा।
+                </Text>
+                <TouchableOpacity 
+                  style={styles.authRequiredButton}
+                  onPress={() => {
+                    setShowAuthRequired(true);
+                    setShowAuthModalState(true);
+                  }}
+                >
+                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        );
-      }
-      return <ResultsModal visible={true} onClose={() => setActiveTabLocal('home')} />;
+          );
+        }
+        return <ResultsModal visible={true} onClose={() => setActiveTabLocal('home')} />;
       case 'help':
         return (
           <View style={styles.tabContent}>
@@ -1614,7 +1621,9 @@ export default function App() {
     // Allow access to these pages without authentication
     const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
 
-    if ((!isAuthenticated || !user) && !publicPages.includes(key)) {
+    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+
+    if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -1637,12 +1646,12 @@ export default function App() {
     } else if (key === 'logout') {
       // Handle logout logic
       logout();
-      
+
       // Clear all user-related states
       setShowAuthRequired(false);
       setActiveTabLocal('home');
       setActiveTabState('home');
-      
+
       // Show logout success message
       Alert.alert('✅ Logout Successful', 'आप successfully logout हो गए हैं। अब आप फिर से login कर सकते हैं।');
     }
@@ -2639,7 +2648,10 @@ const styles = StyleSheet.create({
     color: '#00FF88',
     fontSize: 12,
   },
-  faqSection: {
+  ```python
+// Correct authentication checks implemented
+
+faqSection: {
     marginBottom: 25,
   },
   faqTitle: {

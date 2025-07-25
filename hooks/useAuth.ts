@@ -164,8 +164,10 @@ export const useAuth = () => {
       setIsLoading(false);
       
       console.log('Logout successful - all states cleared');
+      return { success: true };
     } catch (error) {
       console.error('Logout error:', error);
+      return { success: false, error: 'Logout failed' };
     }
   };
 
