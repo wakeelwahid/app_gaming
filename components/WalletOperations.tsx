@@ -19,6 +19,7 @@ interface WalletOperationsProps {
   onUtrChange: (utr: string) => void;
   onConfirmPayment: () => void;
   onWithdrawRequest: (amount: number) => void;
+  onCompleteKYC: () => void;
 }
 
 export default function WalletOperations({
@@ -37,7 +38,8 @@ export default function WalletOperations({
   onPaymentMethodSelect,
   onUtrChange,
   onConfirmPayment,
-  onWithdrawRequest
+  onWithdrawRequest,
+  onCompleteKYC
 }: WalletOperationsProps) {
   const [showPaymentWarningModal, setShowPaymentWarningModal] = useState(false);
   const [selectedMethodForWarning, setSelectedMethodForWarning] = useState('');
@@ -1076,5 +1078,34 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 12,
     textAlign: 'center',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4A90E2',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  kycButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFD700',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  kycButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
 });
