@@ -845,8 +845,7 @@ export default function App() {
       setActiveTabState('home');
     }, 7000);
 
-    setRedirectTimer(```python
-timer);
+    setRedirectTimer(timer);
   };
 
   const handleBetPlace = (amount: number) => {
@@ -949,9 +948,12 @@ timer);
     setShowAuthModalState(false);
   };
 
+  const checkAuthentication = () => {
+    return (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+  };
+
   const handleAddCash = async (amount: number) => {
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-    if (!isUserAuthenticated) {
+    if (!checkAuthentication()) {
       Alert.alert('Login Required', 'Money add करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -965,8 +967,7 @@ timer);
   };
 
   const handleWithdraw = async (amount: number) => {
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-    if (!isUserAuthenticated) {
+    if (!checkAuthentication()) {
       Alert.alert('Login Required', 'Money withdraw करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -1609,7 +1610,7 @@ timer);
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>🚧 Coming Soon</Text>
-            <Text style={styles.comingSoonText}>यह फीचर जल्द ही आएगा</Text>
+            <Text style={styles.comingSoonText}>यह फीचर जल्द हीआएगा</Text>
           </View>
         );
     }
@@ -2648,13 +2649,11 @@ const styles = StyleSheet.create({
     color: '#00FF88',
     fontSize: 12,
   },
-  ```python
-// Correct authentication checks implemented
-
-faqSection: {
+  faqSection: {
     marginBottom: 25,
   },
   faqTitle: {
+```python
     color: '#FFD700',
     fontSize: 16,
     fontWeight: 'bold',
