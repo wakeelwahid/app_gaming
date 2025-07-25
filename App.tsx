@@ -842,6 +842,7 @@ export default function App() {
       console.log('Auto navigating to home page');
       setShowBetSuccessState(false);
       setActiveTabLocal('home');
+```text
       setActiveTabState('home');
     }, 7000);
 
@@ -1084,8 +1085,8 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
-            isAuthenticated={isAuthenticated}
-            user={user}
+            isAuthenticated={checkAuthentication()}
+            user={userDataState || user}
             onViewResults={() => setActiveTabLocal('results')}
             onNavigate={(screen) => {
               setActiveTabLocal(screen);
@@ -1847,6 +1848,17 @@ export default function App() {
           }
         }}
       />
+      {/* Results Modal */}
+        <ResultsModal
+          visible={showResultsModal}
+          onClose={() => setShowResultsModal(false)}
+          isAuthenticated={checkAuthentication()}
+          onAuthRequired={() => {
+            setShowAuthRequired(true);
+            setShowAuthModalState(true);
+            setShowResultsModal(false);
+          }}
+        />
     </SafeAreaView>
   );
 }
@@ -2637,6 +2649,7 @@ const styles = StyleSheet.create({
   contactMethod: {
     color: '#fff',
     fontSize: 16,
+```text
     fontWeight: 'bold',
     marginBottom: 2,
   },
