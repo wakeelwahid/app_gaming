@@ -2653,7 +2653,6 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   faqTitle: {
-```python
     color: '#FFD700',
     fontSize: 16,
     fontWeight: 'bold',
