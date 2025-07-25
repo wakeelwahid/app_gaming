@@ -1075,6 +1075,9 @@ export default function App() {
       ]
     );
   };
+    const handleViewResults = () => {
+    setShowResultsModal(true);
+  };
 
   const renderContent = () => {
     switch (activeTabLocal) {
@@ -1086,7 +1089,7 @@ export default function App() {
             onPlayNow={handlePlayNow}
             isAuthenticated={checkAuthentication()}
             user={userDataState || user}
-            onViewResults={() => setActiveTabLocal('results')}
+            onViewResults={handleViewResults}
             onNavigate={(screen) => {
               setActiveTabLocal(screen);
               setActiveTabState(screen);
@@ -1851,11 +1854,10 @@ export default function App() {
         <ResultsModal
           visible={showResultsModal}
           onClose={() => setShowResultsModal(false)}
-          isAuthenticated={checkAuthentication()}
+          isAuthenticated={(isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone)}
           onAuthRequired={() => {
-            setShowAuthRequired(true);
-            setShowAuthModalState(true);
             setShowResultsModal(false);
+            setShowAuthModalState(true);
           }}
         />
     </SafeAreaView>
@@ -2644,8 +2646,7 @@ const styles = StyleSheet.create({
   contactInfo: {
     marginLeft: 15,
     flex: 1,
-  },
-  contactMethod: {
+  },  contactMethod: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
