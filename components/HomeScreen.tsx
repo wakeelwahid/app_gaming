@@ -18,6 +18,31 @@ interface HomeScreenProps {
 
 export default function HomeScreen({ gameCards, features, onPlayNow, isAuthenticated, user, onViewResults, onNavigate }: HomeScreenProps) {
   const [showGameRules, setShowGameRules] = useState(false);
+  const [currentTime, setCurrentTime] = useState(() => {
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    }).format(new Date());
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const indianTime = new Intl.DateTimeFormat('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }).format(new Date());
+      setCurrentTime(indianTime);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       {/* Promotional Banner */}
@@ -79,7 +104,7 @@ export default function HomeScreen({ gameCards, features, onPlayNow, isAuthentic
         </TouchableOpacity>
 
         <View style={styles.timeCenterSection}>
-          <Text style={styles.currentTime}>🕐12:28:27</Text>
+          <Text style={styles.currentTime}>{currentTime}</Text>
         </View>
 
         <TouchableOpacity style={styles.viewResultButton} onPress={onViewResults}>

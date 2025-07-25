@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 
 interface GameCardProps {
@@ -17,6 +17,15 @@ interface GameCardProps {
 export default function GameCard({ game, onPlayNow }: GameCardProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
+
+  const [liveTime, setLiveTime] = useState(() => {
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).format(new Date());
+  });
 
   useEffect(() => {
     // Continuous pulse animation for status
@@ -43,6 +52,21 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
         useNativeDriver: false,
       })
     ).start();
+  }, []);
+
+  // Update live time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const time = new Intl.DateTimeFormat('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }).format(new Date());
+      setLiveTime(time);
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
   }, []);
 
   const handlePress = () => {
@@ -93,6 +117,10 @@ export default function GameCard({ game, onPlayNow }: GameCardProps) {
           <View style={styles.gameTime}>
             <Text style={styles.timeLabel}>Close:</Text>
             <Text style={styles.timeValue}>{game.closeTime}</Text>
+          </View>
+          <View style={styles.gameTime}>
+            <Text style={styles.timeLabel}>🔴 Live:</Text>
+            <Text style={[styles.timeValue, { color: '#00ff88' }]}>{liveTime}</Text>
           </View>
         </View>
 
