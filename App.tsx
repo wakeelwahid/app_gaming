@@ -842,7 +842,6 @@ export default function App() {
       console.log('Auto navigating to home page');
       setShowBetSuccessState(false);
       setActiveTabLocal('home');
-```text
       setActiveTabState('home');
     }, 7000);
 
@@ -1611,7 +1610,8 @@ export default function App() {
         return (
           <View style={styles.tabContent}>
             <Text style={styles.tabTitle}>🚧 Coming Soon</Text>
-            <Text style={styles.comingSoonText}>यह फीचर जल्द हीआएगा</Text>
+            <Text stylethe previous turn.
+style={styles.comingSoonText}>यह फीचर जल्द हीआएगा</Text>
           </View>
         );
     }
@@ -2649,7 +2649,6 @@ const styles = StyleSheet.create({
   contactMethod: {
     color: '#fff',
     fontSize: 16,
-```text
     fontWeight: 'bold',
     marginBottom: 2,
   },
