@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Alert, Animated, Easing } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface WalletOperationsProps {
   showAddCashModal: boolean;
@@ -42,7 +44,86 @@ export default function WalletOperations({
   const [showPaymentWarningModal, setShowPaymentWarningModal] = useState(false);
   const [selectedMethodForWarning, setSelectedMethodForWarning] = useState('');
   const [showWithdrawConfirmModal, setShowWithdrawConfirmModal] = useState(false);
-    const [paymentTimer, setPaymentTimer] = useState(300); // 5 minutes = 300 seconds
+  const [paymentTimer, setPaymentTimer] = useState(300);
+  
+  // Animation values
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [scaleAnim] = useState(new Animated.Value(0.3));
+  const [slideAnim] = useState(new Animated.Value(50));
+  const [pulseAnim] = useState(new Animated.Value(1));
+  const [glowAnim] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    if (showAddCashModal || showWithdrawModal || showPaymentModal) {
+      startEntranceAnimation();
+    }
+  }, [showAddCashModal, showWithdrawModal, showPaymentModal]);
+
+  useEffect(() => {
+    startPulseAnimation();
+    startGlowAnimation();
+  }, []);
+
+  const startEntranceAnimation = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: false,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 8,
+        useNativeDriver: false,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 400,
+        easing: Easing.out(Easing.back(1.5)),
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  const startPulseAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 1000,
+          easing: Easing.inOut(Easing.sine),
+          useNativeDriver: false,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.inOut(Easing.sine),
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  };
+
+  const startGlowAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowAnim, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.inOut(Easing.sine),
+          useNativeDriver: false,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 0,
+          duration: 2000,
+          easing: Easing.inOut(Easing.sine),
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  };
 
   useEffect(() => {
     if (showPaymentModal) {
@@ -105,148 +186,235 @@ export default function WalletOperations({
       {/* Add Cash Modal */}
       <Modal
         visible={showAddCashModal}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={onCloseAddCash}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.addCashModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💰 UPI से पैसे Add करें</Text>
-              <TouchableOpacity onPress={onCloseAddCash}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
+        <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+          <Animated.View style={[
+            styles.addCashModalContainer,
+            {
+              transform: [
+                { scale: scaleAnim },
+                { translateY: slideAnim }
+              ]
+            }
+          ]}>
+            <LinearGradient
+              colors={['#1a1a1a', '#2d2d2d', '#1a1a1a']}
+              style={styles.gradientHeader}
+            >
+              <View style={styles.modalHeader}>
+                <View style={styles.headerIconContainer}>
+                  <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+                    <Ionicons name="wallet" size={28} color="#FFD700" />
+                  </Animated.View>
+                  <Text style={styles.modalTitle}>💰 UPI से पैसे Add करें</Text>
+                </View>
+                <TouchableOpacity onPress={onCloseAddCash} style={styles.closeButton}>
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
 
             <View style={styles.addCashContent}>
-              <Text style={styles.depositLabel}>Amount डालें (₹)</Text>
-              <TextInput
-                style={styles.depositInput}
-                placeholder="Enter amount"
-                placeholderTextColor="#999"
-                value={depositAmount}
-                onChangeText={onDepositAmountChange}
-                keyboardType="numeric"
-              />
+              <Animated.View style={[styles.amountSection, { opacity: fadeAnim }]}>
+                <Text style={styles.depositLabel}>💸 Amount डालें (₹)</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.depositInput}
+                    placeholder="Enter amount"
+                    placeholderTextColor="#666"
+                    value={depositAmount}
+                    onChangeText={onDepositAmountChange}
+                    keyboardType="numeric"
+                  />
+                  <Animated.View style={[styles.inputGlow, {
+                    opacity: glowAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.3, 0.8]
+                    })
+                  }]} />
+                </View>
+              </Animated.View>
 
-              <View style={styles.quickAmountsGrid}>
-                {[100, 200, 500, 1000, 5000, 10000].map((amount) => (
-                  <TouchableOpacity
-                    key={amount}
-                    style={styles.quickAmountButton}
-                    onPress={() => onDepositAmountChange(amount.toString())}
-                  >
-                    <Text style={styles.quickAmountText}>₹{amount}</Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={styles.quickAmountsContainer}>
+                <Text style={styles.sectionTitle}>⚡ Quick Select</Text>
+                <View style={styles.quickAmountsGrid}>
+                  {[100, 200, 500, 1000, 5000, 10000].map((amount, index) => (
+                    <Animated.View
+                      key={amount}
+                      style={{
+                        transform: [{
+                          scale: fadeAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [0.8, 1]
+                          })
+                        }]
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={styles.quickAmountButton}
+                        onPress={() => onDepositAmountChange(amount.toString())}
+                      >
+                        <LinearGradient
+                          colors={['#2d2d2d', '#404040', '#2d2d2d']}
+                          style={styles.quickButtonGradient}
+                        >
+                          <Text style={styles.quickAmountText}>₹{amount}</Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </Animated.View>
+                  ))}
+                </View>
               </View>
 
               {depositAmount && parseFloat(depositAmount) >= 100 && (
-                <View style={styles.depositSummary}>
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Deposit Amount (Tax छोड़कर)</Text>
-                    <Text style={styles.summaryValue}>₹{depositAmount}</Text>
-                  </View>
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Govt. Tax (28% GST)</Text>
-                    <Text style={styles.summaryValue}>₹{calculateDepositDetails(parseFloat(depositAmount)).gst}</Text>
-                  </View>
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Cashback Bonus</Text>
-                    <Text style={styles.summaryValueGreen}>+₹{calculateDepositDetails(parseFloat(depositAmount)).cashback}</Text>
-                  </View>
-                  <View style={styles.summaryDivider} />
-                  <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabelTotal}>Total Amount</Text>
-                    <Text style={styles.summaryValueTotal}>₹{calculateDepositDetails(parseFloat(depositAmount)).total}</Text>
-                  </View>
-                </View>
+                <Animated.View style={[styles.depositSummary, { opacity: fadeAnim }]}>
+                  <LinearGradient
+                    colors={['#1a1a1a', '#2d2d2d']}
+                    style={styles.summaryGradient}
+                  >
+                    <Text style={styles.summaryTitle}>📊 Payment Summary</Text>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Deposit Amount</Text>
+                      <Text style={styles.summaryValue}>₹{depositAmount}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Govt. Tax (28% GST)</Text>
+                      <Text style={styles.summaryValue}>₹{calculateDepositDetails(parseFloat(depositAmount)).gst}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Cashback Bonus</Text>
+                      <Text style={styles.summaryValueGreen}>+₹{calculateDepositDetails(parseFloat(depositAmount)).cashback}</Text>
+                    </View>
+                    <View style={styles.summaryDivider} />
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabelTotal}>Total Amount</Text>
+                      <Text style={styles.summaryValueTotal}>₹{calculateDepositDetails(parseFloat(depositAmount)).total}</Text>
+                    </View>
+                  </LinearGradient>
+                </Animated.View>
               )}
 
-              <Text style={styles.paymentMethodLabel}>UPI से Payment करें</Text>
-              <View style={styles.paymentMethods}>
-                <TouchableOpacity 
-                  style={styles.paymentMethod}
-                  onPress={() => handlePaymentMethodSelect('PhonePe')}
-                >
-                  <Text style={styles.paymentMethodText}>📱 PhonePe</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.paymentMethod}
-                  onPress={() => handlePaymentMethodSelect('Google Pay')}
-                >
-                  <Text style={styles.paymentMethodText}>🟢 Google Pay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.paymentMethod}
-                  onPress={() => handlePaymentMethodSelect('Paytm')}
-                >
-                  <Text style={styles.paymentMethodText}>💙 Paytm</Text>
-                </TouchableOpacity>
+              <View style={styles.paymentMethodsContainer}>
+                <Text style={styles.sectionTitle}>💳 UPI Payment Methods</Text>
+                <View style={styles.paymentMethods}>
+                  {[
+                    { name: 'PhonePe', icon: '📱', colors: ['#5f259f', '#7b3bb8'] },
+                    { name: 'Google Pay', icon: '🟢', colors: ['#1a73e8', '#4285f4'] },
+                    { name: 'Paytm', icon: '💙', colors: ['#00baf2', '#0099cc'] }
+                  ].map((method) => (
+                    <TouchableOpacity 
+                      key={method.name}
+                      style={styles.paymentMethod}
+                      onPress={() => handlePaymentMethodSelect(method.name)}
+                    >
+                      <LinearGradient
+                        colors={method.colors}
+                        style={styles.paymentMethodGradient}
+                      >
+                        <Text style={styles.paymentMethodIcon}>{method.icon}</Text>
+                        <Text style={styles.paymentMethodText}>{method.name}</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
 
               {(!depositAmount || parseFloat(depositAmount) < 100) && (
-                <View style={styles.depositInfo}>
-                  <Text style={styles.depositInfoTitle}>📌 Deposit की जानकारी:</Text>
-                  <Text style={styles.depositInfoText}>• कम से कम deposit: ₹100</Text>
-                  <Text style={styles.depositInfoText}>• तुरंत UPI deposits (Max ₹50,000)</Text>
-                  <Text style={styles.depositInfoText}>• सभी deposits पर 28% GST लगेगा</Text>
-                  <Text style={styles.depositInfoText}>• ₹2000 से ऊपर 5% cashback मिलेगा</Text>
-                  <Text style={styles.depositInfoText}>• Admin approval के बाद wallet balance update होगा</Text>
-                  <Text style={styles.depositWarningText}>⚠️ Withdrawal केवल deposit वाले account में होगी</Text>
-                </View>
+                <Animated.View style={[styles.depositInfo, { opacity: fadeAnim }]}>
+                  <LinearGradient
+                    colors={['#1a1a1a', '#2d2d2d']}
+                    style={styles.infoGradient}
+                  >
+                    <Text style={styles.depositInfoTitle}>📌 Deposit Information</Text>
+                    <Text style={styles.depositInfoText}>• Minimum deposit: ₹100</Text>
+                    <Text style={styles.depositInfoText}>• Instant UPI deposits (Max ₹50,000)</Text>
+                    <Text style={styles.depositInfoText}>• 28% GST applies on all deposits</Text>
+                    <Text style={styles.depositInfoText}>• 5% cashback on deposits ₹2000+</Text>
+                    <Text style={styles.depositWarningText}>⚠️ Withdrawal only to deposit account</Text>
+                  </LinearGradient>
+                </Animated.View>
               )}
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
 
       {/* Payment QR Code Modal */}
       <Modal
         visible={showPaymentModal}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={onClosePayment}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.paymentQRModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Complete Your Payment</Text>
-              <TouchableOpacity onPress={onClosePayment}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
+        <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+          <Animated.View style={[
+            styles.paymentQRModalContainer,
+            {
+              transform: [
+                { scale: scaleAnim },
+                { translateY: slideAnim }
+              ]
+            }
+          ]}>
+            <LinearGradient
+              colors={['#1a1a1a', '#2d2d2d', '#1a1a1a']}
+              style={styles.gradientHeader}
+            >
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>🔄 Complete Payment</Text>
+                <TouchableOpacity onPress={onClosePayment} style={styles.closeButton}>
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
 
             <View style={styles.paymentQRContent}>
-            <View style={styles.timerContainer}>
+              <Animated.View style={[styles.timerContainer, { transform: [{ scale: pulseAnim }] }]}>
                 <Text style={styles.timerText}>{formatTime(paymentTimer)}</Text>
                 <Text style={styles.timerNote}>Time remaining to complete payment</Text>
-              </View>
-              {/* QR Code Display */}
+              </Animated.View>
+
               <View style={styles.qrCodeContainer}>
-                <View style={styles.qrCodePlaceholder}>
-                  <View style={styles.qrSquare} />
-                  <View style={styles.qrSquare} />
-                  <View style={styles.qrSquare} />
-                  <View style={styles.qrSquare} />
-                </View>
+                <LinearGradient
+                  colors={['#FFD700', '#FFA500']}
+                  style={styles.qrBorder}
+                >
+                  <View style={styles.qrCodePlaceholder}>
+                    <View style={styles.qrSquare} />
+                    <View style={styles.qrSquare} />
+                    <View style={styles.qrSquare} />
+                    <View style={styles.qrSquare} />
+                  </View>
+                </LinearGradient>
               </View>
 
               <Text style={styles.scanInstructions}>
                 Scan this code using <Text style={styles.highlightText}>{selectedPaymentMethod}</Text> to pay ₹{depositAmount && calculateDepositDetails(parseFloat(depositAmount)).total}
               </Text>
 
-              {/* UTR Input */}
-              <Text style={styles.utrLabel}>UTR Number</Text>
-              <TextInput
-                style={styles.utrInput}
-                placeholder="Enter 12-digit UTR"
-                placeholderTextColor="#999"
-                value={utrNumber}
-                onChangeText={onUtrChange}
-                keyboardType="numeric"
-                maxLength={12}
-              />
+              <View style={styles.utrSection}>
+                <Text style={styles.utrLabel}>🔢 UTR Number</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.utrInput}
+                    placeholder="Enter 12-digit UTR"
+                    placeholderTextColor="#666"
+                    value={utrNumber}
+                    onChangeText={onUtrChange}
+                    keyboardType="numeric"
+                    maxLength={12}
+                  />
+                  <Animated.View style={[styles.inputGlow, {
+                    opacity: glowAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.3, 0.8]
+                    })
+                  }]} />
+                </View>
+              </View>
 
               <TouchableOpacity
                 style={[
@@ -256,57 +424,97 @@ export default function WalletOperations({
                 onPress={onConfirmPayment}
                 disabled={utrNumber.length !== 12}
               >
-                <Text style={styles.confirmPaymentButtonText}>CONFIRM PAYMENT</Text>
+                <LinearGradient
+                  colors={utrNumber.length === 12 ? ['#FFD700', '#FFA500'] : ['#333', '#555']}
+                  style={styles.confirmButtonGradient}
+                >
+                  <Text style={styles.confirmPaymentButtonText}>✅ CONFIRM PAYMENT</Text>
+                </LinearGradient>
               </TouchableOpacity>
 
-              {/* UTR Help */}
               <View style={styles.utrHelp}>
-                <Text style={styles.utrHelpTitle}>How to Find Your UTR Number:</Text>
-                <Text style={styles.utrHelpText}>• Check your bank SMS for the transaction confirmation</Text>
-                <Text style={styles.utrHelpText}>• Look for a 12-digit number labeled "UTR" or "Ref No"</Text>
+                <Text style={styles.utrHelpTitle}>💡 How to Find UTR:</Text>
+                <Text style={styles.utrHelpText}>• Check bank SMS for transaction confirmation</Text>
+                <Text style={styles.utrHelpText}>• Look for 12-digit "UTR" or "Ref No"</Text>
               </View>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
 
       {/* Withdraw Modal */}
       <Modal
         visible={showWithdrawModal}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={onCloseWithdraw}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.withdrawModalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💳 Redeem Coins to Your Account</Text>
-              <TouchableOpacity onPress={onCloseWithdraw}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
+        <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+          <Animated.View style={[
+            styles.withdrawModalContainer,
+            {
+              transform: [
+                { scale: scaleAnim },
+                { translateY: slideAnim }
+              ]
+            }
+          ]}>
+            <LinearGradient
+              colors={['#1a1a1a', '#2d2d2d', '#1a1a1a']}
+              style={styles.gradientHeader}
+            >
+              <View style={styles.modalHeader}>
+                <View style={styles.headerIconContainer}>
+                  <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+                    <Ionicons name="card" size={28} color="#4A90E2" />
+                  </Animated.View>
+                  <Text style={styles.modalTitle}>💳 Redeem Coins</Text>
+                </View>
+                <TouchableOpacity onPress={onCloseWithdraw} style={styles.closeButton}>
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
 
             <View style={styles.withdrawContent}>
-              <Text style={styles.withdrawLabel}>Amount (₹)</Text>
-              <TextInput
-                style={styles.withdrawInput}
-                placeholder="Enter amount"
-                placeholderTextColor="#999"
-                value={withdrawAmount}
-                onChangeText={onWithdrawAmountChange}
-                keyboardType="numeric"
-              />
+              <View style={styles.amountSection}>
+                <Text style={styles.withdrawLabel}>💰 Amount (₹)</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.withdrawInput}
+                    placeholder="Enter amount"
+                    placeholderTextColor="#666"
+                    value={withdrawAmount}
+                    onChangeText={onWithdrawAmountChange}
+                    keyboardType="numeric"
+                  />
+                  <Animated.View style={[styles.inputGlow, {
+                    opacity: glowAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.3, 0.8]
+                    })
+                  }]} />
+                </View>
+              </View>
 
-              <View style={styles.quickAmountsGrid}>
-                {[100, 500, 1000, 2000, 5000, 10000].map((amount) => (
-                  <TouchableOpacity
-                    key={amount}
-                    style={styles.quickAmountButton}
-                    onPress={() => onWithdrawAmountChange(amount.toString())}
-                  >
-                    <Text style={styles.quickAmountText}>₹{amount}</Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={styles.quickAmountsContainer}>
+                <Text style={styles.sectionTitle}>⚡ Quick Select</Text>
+                <View style={styles.quickAmountsGrid}>
+                  {[100, 500, 1000, 2000, 5000, 10000].map((amount) => (
+                    <TouchableOpacity
+                      key={amount}
+                      style={styles.quickAmountButton}
+                      onPress={() => onWithdrawAmountChange(amount.toString())}
+                    >
+                      <LinearGradient
+                        colors={['#2d2d2d', '#404040', '#2d2d2d']}
+                        style={styles.quickButtonGradient}
+                      >
+                        <Text style={styles.quickAmountText}>₹{amount}</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
 
               <TouchableOpacity
@@ -314,20 +522,29 @@ export default function WalletOperations({
                 onPress={handleWithdrawSubmit}
                 disabled={!withdrawAmount || parseFloat(withdrawAmount) < 100}
               >
-                <Text style={styles.withdrawRequestButtonText}>REQUEST WITHDRAWAL</Text>
+                <LinearGradient
+                  colors={withdrawAmount && parseFloat(withdrawAmount) >= 100 ? ['#4A90E2', '#357ABD'] : ['#333', '#555']}
+                  style={styles.withdrawButtonGradient}
+                >
+                  <Text style={styles.withdrawRequestButtonText}>🚀 REQUEST WITHDRAWAL</Text>
+                </LinearGradient>
               </TouchableOpacity>
 
               <View style={styles.withdrawInfo}>
-                <Text style={styles.withdrawInfoTitle}>ℹ️ Withdrawal Information:</Text>
-                <Text style={styles.withdrawInfoText}>• Minimum withdrawal: ₹100</Text>
-                <Text style={styles.withdrawInfoText}>• Maximum per request: ₹30,000</Text>
-                <Text style={styles.withdrawInfoText}>• Processing time: 5 to 10 minutes</Text>
-                <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
-                <Text style={styles.withdrawInfoText}>• Bank charges may apply</Text>
+                <LinearGradient
+                  colors={['#1a1a1a', '#2d2d2d']}
+                  style={styles.infoGradient}
+                >
+                  <Text style={styles.withdrawInfoTitle}>ℹ️ Withdrawal Information</Text>
+                  <Text style={styles.withdrawInfoText}>• Minimum withdrawal: ₹100</Text>
+                  <Text style={styles.withdrawInfoText}>• Maximum per request: ₹30,000</Text>
+                  <Text style={styles.withdrawInfoText}>• Processing time: 5-10 minutes</Text>
+                  <Text style={styles.withdrawInfoText}>• Daily limit: ₹50,000</Text>
+                </LinearGradient>
               </View>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
 
       {/* Payment Warning Modal */}
@@ -337,53 +554,53 @@ export default function WalletOperations({
         transparent={true}
         onRequestClose={() => setShowPaymentWarningModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.paymentWarningModalContainer}>
-            <View style={styles.warningModalHeader}>
+        <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+          <Animated.View style={[
+            styles.warningModalContainer,
+            { transform: [{ scale: scaleAnim }] }
+          ]}>
+            <LinearGradient
+              colors={['#FF6B6B', '#E55555']}
+              style={styles.warningHeader}
+            >
               <Text style={styles.warningModalTitle}>⚠️ महत्वपूर्ण सूचना</Text>
               <TouchableOpacity onPress={() => setShowPaymentWarningModal(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
-            </View>
+            </LinearGradient>
 
             <View style={styles.warningModalContent}>
-              <View style={styles.warningIconContainer}>
+              <Animated.View style={[styles.warningIconContainer, { transform: [{ scale: pulseAnim }] }]}>
                 <Text style={styles.warningIcon}>⚠️</Text>
-              </View>
+              </Animated.View>
 
               <Text style={styles.warningMainText}>
-                जब आप <Text style={styles.highlightText}>{selectedMethodForWarning}</Text> से deposit करते हैं, तो withdrawal भी इसी {selectedMethodForWarning} account में होगी।
+                जब आप <Text style={styles.highlightText}>{selectedMethodForWarning}</Text> से deposit करते हैं, तो withdrawal भी इसी account में होगी।
               </Text>
-
-              <Text style={styles.warningSubText}>
-                When you deposit via <Text style={styles.highlightText}>{selectedMethodForWarning}</Text>, withdrawal will also be made to the same {selectedMethodForWarning} account.
-              </Text>
-
-              <View style={styles.warningPointsContainer}>
-                <Text style={styles.warningPoint}>• कृपया सुनिश्चित करें कि यह आपका own account है</Text>
-                <Text style={styles.warningPoint}>• Please ensure this is your own account</Text>
-                <Text style={styles.warningPoint}>• Withdrawal केवल same payment method में होगी</Text>
-                <Text style={styles.warningPoint}>• No changes allowed after deposit</Text>
-              </View>
 
               <View style={styles.warningButtonsContainer}>
                 <TouchableOpacity
                   style={styles.cancelWarningButton}
                   onPress={() => setShowPaymentWarningModal(false)}
                 >
-                  <Text style={styles.cancelWarningButtonText}>रद्द करें (Cancel)</Text>
+                  <Text style={styles.cancelWarningButtonText}>❌ Cancel</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.confirmWarningButton}
                   onPress={handleConfirmPaymentMethod}
                 >
-                  <Text style={styles.confirmWarningButtonText}>समझ गया, आगे बढ़ें</Text>
+                  <LinearGradient
+                    colors={['#FF6B6B', '#E55555']}
+                    style={styles.confirmWarningGradient}
+                  >
+                    <Text style={styles.confirmWarningButtonText}>✅ Proceed</Text>
+                  </LinearGradient>
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
 
       {/* Withdrawal Confirmation Modal */}
@@ -393,63 +610,53 @@ export default function WalletOperations({
         transparent={true}
         onRequestClose={() => setShowWithdrawConfirmModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.withdrawConfirmModalContainer}>
-            <View style={styles.confirmModalHeader}>
-              <Text style={styles.confirmModalTitle}>💰 Withdrawal Confirm करें</Text>
+        <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+          <Animated.View style={[
+            styles.withdrawConfirmModalContainer,
+            { transform: [{ scale: scaleAnim }] }
+          ]}>
+            <LinearGradient
+              colors={['#4A90E2', '#357ABD']}
+              style={styles.confirmHeader}
+            >
+              <Text style={styles.confirmModalTitle}>💰 Confirm Withdrawal</Text>
               <TouchableOpacity onPress={() => setShowWithdrawConfirmModal(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
-            </View>
+            </LinearGradient>
 
             <View style={styles.confirmModalContent}>
-              <View style={styles.confirmIconContainer}>
+              <Animated.View style={[styles.confirmIconContainer, { transform: [{ scale: pulseAnim }] }]}>
                 <Text style={styles.confirmIcon}>💳</Text>
-              </View>
+              </Animated.View>
 
               <Text style={styles.confirmMainText}>
-                क्या आप withdraw करना चाहते हैं?
+                Are you sure you want to withdraw ₹{withdrawAmount}?
               </Text>
-
-              <View style={styles.withdrawDetailsContainer}>
-                <View style={styles.withdrawDetailRow}>
-                  <Text style={styles.withdrawDetailLabel}>📱 UPI ID (जिससे last deposit किया था):</Text>
-                  <Text style={styles.withdrawDetailValueHighlight}>user@phonepe</Text>
-                </View>
-
-                <View style={styles.withdrawDetailRow}>
-                  <Text style={styles.withdrawDetailLabel}>⏰ Processing Time:</Text>
-                  <Text style={styles.withdrawDetailValue}>5-10 minutes</Text>
-                </View>
-              </View>
-
-              <View style={styles.confirmWarningContainer}>
-                <Text style={styles.confirmWarningText}>
-                  ⚠️ जिस UPI ID से आपने last deposit किया था, उसी में withdrawal आएगी
-                </Text>
-                <Text style={styles.confirmWarningSubText}>
-                  Amount credited after admin approval
-                </Text>
-              </View>
 
               <View style={styles.confirmButtonsContainer}>
                 <TouchableOpacity
                   style={styles.cancelConfirmButton}
                   onPress={() => setShowWithdrawConfirmModal(false)}
                 >
-                  <Text style={styles.cancelConfirmButtonText}>रद्द करें</Text>
+                  <Text style={styles.cancelConfirmButtonText}>❌ Cancel</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.confirmWithdrawButton}
                   onPress={handleConfirmWithdraw}
                 >
-                  <Text style={styles.confirmWithdrawButtonText}>हाँ, Withdraw करें</Text>
+                  <LinearGradient
+                    colors={['#4A90E2', '#357ABD']}
+                    style={styles.confirmWithdrawGradient}
+                  >
+                    <Text style={styles.confirmWithdrawButtonText}>✅ Confirm</Text>
+                  </LinearGradient>
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
     </>
   );
@@ -458,89 +665,144 @@ export default function WalletOperations({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  gradientHeader: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+  },
+  headerIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#fff',
+    marginLeft: 12,
     flex: 1,
+  },
+  closeButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   addCashModalContainer: {
     backgroundColor: '#0a0a0a',
     width: '95%',
     maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
+    borderRadius: 20,
+    borderWidth: 2,
     borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
   },
   addCashContent: {
     flex: 1,
     padding: 20,
   },
+  amountSection: {
+    marginBottom: 25,
+  },
   depositLabel: {
     color: '#FFD700',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 12,
+  },
+  inputContainer: {
+    position: 'relative',
   },
   depositInput: {
     backgroundColor: '#1a1a1a',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#FFD700',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    borderRadius: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  inputGlow: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    borderRadius: 17,
+    backgroundColor: '#FFD700',
+    zIndex: -1,
+  },
+  sectionTitle: {
     color: '#fff',
     fontSize: 16,
-    marginBottom: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  quickAmountsContainer: {
+    marginBottom: 25,
   },
   quickAmountsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    gap: 12,
   },
   quickAmountButton: {
     width: '30%',
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 12,
-    borderRadius: 8,
+    height: 55,
+    borderRadius: 15,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#333',
+  },
+  quickButtonGradient: {
+    flex: 1,
     alignItems: 'center',
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#00FF88',
+    justifyContent: 'center',
   },
   quickAmountText: {
-    color: '#00FF88',
-    fontSize: 14,
+    color: '#FFD700',
+    fontSize: 16,
     fontWeight: 'bold',
   },
   depositSummary: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 25,
+    borderRadius: 15,
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#333',
+  },
+  summaryGradient: {
+    padding: 20,
+  },
+  summaryTitle: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
   },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   summaryLabel: {
-    color: '#999',
+    color: '#ccc',
     fontSize: 14,
   },
   summaryValue: {
@@ -566,140 +828,172 @@ const styles = StyleSheet.create({
   summaryDivider: {
     height: 1,
     backgroundColor: '#333',
-    marginVertical: 8,
+    marginVertical: 10,
   },
-  paymentMethodLabel: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  paymentMethodsContainer: {
+    marginBottom: 25,
   },
   paymentMethods: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    gap: 10,
   },
   paymentMethod: {
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    alignItems: 'center',
     flex: 1,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderColor: '#333',
+    height: 60,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  paymentMethodGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  paymentMethodIcon: {
+    fontSize: 20,
+    marginRight: 8,
   },
   paymentMethodText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   depositInfo: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: 15,
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#4A90E2',
   },
+  infoGradient: {
+    padding: 15,
+  },
   depositInfoTitle: {
     color: '#4A90E2',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   depositInfoText: {
-    color: '#999',
-    fontSize: 12,
-    marginBottom: 4,
+    color: '#ccc',
+    fontSize: 13,
+    marginBottom: 6,
   },
   depositWarningText: {
     color: '#FF6B6B',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 'bold',
     marginTop: 8,
-    marginBottom: 4,
   },
   paymentQRModalContainer: {
     backgroundColor: '#0a0a0a',
     width: '95%',
     maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
+    borderRadius: 20,
+    borderWidth: 2,
     borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
   },
   paymentQRContent: {
     flex: 1,
     padding: 20,
     alignItems: 'center',
   },
-  qrCodeContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
+  timerContainer: {
+    backgroundColor: '#1a1a1a',
+    padding: 15,
     borderRadius: 15,
-    marginBottom: 20,
-    borderWidth: 3,
+    marginBottom: 25,
+    borderWidth: 2,
     borderColor: '#FFD700',
+    alignItems: 'center',
+    width: '100%',
+  },
+  timerText: {
+    color: '#FFD700',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  timerNote: {
+    color: '#ccc',
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  qrCodeContainer: {
+    marginBottom: 25,
+  },
+  qrBorder: {
+    padding: 4,
+    borderRadius: 20,
   },
   qrCodePlaceholder: {
     width: 200,
     height: 200,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    backgroundColor: '#fff',
+    borderRadius: 16,
   },
   qrSquare: {
     width: '48%',
     height: '48%',
-    backgroundColor: '#ccc',
+    backgroundColor: '#333',
     margin: '1%',
-    borderRadius: 5,
+    borderRadius: 8,
   },
   scanInstructions: {
-    color: '#FFD700',
+    color: '#fff',
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 30,
-    lineHeight: 22,
+    marginBottom: 25,
+    lineHeight: 24,
   },
   highlightText: {
-    color: '#00FF88',
+    color: '#FFD700',
     fontWeight: 'bold',
+  },
+  utrSection: {
+    width: '100%',
+    marginBottom: 25,
   },
   utrLabel: {
     color: '#FFD700',
     fontSize: 18,
     fontWeight: 'bold',
-    alignSelf: 'flex-start',
-    marginBottom: 10,
+    marginBottom: 12,
+    textAlign: 'center',
   },
   utrInput: {
     backgroundColor: '#1a1a1a',
     borderWidth: 2,
     borderColor: '#FFD700',
-    borderRadius: 10,
-    paddingHorizontal: 15,
+    borderRadius: 15,
+    paddingHorizontal: 20,
     paddingVertical: 15,
     color: '#fff',
-    fontSize: 16,
-    width: '100%',
+    fontSize: 18,
+    fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 20,
   },
   confirmPaymentButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
     width: '100%',
-    alignItems: 'center',
+    height: 55,
+    borderRadius: 15,
+    overflow: 'hidden',
     marginBottom: 20,
   },
   confirmPaymentButtonDisabled: {
-    backgroundColor: '#333',
+    opacity: 0.5,
+  },
+  confirmButtonGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   confirmPaymentButtonText: {
     color: '#000',
@@ -709,7 +1003,7 @@ const styles = StyleSheet.create({
   utrHelp: {
     backgroundColor: '#1a1a1a',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#333',
     width: '100%',
@@ -721,7 +1015,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   utrHelpText: {
-    color: '#999',
+    color: '#ccc',
     fontSize: 12,
     marginBottom: 4,
   },
@@ -729,9 +1023,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0a0a',
     width: '95%',
     maxHeight: '90%',
-    borderRadius: 15,
-    borderWidth: 1,
+    borderRadius: 20,
+    borderWidth: 2,
     borderColor: '#4A90E2',
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
   },
   withdrawContent: {
     flex: 1,
@@ -739,117 +1038,83 @@ const styles = StyleSheet.create({
   },
   withdrawLabel: {
     color: '#4A90E2',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   withdrawInput: {
     backgroundColor: '#1a1a1a',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#4A90E2',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    borderRadius: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     color: '#fff',
-    fontSize: 16,
-    marginBottom: 20,
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   withdrawRequestButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 20,
+    height: 55,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginBottom: 25,
   },
   withdrawButtonDisabled: {
-    backgroundColor: '#333',
+    opacity: 0.5,
+  },
+  withdrawButtonGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   withdrawRequestButtonText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
   withdrawInfo: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#4A90E2',
   },
   withdrawInfoTitle: {
     color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  withdrawInfoText: {
-    color: '#999',
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  upiAccountContainer: {
-    backgroundColor: '#1a1a1a',
-    borderWidth: 2,
-    borderColor: '#4A90E2',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-  },
-  upiAccountLabel: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  upiAccountBox: {
-    backgroundColor: '#0a0a0a',
-    borderWidth: 1,
-    borderColor: '#00FF88',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-  },
-  upiAccountText: {
-    color: '#00FF88',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
+    marginBottom: 12,
   },
-  upiAccountSubText: {
-    color: '#999',
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 4,
+  withdrawInfoText: {
+    color: '#ccc',
+    fontSize: 13,
+    marginBottom: 6,
   },
-  upiAccountNote: {
-    color: '#FFD700',
-    fontSize: 12,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  paymentWarningModalContainer: {
+  warningModalContainer: {
     backgroundColor: '#0a0a0a',
     width: '90%',
-    borderRadius: 15,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#FF6B6B',
+    shadowColor: '#FF6B6B',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
     maxWidth: 400,
   },
-  warningModalHeader: {
+  warningHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-    backgroundColor: '#1a1a1a',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   warningModalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FF6B6B',
+    color: '#fff',
     flex: 1,
   },
   warningModalContent: {
@@ -860,7 +1125,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   warningIcon: {
-    fontSize: 50,
+    fontSize: 60,
     color: '#FF6B6B',
   },
   warningMainText: {
@@ -868,40 +1133,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 15,
-    lineHeight: 22,
-  },
-  warningSubText: {
-    color: '#ccc',
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  warningPointsContainer: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
     marginBottom: 25,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  warningPoint: {
-    color: '#FFD700',
-    fontSize: 12,
-    marginBottom: 8,
-    lineHeight: 16,
+    lineHeight: 24,
   },
   warningButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: 15,
   },
   cancelWarningButton: {
     flex: 1,
     backgroundColor: '#333',
     paddingVertical: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#666',
@@ -913,9 +1157,11 @@ const styles = StyleSheet.create({
   },
   confirmWarningButton: {
     flex: 1,
-    backgroundColor: '#FF6B6B',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  confirmWarningGradient: {
     paddingVertical: 15,
-    borderRadius: 10,
     alignItems: 'center',
   },
   confirmWarningButtonText: {
@@ -926,26 +1172,28 @@ const styles = StyleSheet.create({
   withdrawConfirmModalContainer: {
     backgroundColor: '#0a0a0a',
     width: '90%',
-    borderRadius: 15,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#4A90E2',
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
     maxWidth: 400,
   },
-  confirmModalHeader: {
+  confirmHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-    backgroundColor: '#1a1a1a',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   confirmModalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#fff',
     flex: 1,
   },
   confirmModalContent: {
@@ -956,7 +1204,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   confirmIcon: {
-    fontSize: 50,
+    fontSize: 60,
     color: '#4A90E2',
   },
   confirmMainText: {
@@ -964,78 +1212,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 24,
-  },
-  withdrawDetailsContainer: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  withdrawDetailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  withdrawDetailLabel: {
-    color: '#999',
-    fontSize: 14,
-    flex: 1,
-  },
-  withdrawDetailValue: {
-    color: '#00FF88',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'right',
-  },
-  withdrawDetailValueHighlight: {
-    color: '#FFD700',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'right',
-    backgroundColor: '#1a1a1a',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  confirmWarningContainer: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
     marginBottom: 25,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  confirmWarningText: {
-    color: '#FFD700',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 5,
-    lineHeight: 18,
-  },
-  confirmWarningSubText: {
-    color: '#999',
-    fontSize: 12,
-    textAlign: 'center',
-    fontStyle: 'italic',
+    lineHeight: 26,
   },
   confirmButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: 15,
   },
   cancelConfirmButton: {
     flex: 1,
     backgroundColor: '#333',
     paddingVertical: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#666',
@@ -1047,34 +1236,16 @@ const styles = StyleSheet.create({
   },
   confirmWithdrawButton: {
     flex: 1,
-    backgroundColor: '#4A90E2',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  confirmWithdrawGradient: {
     paddingVertical: 15,
-    borderRadius: 10,
     alignItems: 'center',
   },
   confirmWithdrawButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  timerContainer: {
-    backgroundColor: '#1a1a1a',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-    alignItems: 'center',
-  },
-  timerText: {
-    color: '#FFD700',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  timerNote: {
-    color: '#999',
-    fontSize: 12,
-    textAlign: 'center',
   },
 });
