@@ -10,11 +10,9 @@ export const useAuth = () => {
 
   // Ensure authentication state is properly synchronized
   useEffect(() => {
-    if (user && user.id) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    const hasValidUser = user && user.id && user.phone;
+    setIsAuthenticated(hasValidUser);
+    console.log('Auth state updated:', { hasValidUser, userId: user?.id, userName: user?.name });
   }, [user]);
 
   // Login validation function
@@ -100,7 +98,7 @@ export const useAuth = () => {
       setUser(mockUser);
       setIsAuthenticated(true);
       
-      console.log('User authenticated successfully:', mockUser.name);
+      console.log('User authenticated successfully:', mockUser.name, 'ID:', mockUser.id);
       return { success: true, user: mockUser };
       
     } catch (error) {

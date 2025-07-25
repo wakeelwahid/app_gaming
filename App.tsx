@@ -659,7 +659,8 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    if (!isAuthenticated || !user) {
+    const isUserAuthenticated = isAuthenticated && user && user.id;
+    if (!isUserAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -721,7 +722,10 @@ export default function App() {
     // Allow access to these pages without authentication
     const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
 
-    if ((!isAuthenticated || !user) && !publicPages.includes(key)) {
+    // Check authentication status properly
+    const isUserAuthenticated = isAuthenticated && user && user.id;
+
+    if (!isUserAuthenticated && !publicPages.includes(key)) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -733,7 +737,8 @@ export default function App() {
   };
 
   const handleGameSelect = (game: any) => {
-    if (!isAuthenticated || !user) {
+    const isUserAuthenticated = isAuthenticated && user && user.id;
+    if (!isUserAuthenticated) {
       setShowAuthRequired(true);
       setShowAuthModalState(true);
       return;
@@ -771,7 +776,8 @@ export default function App() {
   const handlePlaceBets = () => {
     console.log('handlePlaceBets called with betList:', betListState);
 
-    if (!isAuthenticated || !user) {
+    const isUserAuthenticated = isAuthenticated && user && user.id;
+    if (!isUserAuthenticated) {
       Alert.alert('Login Required', 'Bet place करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -943,7 +949,8 @@ export default function App() {
   };
 
   const handleAddCash = async (amount: number) => {
-    if (!isAuthenticated || !user) {
+    const isUserAuthenticated = isAuthenticated && user && user.id;
+    if (!isUserAuthenticated) {
       Alert.alert('Login Required', 'Money add करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -957,7 +964,8 @@ export default function App() {
   };
 
   const handleWithdraw = async (amount: number) => {
-    if (!isAuthenticated || !user) {
+    const isUserAuthenticated = isAuthenticated && user && user.id;
+    if (!isUserAuthenticated) {
       Alert.alert('Login Required', 'Money withdraw करने के लिए आपको login करना होगा।');
       setShowAuthRequired(true);
       setShowAuthModalState(true);
@@ -1086,7 +1094,7 @@ export default function App() {
       case 'game-history':
         return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
-        if (!isAuthenticated || !user) {
+        if (!isAuthenticated || !user || !user.id) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1190,7 +1198,7 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user || !user.id) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1214,7 +1222,7 @@ export default function App() {
         }
         return <MyBet placedBets={placedBetsState} />;
       case 'transactions':
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user || !user.id) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1446,7 +1454,7 @@ export default function App() {
           />
         );
       case 'profile':
-        if (!isAuthenticated || !user) {
+        if (!isAuthenticated || !user || !user.id) {
           return (
             <View style={styles.authRequiredContainer}>
               <View style={styles.authRequiredCard}>
@@ -1482,7 +1490,7 @@ export default function App() {
           />
         );
       case 'results':
-      if (!isAuthenticated) {
+      if (!isAuthenticated || !user || !user.id) {
         return (
           <View style={styles.authRequiredContainer}>
             <View style={styles.authRequiredCard}>
