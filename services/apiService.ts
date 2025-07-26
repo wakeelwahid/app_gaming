@@ -34,7 +34,7 @@ interface BetData {
 
 // API Service for all HTTP requests
 export const apiService = {
-  baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://YOUR_LOCAL_IP:8000',
+  baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://192.168.132.143:8000',
 
   // GET request
   get: async (endpoint: string) => {

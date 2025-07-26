@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
+import { apiService } from '../services/apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useAuth = () => {

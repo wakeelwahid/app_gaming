@@ -26,7 +26,7 @@ export interface RegisterData {
 }
 
 class UserService {
-  private baseUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/user` : 'http://127.0.0.1:8000/api';
+  private baseUrl = process.env.EXPO_PUBLIC_API_URL ? `${process.env.EXPO_PUBLIC_API_URL}/api` : 'http://192.168.132.143:8000/api';
 
   private async makeRequest<T>(
     endpoint: string,
