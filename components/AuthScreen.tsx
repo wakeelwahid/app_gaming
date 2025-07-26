@@ -98,28 +98,75 @@ export default function AuthScreen({
   };
 
   const handleRegister = async () => {
-    if (
-      !registerData.name ||
-      !registerData.phone ||
-      !registerData.password ||
-      !registerData.confirmPassword
-    ) {
-      Alert.alert("Error", "कृपया सभी आवश्यक फील्ड भरें");
+    // Username validation
+    if (!registerData.name || !registerData.name.trim()) {
+      Alert.alert("Error", "Username जरूरी है");
+      return;
+    }
+    if (registerData.name.length < 3) {
+      Alert.alert("Error", "Username कम से कम 3 characters का होना चाहिए");
+      return;
+    }
+    if (registerData.name.length > 50) {
+      Alert.alert("Error", "Username 50 characters से कम होना चाहिए");
       return;
     }
 
+    // Mobile validation
+    if (!registerData.phone || !registerData.phone.trim()) {
+      Alert.alert("Error", "Mobile number जरूरी है");
+      return;
+    }
     if (registerData.phone.length !== 10) {
-      Alert.alert("Error", "कृपया वैध मोबाइल नंबर डालें");
+      Alert.alert("Error", "Mobile number exactly 10 digits का होना चाहिए");
+      return;
+    }
+    if (!/^[0-9]{10}$/.test(registerData.phone)) {
+      Alert.alert("Error", "Mobile number में केवल digits होने चाहिए");
+      return;
+    }
+    if (registerData.phone.startsWith('0')) {
+      Alert.alert("Error", "Mobile number 0 से शुरू नहीं हो सकता");
       return;
     }
 
-    if (registerData.password !== registerData.confirmPassword) {
-      Alert.alert("Error", "Password match नहीं कर रहा");
+    // Password validation
+    if (!registerData.password || !registerData.password.trim()) {
+      Alert.alert("Error", "Password जरूरी है");
       return;
     }
-
     if (registerData.password.length < 6) {
       Alert.alert("Error", "Password कम से कम 6 characters का होना चाहिए");
+      return;
+    }
+    if (registerData.password.length > 50) {
+      Alert.alert("Error", "Password 50 characters से कम होना चाहिए");
+      return;
+    }
+    if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(registerData.password)) {
+      Alert.alert("Error", "Password में कम से कम एक letter और एक number होना चाहिए");
+      return;
+    }
+
+    // Confirm Password validation
+    if (!registerData.confirmPassword || !registerData.confirmPassword.trim()) {
+      Alert.alert("Error", "Password confirm करना जरूरी है");
+      return;
+    }
+    if (registerData.password !== registerData.confirmPassword) {
+      Alert.alert("Error", "Password और Confirm Password match नहीं कर रहे");
+      return;
+    }
+
+    // Email validation (optional)
+    if (registerData.email && registerData.email.trim() && !registerData.email.includes('@')) {
+      Alert.alert("Error", "Valid email address डालें");
+      return;
+    }
+
+    // Referral code validation (optional)
+    if (registerData.referralCode && registerData.referralCode.trim() && registerData.referralCode.length < 6) {
+      Alert.alert("Error", "Referral code कम से कम 6 characters का होना चाहिए");
       return;
     }
 

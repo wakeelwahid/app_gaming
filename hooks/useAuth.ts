@@ -40,24 +40,61 @@ export const useAuth = () => {
 
   // Register validation function
   const validateRegistration = (userData: any) => {
-    if (!userData.name || !userData.phone || !userData.password || !userData.confirmPassword) {
-      return { valid: false, error: 'सभी required fields भरना जरूरी है' };
+    // Username/Name validation
+    if (!userData.name || !userData.name.trim()) {
+      return { valid: false, error: 'Username जरूरी है' };
+    }
+    if (userData.name.length < 3) {
+      return { valid: false, error: 'Username कम से कम 3 characters का होना चाहिए' };
+    }
+    if (userData.name.length > 50) {
+      return { valid: false, error: 'Username 50 characters से कम होना चाहिए' };
     }
     
+    // Mobile validation
+    if (!userData.phone || !userData.phone.trim()) {
+      return { valid: false, error: 'Mobile number जरूरी है' };
+    }
     if (userData.phone.length !== 10) {
-      return { valid: false, error: 'Phone number 10 digits का होना चाहिए' };
+      return { valid: false, error: 'Mobile number exactly 10 digits का होना चाहिए' };
+    }
+    if (!/^[0-9]{10}$/.test(userData.phone)) {
+      return { valid: false, error: 'Mobile number में केवल digits होने चाहिए' };
+    }
+    if (userData.phone.startsWith('0')) {
+      return { valid: false, error: 'Mobile number 0 से शुरू नहीं हो सकता' };
     }
     
+    // Password validation
+    if (!userData.password || !userData.password.trim()) {
+      return { valid: false, error: 'Password जरूरी है' };
+    }
+    if (userData.password.length < 6) {
+      return { valid: false, error: 'Password कम से कम 6 characters का होना चाहिए' };
+    }
+    if (userData.password.length > 50) {
+      return { valid: false, error: 'Password 50 characters से कम होना चाहिए' };
+    }
+    if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(userData.password)) {
+      return { valid: false, error: 'Password में कम से कम एक letter और एक number होना चाहिए' };
+    }
+    
+    // Confirm Password validation
+    if (!userData.confirmPassword || !userData.confirmPassword.trim()) {
+      return { valid: false, error: 'Password confirm करना जरूरी है' };
+    }
     if (userData.password !== userData.confirmPassword) {
       return { valid: false, error: 'Password और Confirm Password match नहीं कर रहे' };
     }
     
-    if (userData.password.length < 6) {
-      return { valid: false, error: 'Password कम से कम 6 characters का होना चाहिए' };
+    // Email validation (optional)
+    if (userData.email && userData.email.trim() && !userData.email.includes('@')) {
+      return { valid: false, error: 'Valid email address डालें' };
     }
     
-    if (userData.email && !userData.email.includes('@')) {
-      return { valid: false, error: 'Valid email address डालें' };
+    // Referral code validation (optional)
+    if (userData.referralCode && userData.referralCode.trim() && userData.referralCode.length < 6) {
+      return { valid: false, error: 'Referral code कम से कम 6 characters का होना चाहिए' };
     }
     
     return { valid: true };
@@ -74,36 +111,60 @@ export const useAuth = () => {
         return { success: false, error: validation.error };
       }
       
-      // Mock API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Prepare API payload
+      const payload = {
+        mobile: credentials.phone.trim(),
+        password: credentials.password
+      };
       
-      // For demo purposes, accept any 10-digit phone with password length >= 6
-      const mockUser = {
-        id: Date.now().toString(),
-        name: `User ${credentials.phone.slice(-4)}`,
-        phone: credentials.phone,
-        email: `user${credentials.phone.slice(-4)}@example.com`,
-        kycStatus: 'PENDING' as const,
-        referralCode: 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-        walletBalance: Math.floor(Math.random() * 5000) + 1000,
-        isVerified: true,
-        joinedAt: new Date().toISOString()
+      // Make API call to backend
+      const response = await fetch(`${apiService.baseURL}/api/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          return { success: false, error: 'Invalid mobile number या password। कृपया check करें।' };
+        } else if (response.status === 400) {
+          return { success: false, error: data.error || 'Login details incorrect हैं।' };
+        } else {
+          return { success: false, error: 'Login में problem हुई। कृपया बाद में try करें।' };
+        }
+      }
+      
+      // If login successful, create user object
+      const loggedInUser = {
+        id: data.user?.id || Date.now().toString(),
+        name: data.user?.username || `User ${credentials.phone.slice(-4)}`,
+        phone: data.user?.mobile || credentials.phone,
+        email: data.user?.email || '',
+        kycStatus: data.user?.kyc_status || 'PENDING',
+        referralCode: data.user?.referral_code || 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        walletBalance: data.user?.wallet_balance || 0,
+        isVerified: data.user?.is_verified || false,
+        joinedAt: data.user?.created_at || new Date().toISOString()
       };
       
       // Store user data securely
-      await AsyncStorage.setItem('user_data', JSON.stringify(mockUser));
-      await AsyncStorage.setItem('auth_token', 'demo_token_' + Date.now());
+      await AsyncStorage.setItem('user_data', JSON.stringify(loggedInUser));
+      await AsyncStorage.setItem('auth_token', data.token || 'token_' + Date.now());
       
-      // Ensure both states are updated properly
-      setUser(mockUser);
+      // Update states
+      setUser(loggedInUser);
       setIsAuthenticated(true);
       
-      console.log('User authenticated successfully:', mockUser.name, 'ID:', mockUser.id);
-      return { success: true, user: mockUser };
+      console.log('User authenticated successfully:', loggedInUser.name, 'ID:', loggedInUser.id);
+      return { success: true, user: loggedInUser };
       
     } catch (error) {
       console.error('Login error:', error);
-      return { success: false, error: 'Login में problem हुई। कृपया फिर से try करें।' };
+      return { success: false, error: 'Network error। कृपया अपना internet connection check करें।' };
     } finally {
       setIsLoading(false);
     }
@@ -116,30 +177,70 @@ export const useAuth = () => {
       // Validate registration data
       const validation = validateRegistration(userData);
       if (!validation.valid) {
+        setIsLoading(false);
         return { success: false, error: validation.error };
       }
       
-      // Mock successful registration
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Prepare API payload
+      const payload = {
+        username: userData.name.trim(),
+        mobile: userData.phone.trim(),
+        email: userData.email?.trim() || '',
+        password: userData.password,
+        confirm_password: userData.confirmPassword,
+        referral_code: userData.referralCode?.trim().toUpperCase() || ''
+      };
       
+      // Make API call to backend
+      const response = await fetch(`${apiService.baseURL}/api/register/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        // Handle different types of errors from backend
+        if (response.status === 400) {
+          if (data?.mobile) {
+            return { success: false, error: 'Mobile number already exists. कृपया दूसरा number उपयोग करें।' };
+          } else if (data?.referred_by) {
+            return { success: false, error: 'Invalid referral code. कृपया check करके try करें।' };
+          } else if (data?.username) {
+            return { success: false, error: data.username[0] };
+          } else if (typeof data === 'object') {
+            const firstKey = Object.keys(data)[0];
+            return { success: false, error: data[firstKey] };
+          } else {
+            return { success: false, error: 'Registration failed. कृपया अपनी details check करें।' };
+          }
+        } else {
+          return { success: false, error: 'Registration failed. कृपया बाद में try करें।' };
+        }
+      }
+      
+      // If registration successful, create user object
       const newUser = {
-        id: Date.now().toString(),
-        name: userData.name,
-        phone: userData.phone,
-        email: userData.email || '',
+        id: data.user?.id || Date.now().toString(),
+        name: data.user?.username || userData.name,
+        phone: data.user?.mobile || userData.phone,
+        email: data.user?.email || userData.email || '',
         kycStatus: 'PENDING',
-        referralCode: 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-        walletBalance: 0,
-        isVerified: false,
-        joinedAt: new Date().toISOString(),
+        referralCode: data.user?.referral_code || 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        walletBalance: data.user?.wallet_balance || 0,
+        isVerified: data.user?.is_verified || false,
+        joinedAt: data.user?.created_at || new Date().toISOString(),
         referredBy: userData.referralCode || null
       };
       
       // Store user data securely
       await AsyncStorage.setItem('user_data', JSON.stringify(newUser));
-      await AsyncStorage.setItem('auth_token', 'demo_token_' + Date.now());
+      await AsyncStorage.setItem('auth_token', data.token || 'token_' + Date.now());
       
-      // Ensure both states are updated properly
+      // Update states
       setUser(newUser);
       setIsAuthenticated(true);
       
@@ -147,7 +248,8 @@ export const useAuth = () => {
       return { success: true, user: newUser };
       
     } catch (error) {
-      return { success: false, error: 'Registration failed. Please try again.' };
+      console.error('Registration error:', error);
+      return { success: false, error: 'Network error. कृपया अपना internet connection check करें।' };
     } finally {
       setIsLoading(false);
     }
