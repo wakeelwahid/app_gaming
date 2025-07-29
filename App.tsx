@@ -50,6 +50,7 @@ export default function App() {
   // Use proper authentication state from useAuth hook
   const [showAuthRequired, setShowAuthRequired] = useState(false);
   const [isAuthenticatedState, setIsAuthenticatedState] = useState(false);
+    const [appInitialized, setAppInitialized] = useState(false);
 
   // Wallet state  
   const { wallet, winnings, bonus, addMoney, withdrawMoney } = useWallet();
@@ -655,18 +656,21 @@ export default function App() {
     const [currentViewState, setCurrentViewState] = useState('home');
 
   useEffect(() => {
-    // On app start, always show age verification first
-    // After age verification, login popup will automatically show
-    setShowAgeVerificationState(true);
-    setIsAgeVerifiedState(false);
-    
-    // Reset authentication state on app start
-    setIsAuthenticatedState(false);
-    setShowAuthModalState(false);
-    setShowAuthRequired(false);
-    
     console.log('App initialized - Age verification will be shown first');
+    // Show age verification after a brief delay
+    setTimeout(() => {
+      setShowAgeVerificationState(true);
+        setAppInitialized(true);
+    }, 1000);
   }, []);
+
+    // Show login popup when app initializes and user is not authenticated
+    useEffect(() => {
+        if (appInitialized && !isLoading && !isAuthenticated) {
+            setShowAuthModalState(true);
+            setShowAuthRequired(true);
+        }
+    }, [appInitialized, isLoading, isAuthenticated]);
 
   const handlePlayNow = (game: any) => {
     setSelectedGameState(game);
@@ -691,7 +695,7 @@ export default function App() {
   const handleAgeVerificationAccept = () => {
     setIsAgeVerifiedState(true);
     setShowAgeVerificationState(false);
-    
+
     // Always show login popup after age verification, regardless of current auth state
     setTimeout(() => {
       setShowAuthModalState(true);
