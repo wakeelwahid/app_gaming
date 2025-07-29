@@ -1653,11 +1653,6 @@ export default function App() {
         <ResultsModal
           visible={showResultsModal}
           onClose={() => setShowResultsModal(false)}
-          isAuthenticated={(isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone)}
-          onAuthRequired={() => {
-            setShowResultsModal(false);
-            setShowAuthModalState(true);
-          }}
         />
     </SafeAreaView>
   );

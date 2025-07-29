@@ -168,54 +168,6 @@ export default function ResultsModal({ visible, onClose, isAuthenticated = false
     outputRange: ['0deg', '360deg'],
   });
 
-  // Auth required view
-  if (!isAuthenticated) {
-    return (
-      <Modal
-        visible={visible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={onClose}
-      >
-        <View style={styles.modalOverlay}>
-          <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleAnim }] }]}>
-            <View style={styles.header}>
-              <Text style={styles.headerTitle}>🏆 Winning Results</Text>
-              <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <TouchableOpacity 
-                  style={styles.authRequiredCloseButton} 
-                  onPress={onClose}
-                >
-                  <Ionicons name="close" size={24} color="#fff" />
-                </TouchableOpacity>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  Results देखने के लिए आपको login करना होगा
-                </Text>
-                <TouchableOpacity
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    onClose();
-                    onAuthRequired && onAuthRequired();
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🔐 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Animated.View>
-        </View>
-      </Modal>
-    );
-  }
-
   return (
     <Modal
       visible={visible}
