@@ -10,7 +10,7 @@ interface HomeScreenProps {
   gameCards: any[];
   features: any[];
   onPlayNow: (game: any) => void;
-  isAuthenticated: boolean;
+  isAuthenticated?: boolean;
   user?: any;
   onViewResults?: () => void;
   onNavigate?: (screen: string) => void;

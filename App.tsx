@@ -59,6 +59,7 @@ export default function App() {
     if (isAuthenticated && user) {
       setIsAuthenticatedState(true);
       setShowAuthRequired(false);
+      setShowAuthModalState(false);
     } else {
       setIsAuthenticatedState(false);
     }
@@ -659,12 +660,6 @@ export default function App() {
   }, []);
 
   const handlePlayNow = (game: any) => {
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-    if (!isUserAuthenticated) {
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
     setSelectedGameState(game);
     setShowBettingModalState(true);
   };
@@ -687,6 +682,15 @@ export default function App() {
   const handleAgeVerificationAccept = () => {
     setIsAgeVerifiedState(true);
     setShowAgeVerificationState(false);
+    
+    // Show login form immediately after age verification
+    const isUserLoggedIn = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
+    if (!isUserLoggedIn) {
+      setTimeout(() => {
+        setShowAuthModalState(true);
+        setShowAuthRequired(true);
+      }, 500);
+    }
   };
 
   const handlePaymentMethodSelect = (method: string) => {
@@ -719,30 +723,12 @@ export default function App() {
     console.log('Withdrawal request submitted for amount:', amount);
   };
   const handleMenuItemPress = (key: string) => {
-    // Allow access to these pages without authentication
-    const publicPages = ['home', 'refer', 'terms', 'privacy', 'refund', 'help'];
-
-    // Check authentication status properly
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-
-    if (!isUserAuthenticated && !publicPages.includes(key)) {
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
-
-    // User is authenticated, allow access to all components
+    // Allow access to all pages without authentication check
     setActiveTabLocal(key);
     setActiveTabState(key);
   };
 
   const handleGameSelect = (game: any) => {
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-    if (!isUserAuthenticated) {
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
     setSelectedGameLocal(game);
     setSelectedGameState(game); // Also set the state game
     setBetListState([]); // Clear any previous selections
@@ -775,14 +761,6 @@ export default function App() {
 
   const handlePlaceBets = () => {
     console.log('handlePlaceBets called with betList:', betListState);
-
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-    if (!isUserAuthenticated) {
-      Alert.alert('Login Required', 'Bet place करने के लिए आपको login करना होगा।');
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
 
     if (betListState.length === 0) {
       Alert.alert('No Bets', 'कोई bet select नहीं किया गया है।');
@@ -953,12 +931,6 @@ export default function App() {
   };
 
   const handleAddCash = async (amount: number) => {
-    if (!checkAuthentication()) {
-      Alert.alert('Login Required', 'Money add करने के लिए आपको login करना होगा।');
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
     // Here you can make API call to add money
     // const result = await apiService.addMoney(amount);
     setShowAddCashModalState(false);
@@ -967,12 +939,6 @@ export default function App() {
   };
 
   const handleWithdraw = async (amount: number) => {
-    if (!checkAuthentication()) {
-      Alert.alert('Login Required', 'Money withdraw करने के लिए आपको login करना होगा।');
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
     // For demo purposes, allow withdrawal regardless of wallet balance
     // In production, you would validate wallet balance properly
 
@@ -1087,7 +1053,7 @@ export default function App() {
             gameCards={gameCards}
             features={features}
             onPlayNow={handlePlayNow}
-            isAuthenticated={checkAuthentication()}
+            isAuthenticated={true}
             user={userDataState || user}
             onViewResults={handleViewResults}
             onNavigate={(screen) => {
@@ -1099,35 +1065,6 @@ export default function App() {
       case 'game-history':
         return <GameHistory betHistory={betHistoryState} />;
       case 'wallet':
-        const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-        if (!isUserAuthenticated) {
-          return (
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <TouchableOpacity 
-                  style={styles.authRequiredCloseButton} 
-                  onPress={() => setActiveTabLocal('home')}
-                >
-                  <Ionicons name="close" size={20} color="#999" />
-                </TouchableOpacity>
-                <Text style={styles.authRequiredIcon}>💰</Text>
-                <Text style={styles.authRequiredTitle}>Wallet Access Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  अपने wallet को access करने के लिए आपको login करना होगा। Login करने के बाद आप अपना balance check कर सकते हैं, money add कर सकते हैं और withdraw कर सकते हैं।
-                </Text>
-                <TouchableOpacity 
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }
         return (
           <View style={styles.walletContainer}>
             {/* Main Balance Display */}
@@ -1204,54 +1141,8 @@ export default function App() {
       case 'mybets':
       case 'history':
       case 'bets':
-        const isUserAuthenticated1 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-        if (!isUserAuthenticated1) {
-          return (
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  My Bets देखने के लिए आपको login करना होगा।
-                </Text>
-                <TouchableOpacity 
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }
         return <MyBet placedBets={placedBetsState} />;
       case 'transactions':
-        const isUserAuthenticated2 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-        if (!isUserAuthenticated2) {
-          return (
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  Transactions देखने के लिए आपको login करना होगा।
-                </Text>
-                <TouchableOpacity 
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }
         return <Transaction />;
       case 'refer':
         return <ReferPage userData={userDataState} />;
@@ -1427,35 +1318,6 @@ export default function App() {
           </ScrollView>
         );
       case 'games':
-        const isUserAuthenticated3 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-        if (!isUserAuthenticated3) {
-          return (
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <TouchableOpacity 
-                  style={styles.authRequiredCloseButton} 
-                  onPress={() => setActiveTabLocal('home')}
-                >
-                  <Ionicons name="close" size={20} color="#999" />
-                </TouchableOpacity>
-                <Text style={styles.authRequiredIcon}>🎮</Text>
-                <Text style={styles.authRequiredTitle}>Games Access Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  Games खेलने के लिए आपको login करना होगा। Login करने के बाद आप सभी games खेल सकते हैं और bets लगा सकते हैं।
-                </Text>
-                <TouchableOpacity 
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }
         return (
           <Games
             gameCards={gameCards}
@@ -1463,35 +1325,6 @@ export default function App() {
           />
         );
       case 'profile':
-        const isUserAuthenticated4 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-        if (!isUserAuthenticated4) {
-          return (
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <TouchableOpacity 
-                  style={styles.authRequiredCloseButton} 
-                  onPress={() => setActiveTabLocal('home')}
-                >
-                  <Ionicons name="close" size={20} color="#999" />
-                </TouchableOpacity>
-                <Text style={styles.authRequiredIcon}>👤</Text>
-                <Text style={styles.authRequiredTitle}>Profile Access Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  अपनी profile को देखने और edit करने के लिए आपको login करना होगा। आप अपनी details update कर सकते हैं और KYC complete कर सकते हैं।
-                </Text>
-                <TouchableOpacity 
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }
         return (
           <Profile
             userData={userDataState}
@@ -1500,29 +1333,6 @@ export default function App() {
           />
         );
       case 'results':
-        const isUserAuthenticated5 = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-        if (!isUserAuthenticated5) {
-          return (
-            <View style={styles.authRequiredContainer}>
-              <View style={styles.authRequiredCard}>
-                <Text style={styles.authRequiredIcon}>🔒</Text>
-                <Text style={styles.authRequiredTitle}>Login Required</Text>
-                <Text style={styles.authRequiredMessage}>
-                  Results देखने के लिए आपको login करना होगा।
-                </Text>
-                <TouchableOpacity 
-                  style={styles.authRequiredButton}
-                  onPress={() => {
-                    setShowAuthRequired(true);
-                    setShowAuthModalState(true);
-                  }}
-                >
-                  <Text style={styles.authRequiredButtonText}>🚀 Login करें</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }
         return <ResultsModal visible={true} onClose={() => setActiveTabLocal('home')} />;
       case 'help':
         return (
@@ -1621,17 +1431,6 @@ export default function App() {
 
   const handleHeaderMenuItemPress = (key: string) => {
     console.log('Header menu item pressed:', key);
-
-    // Allow access to these pages without authentication
-    const publicPages = ['refer', 'terms', 'privacy', 'refund', 'help'];
-
-    const isUserAuthenticated = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-
-    if (!isUserAuthenticated && !publicPages.includes(key)) {
-      setShowAuthRequired(true);
-      setShowAuthModalState(true);
-      return;
-    }
 
     if (key === 'transactions') {
       setActiveTabLocal('transactions');
@@ -1781,7 +1580,7 @@ export default function App() {
 
       {/* Authentication Screen */}
       <AuthScreen 
-        visible={showAuthModalState && showAuthRequired}
+        visible={showAuthModalState}
         onAuthSuccess={handleAuthSuccess}
         onClose={() => {
           setShowAuthModalState(false);
