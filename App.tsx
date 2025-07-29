@@ -655,8 +655,17 @@ export default function App() {
     const [currentViewState, setCurrentViewState] = useState('home');
 
   useEffect(() => {
-    // Check age verification on app start
+    // On app start, always show age verification first
+    // After age verification, login popup will automatically show
     setShowAgeVerificationState(true);
+    setIsAgeVerifiedState(false);
+    
+    // Reset authentication state on app start
+    setIsAuthenticatedState(false);
+    setShowAuthModalState(false);
+    setShowAuthRequired(false);
+    
+    console.log('App initialized - Age verification will be shown first');
   }, []);
 
   const handlePlayNow = (game: any) => {
@@ -683,14 +692,11 @@ export default function App() {
     setIsAgeVerifiedState(true);
     setShowAgeVerificationState(false);
     
-    // Show login form immediately after age verification
-    const isUserLoggedIn = (isAuthenticated && user && user.id) || (isAuthenticatedState && userDataState && userDataState.phone);
-    if (!isUserLoggedIn) {
-      setTimeout(() => {
-        setShowAuthModalState(true);
-        setShowAuthRequired(true);
-      }, 500);
-    }
+    // Always show login popup after age verification, regardless of current auth state
+    setTimeout(() => {
+      setShowAuthModalState(true);
+      setShowAuthRequired(true);
+    }, 300);
   };
 
   const handlePaymentMethodSelect = (method: string) => {
@@ -888,28 +894,29 @@ export default function App() {
     setShowAuthRequired(false);
     setShowAuthModalState(false);
 
-    // Force redirect to home page
+    // Force redirect to home page immediately
     setActiveTabLocal('home');
     setActiveTabState('home');
+    setCurrentViewState('home');
 
-    // Show success message
+    // Show welcome message after successful login
     setTimeout(() => {
       if (userData.isNewUser) {
         Alert.alert(
           '🎉 Welcome!',
-          `${userData.name}, आपका account successfully create हो गया!\n\n🎁 Welcome bonus: ₹100\n📱 सभी features अब unlock हैं!`,
-          [{ text: 'शुरू करें', style: 'default' }]
+          `${userData.name}, आपका account successfully create हो गया है!\n\n🎁 Welcome bonus मिल गया है!\n🎮 अब सभी games खेल सकते हैं!`,
+          [{ text: '✨ शुरू करें', style: 'default' }]
         );
       } else {
         Alert.alert(
           '✅ Login Successful',
-          `Welcome back, ${userData.name}!\n\n🎮 अब आप सभी games और features access कर सकते हैं!`,
-          [{ text: 'Continue', style: 'default' }]
+          `Welcome back, ${userData.name}!\n\n🎮 अब आप home page पर हैं और सभी features access कर सकते हैं!`,
+          [{ text: '🚀 Continue', style: 'default' }]
         );
       }
-    }, 500);
+    }, 300);
 
-    console.log('Authentication completed - user now has full app access');
+    console.log('Authentication completed - redirected to home page');
   };
 
   const handleLogin = async () => {
