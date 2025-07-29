@@ -1,3 +1,4 @@
+
 import { ApiResponse } from './apiService';
 
 export interface Game {
@@ -42,60 +43,149 @@ export interface GameResult {
   date: string;
 }
 
+// Static data
+const staticGames: Game[] = [
+  {
+    id: 1,
+    title: 'Mumbai Day',
+    openTime: '10:00',
+    closeTime: '12:00',
+    status: 'OPEN',
+    color: '#FF6B6B',
+    bgColor: '#FFE5E5',
+    lastResult: '123-45-678',
+    nextResultTime: '12:05'
+  },
+  {
+    id: 2,
+    title: 'Delhi Night',
+    openTime: '21:00',
+    closeTime: '23:00',
+    status: 'CLOSED',
+    color: '#4ECDC4',
+    bgColor: '#E5F9F6',
+    lastResult: '456-78-901',
+    nextResultTime: '23:05'
+  },
+  {
+    id: 3,
+    title: 'Kolkata Open',
+    openTime: '09:30',
+    closeTime: '11:30',
+    status: 'RESULT_DECLARED',
+    color: '#45B7D1',
+    bgColor: '#E5F4FD',
+    lastResult: '789-01-234',
+    nextResultTime: '11:35'
+  },
+  {
+    id: 4,
+    title: 'Chennai Close',
+    openTime: '14:00',
+    closeTime: '16:00',
+    status: 'OPEN',
+    color: '#F7B731',
+    bgColor: '#FEF5E7',
+    lastResult: '012-34-567',
+    nextResultTime: '16:05'
+  }
+];
+
+const staticBets: Bet[] = [
+  {
+    id: 'bet_1',
+    gameId: 1,
+    gameName: 'Mumbai Day',
+    number: 123,
+    amount: 100,
+    type: 'SINGLE',
+    status: 'WIN',
+    multiplier: 9.5,
+    winAmount: 950,
+    placedAt: '2024-01-15T10:30:00Z',
+    resultTime: '2024-01-15T12:05:00Z'
+  },
+  {
+    id: 'bet_2',
+    gameId: 2,
+    gameName: 'Delhi Night',
+    number: '45-67',
+    amount: 200,
+    type: 'JODI',
+    status: 'LOSS',
+    multiplier: 95,
+    placedAt: '2024-01-14T21:30:00Z',
+    resultTime: '2024-01-14T23:05:00Z'
+  },
+  {
+    id: 'bet_3',
+    gameId: 3,
+    gameName: 'Kolkata Open',
+    number: 789,
+    amount: 50,
+    type: 'SINGLE_PANNA',
+    status: 'PENDING',
+    multiplier: 142,
+    placedAt: '2024-01-15T09:45:00Z'
+  }
+];
+
+const staticResults: GameResult[] = [
+  {
+    id: 'result_1',
+    gameId: 1,
+    gameName: 'Mumbai Day',
+    result: '123-45-678',
+    declaredAt: '2024-01-15T12:05:00Z',
+    date: '2024-01-15'
+  },
+  {
+    id: 'result_2',
+    gameId: 2,
+    gameName: 'Delhi Night',
+    result: '456-78-901',
+    declaredAt: '2024-01-14T23:05:00Z',
+    date: '2024-01-14'
+  },
+  {
+    id: 'result_3',
+    gameId: 3,
+    gameName: 'Kolkata Open',
+    result: '789-01-234',
+    declaredAt: '2024-01-14T11:35:00Z',
+    date: '2024-01-14'
+  }
+];
+
 class GameService {
   private baseUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/games` : 'https://api.example.com/api/games';
 
-  private async makeRequest<T>(
-    endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
-    body?: any
-  ): Promise<ApiResponse<T>> {
-    try {
-      const config: RequestInit = {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.getToken()}`,
-        },
-      };
-
-      if (body && method !== 'GET') {
-        config.body = JSON.stringify(body);
-      }
-
-      const response = await fetch(`${this.baseUrl}${endpoint}`, config);
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.message || 'API call failed',
-        };
-      }
-
-      return {
-        success: true,
-        data,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
-    }
+  private async makeStaticResponse<T>(data: T, delay: number = 300): Promise<ApiResponse<T>> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data,
+        });
+      }, delay);
+    });
   }
 
   private getToken(): string {
-    return localStorage.getItem('authToken') || '';
+    return typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') || '' : '';
   }
 
-  // Game APIs
+  // Game APIs - Static responses
   async getGames(): Promise<ApiResponse<Game[]>> {
-    return this.makeRequest<Game[]>('/');
+    return this.makeStaticResponse(staticGames);
   }
 
   async getGameById(gameId: number): Promise<ApiResponse<Game>> {
-    return this.makeRequest<Game>(`/${gameId}`);
+    const game = staticGames.find(g => g.id === gameId);
+    if (game) {
+      return this.makeStaticResponse(game);
+    }
+    return { success: false, error: 'Game not found' };
   }
 
   async getGameStatus(gameId: number): Promise<ApiResponse<{
@@ -104,16 +194,30 @@ class GameService {
     nextCloseTime?: string;
     timeRemaining?: number;
   }>> {
-    return this.makeRequest(`/${gameId}/status`);
+    const game = staticGames.find(g => g.id === gameId);
+    if (game) {
+      return this.makeStaticResponse({
+        isOpen: game.status === 'OPEN',
+        nextOpenTime: game.openTime,
+        nextCloseTime: game.closeTime,
+        timeRemaining: Math.floor(Math.random() * 3600) // Random time remaining
+      });
+    }
+    return { success: false, error: 'Game not found' };
   }
 
-  // Betting APIs
+  // Betting APIs - Static responses
   async placeBet(betData: BetRequest): Promise<ApiResponse<{
     betId: string;
     message: string;
     newBalance: number;
   }>> {
-    return this.makeRequest('/bet/place', 'POST', betData);
+    const betId = 'bet_' + Date.now();
+    return this.makeStaticResponse({
+      betId: betId,
+      message: 'Bet placed successfully',
+      newBalance: Math.floor(Math.random() * 10000) + 1000 // Random balance
+    });
   }
 
   async getBetHistory(
@@ -126,17 +230,25 @@ class GameService {
     currentPage: number;
     totalPages: number;
   }>> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-      ...(gameId && { gameId: gameId.toString() }),
-    });
+    let filteredBets = staticBets;
+    if (gameId) {
+      filteredBets = staticBets.filter(bet => bet.gameId === gameId);
+    }
 
-    return this.makeRequest(`/bet/history?${params}`);
+    return this.makeStaticResponse({
+      bets: filteredBets,
+      totalCount: filteredBets.length,
+      currentPage: page,
+      totalPages: Math.ceil(filteredBets.length / limit)
+    });
   }
 
   async getBetDetails(betId: string): Promise<ApiResponse<Bet>> {
-    return this.makeRequest<Bet>(`/bet/${betId}`);
+    const bet = staticBets.find(b => b.id === betId);
+    if (bet) {
+      return this.makeStaticResponse(bet);
+    }
+    return { success: false, error: 'Bet not found' };
   }
 
   async cancelBet(betId: string): Promise<ApiResponse<{
@@ -144,10 +256,18 @@ class GameService {
     refundAmount: number;
     newBalance: number;
   }>> {
-    return this.makeRequest(`/bet/${betId}/cancel`, 'POST');
+    const bet = staticBets.find(b => b.id === betId);
+    if (bet && bet.status === 'PENDING') {
+      return this.makeStaticResponse({
+        success: true,
+        refundAmount: bet.amount,
+        newBalance: Math.floor(Math.random() * 10000) + 1000
+      });
+    }
+    return { success: false, error: 'Cannot cancel bet' };
   }
 
-  // Results APIs
+  // Results APIs - Static responses
   async getResults(
     gameId?: number,
     date?: string,
@@ -159,26 +279,41 @@ class GameService {
     currentPage: number;
     totalPages: number;
   }>> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-      ...(gameId && { gameId: gameId.toString() }),
-      ...(date && { date }),
-    });
+    let filteredResults = staticResults;
+    
+    if (gameId) {
+      filteredResults = staticResults.filter(result => result.gameId === gameId);
+    }
+    
+    if (date) {
+      filteredResults = filteredResults.filter(result => result.date === date);
+    }
 
-    return this.makeRequest(`/results?${params}`);
+    return this.makeStaticResponse({
+      results: filteredResults,
+      totalCount: filteredResults.length,
+      currentPage: page,
+      totalPages: Math.ceil(filteredResults.length / limit)
+    });
   }
 
   async getLatestResults(): Promise<ApiResponse<GameResult[]>> {
-    return this.makeRequest<GameResult[]>('/results/latest');
+    return this.makeStaticResponse(staticResults.slice(0, 5));
   }
 
   async getResultByGame(gameId: number, date?: string): Promise<ApiResponse<GameResult>> {
-    const params = date ? `?date=${date}` : '';
-    return this.makeRequest<GameResult>(`/results/game/${gameId}${params}`);
+    let result = staticResults.find(r => r.gameId === gameId);
+    if (date) {
+      result = staticResults.find(r => r.gameId === gameId && r.date === date);
+    }
+    
+    if (result) {
+      return this.makeStaticResponse(result);
+    }
+    return { success: false, error: 'Result not found' };
   }
 
-  // Chart APIs
+  // Chart APIs - Static responses
   async getChart(gameId: number, month: string, year: string): Promise<ApiResponse<{
     gameId: number;
     gameName: string;
@@ -190,10 +325,25 @@ class GameService {
       day: string;
     }>;
   }>> {
-    return this.makeRequest(`/chart/${gameId}?month=${month}&year=${year}`);
+    const game = staticGames.find(g => g.id === gameId);
+    const chartData = {
+      gameId: gameId,
+      gameName: game?.title || 'Unknown Game',
+      month: month,
+      year: year,
+      results: [
+        { date: '01', result: '123-45-678', day: 'Mon' },
+        { date: '02', result: '456-78-901', day: 'Tue' },
+        { date: '03', result: '789-01-234', day: 'Wed' },
+        { date: '04', result: '012-34-567', day: 'Thu' },
+        { date: '05', result: '345-67-890', day: 'Fri' },
+      ]
+    };
+
+    return this.makeStaticResponse(chartData);
   }
 
-  // Statistics APIs
+  // Statistics APIs - Static responses
   async getGameStatistics(gameId: number): Promise<ApiResponse<{
     totalBets: number;
     totalAmount: number;
@@ -204,7 +354,16 @@ class GameService {
       percentage: number;
     }>;
   }>> {
-    return this.makeRequest(`/statistics/${gameId}`);
+    return this.makeStaticResponse({
+      totalBets: 150,
+      totalAmount: 25000,
+      winPercentage: 15.5,
+      popularNumbers: [
+        { number: '123', count: 25, percentage: 16.7 },
+        { number: '456', count: 20, percentage: 13.3 },
+        { number: '789', count: 18, percentage: 12.0 },
+      ]
+    });
   }
 
   async getUserStatistics(): Promise<ApiResponse<{
@@ -216,10 +375,18 @@ class GameService {
     favoriteGame: string;
     biggestWin: number;
   }>> {
-    return this.makeRequest('/statistics/user');
+    return this.makeStaticResponse({
+      totalBets: 45,
+      totalAmount: 5000,
+      totalWins: 8,
+      totalLosses: 37,
+      winPercentage: 17.8,
+      favoriteGame: 'Mumbai Day',
+      biggestWin: 2500
+    });
   }
 
-  // Rates APIs
+  // Rates APIs - Static responses
   async getBetRates(): Promise<ApiResponse<{
     single: number;
     jodi: number;
@@ -227,7 +394,13 @@ class GameService {
     doublePanna: number;
     triplePanna: number;
   }>> {
-    return this.makeRequest('/rates');
+    return this.makeStaticResponse({
+      single: 9.5,
+      jodi: 95,
+      singlePanna: 142,
+      doublePanna: 285,
+      triplePanna: 950
+    });
   }
 }
 

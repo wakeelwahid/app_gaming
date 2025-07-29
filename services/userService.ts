@@ -25,60 +25,41 @@ export interface RegisterData {
   referralCode?: string;
 }
 
+// Static user data
+const staticUserData: UserProfile = {
+  id: 'user_123',
+  name: 'John Doe',
+  phone: '+919876543210',
+  email: 'john@example.com',
+  referralCode: 'REF123',
+  kycStatus: 'VERIFIED',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
 class UserService {
   private baseUrl = process.env.EXPO_PUBLIC_API_URL ? `${process.env.EXPO_PUBLIC_API_URL}/api` : 'http://192.168.132.143:8000/api';
 
-  private async makeRequest<T>(
-    endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
-    body?: any
-  ): Promise<ApiResponse<T>> {
-    try {
-      const config: RequestInit = {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          // Add authorization token if available
-          'Authorization': `Bearer ${this.getToken()}`,
-        },
-      };
-
-      if (body && method !== 'GET') {
-        config.body = JSON.stringify(body);
-      }
-
-      const response = await fetch(`${this.baseUrl}${endpoint}`, config);
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.message || 'API call failed',
-        };
-      }
-
-      return {
-        success: true,
-        data,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
-    }
+  private async makeStaticResponse<T>(data: T, delay: number = 500): Promise<ApiResponse<T>> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data,
+        });
+      }, delay);
+    });
   }
 
   private getToken(): string {
-    // In React Native, use AsyncStorage or secure storage
     try {
       if (typeof localStorage !== 'undefined') {
-        return localStorage.getItem('authToken') || '';
+        return localStorage.getItem('authToken') || 'static_token_123';
       }
-      return '';
+      return 'static_token_123';
     } catch (error) {
       console.error('Error getting token:', error);
-      return '';
+      return 'static_token_123';
     }
   }
 
@@ -86,50 +67,68 @@ class UserService {
     try {
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('authToken', token);
+        localStorage.setItem('user_data', JSON.stringify(staticUserData));
       }
     } catch (error) {
       console.error('Error setting token:', error);
     }
   }
 
-  // Authentication APIs
+  // Authentication APIs - Static responses
   async login(credentials: LoginCredentials): Promise<ApiResponse<{ user: UserProfile; token: string }>> {
-    const result = await this.makeRequest<{ user: UserProfile; token: string }>('/login', 'POST', credentials);
-    
-    if (result.success && result.data) {
-      this.setToken(result.data.token);
+    // Validate credentials (basic validation for demo)
+    if (credentials.phone && credentials.password) {
+      const token = 'static_auth_token_' + Date.now();
+      this.setToken(token);
+      
+      return this.makeStaticResponse({
+        user: staticUserData,
+        token: token
+      });
+    } else {
+      return {
+        success: false,
+        error: 'Invalid credentials'
+      };
     }
-    
-    return result;
   }
 
   async register(userData: RegisterData): Promise<ApiResponse<{ user: UserProfile; token: string }>> {
-    const result = await this.makeRequest<{ user: UserProfile; token: string }>('/register', 'POST', userData);
-    
-    if (result.success && result.data) {
-      this.setToken(result.data.token);
-    }
-    
-    return result;
+    // Create new user with provided data
+    const newUser: UserProfile = {
+      ...staticUserData,
+      id: 'user_' + Date.now(),
+      name: userData.name,
+      phone: userData.phone,
+      email: userData.email || '',
+      referralCode: userData.referralCode || 'REF' + Math.random().toString(36).substring(7).toUpperCase(),
+    };
+
+    const token = 'static_auth_token_' + Date.now();
+    this.setToken(token);
+
+    return this.makeStaticResponse({
+      user: newUser,
+      token: token
+    });
   }
 
   async logout(): Promise<ApiResponse<{ success: boolean }>> {
     try {
-      const result = await this.makeRequest<{ success: boolean }>('/logout', 'POST');
       if (typeof localStorage !== 'undefined') {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('user_data');
       }
-      return result;
+      return this.makeStaticResponse({ success: true });
     } catch (error) {
       console.error('Error during logout:', error);
       return { success: false, error: 'Logout failed' };
     }
   }
 
-  // Authentication status check
+  // Authentication status check - Static response
   async checkAuthStatus(): Promise<ApiResponse<{ user: UserProfile }>> {
     try {
-      // Check if we have stored user data
       if (typeof localStorage !== 'undefined') {
         const userData = localStorage.getItem('user_data');
         const authToken = localStorage.getItem('authToken');
@@ -148,32 +147,41 @@ class UserService {
     }
   }
 
-  // Profile APIs
+  // Profile APIs - Static responses
   async getProfile(): Promise<ApiResponse<UserProfile>> {
     if (!this.getToken()) {
       return { success: false, error: 'Authentication required' };
     }
-    return this.makeRequest<UserProfile>('/profile');
+    return this.makeStaticResponse(staticUserData);
   }
 
   async updateProfile(profileData: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
     if (!this.getToken()) {
       return { success: false, error: 'Authentication required' };
     }
-    return this.makeRequest<UserProfile>('/profile', 'PUT', profileData);
+    
+    const updatedUser = {
+      ...staticUserData,
+      ...profileData,
+      updatedAt: new Date().toISOString()
+    };
+
+    // Update localStorage
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('user_data', JSON.stringify(updatedUser));
+    }
+
+    return this.makeStaticResponse(updatedUser);
   }
 
   async changePassword(currentPassword: string, newPassword: string): Promise<ApiResponse<{ success: boolean }>> {
     if (!this.getToken()) {
       return { success: false, error: 'Authentication required' };
     }
-    return this.makeRequest<{ success: boolean }>('/change-password', 'POST', {
-      currentPassword,
-      newPassword,
-    });
+    return this.makeStaticResponse({ success: true });
   }
 
-  // KYC APIs
+  // KYC APIs - Static responses
   async submitKYC(kycData: {
     documentType: string;
     documentNumber: string;
@@ -184,14 +192,19 @@ class UserService {
       address: string;
     };
   }): Promise<ApiResponse<{ kycId: string; status: string }>> {
-    return this.makeRequest<{ kycId: string; status: string }>('/kyc/submit', 'POST', kycData);
+    return this.makeStaticResponse({
+      kycId: 'kyc_' + Date.now(),
+      status: 'PENDING'
+    });
   }
 
   async getKYCStatus(): Promise<ApiResponse<{ status: string; rejectionReason?: string }>> {
-    return this.makeRequest<{ status: string; rejectionReason?: string }>('/kyc/status');
+    return this.makeStaticResponse({
+      status: 'VERIFIED'
+    });
   }
 
-  // Referral APIs
+  // Referral APIs - Static responses
   async getReferralData(): Promise<ApiResponse<{
     referralCode: string;
     totalReferrals: number;
@@ -204,11 +217,39 @@ class UserService {
       earnings: number;
     }>;
   }>> {
-    return this.makeRequest('/referrals');
+    return this.makeStaticResponse({
+      referralCode: staticUserData.referralCode,
+      totalReferrals: 5,
+      totalEarnings: 2500,
+      referrals: [
+        {
+          id: 'ref_1',
+          name: 'Amit Kumar',
+          joinedAt: '2024-01-15T10:00:00Z',
+          status: 'ACTIVE',
+          earnings: 500
+        },
+        {
+          id: 'ref_2',
+          name: 'Priya Sharma',
+          joinedAt: '2024-01-20T14:30:00Z',
+          status: 'ACTIVE',
+          earnings: 750
+        },
+        {
+          id: 'ref_3',
+          name: 'Rahul Singh',
+          joinedAt: '2024-02-01T09:15:00Z',
+          status: 'ACTIVE',
+          earnings: 300
+        }
+      ]
+    });
   }
 
   async generateNewReferralCode(): Promise<ApiResponse<{ referralCode: string }>> {
-    return this.makeRequest<{ referralCode: string }>('/referrals/generate', 'POST');
+    const newCode = 'REF' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    return this.makeStaticResponse({ referralCode: newCode });
   }
 }
 
