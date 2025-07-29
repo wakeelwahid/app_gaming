@@ -45,7 +45,7 @@ const isLargeDevice = SCREEN_WIDTH >= 768;
 
 export default function App() {
   // Auth state
-  const { user, isAuthenticated, login, register, logout, updateProfile } = useAuth();
+  const { user, isAuthenticated, isLoading, login, register, logout, updateProfile } = useAuth();
 
   // Use proper authentication state from useAuth hook
   const [showAuthRequired, setShowAuthRequired] = useState(false);

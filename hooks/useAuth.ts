@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
 import { apiService } from '../services/apiService';
@@ -21,21 +20,21 @@ export const useAuth = () => {
     if (!credentials.phone || credentials.phone.trim() === '') {
       return { valid: false, error: '📱 Mobile number जरूरी है' };
     }
-    
+
     if (!credentials.password || credentials.password.trim() === '') {
       return { valid: false, error: '🔒 Password जरूरी है' };
     }
-    
+
     // Remove any spaces and check if it's numeric
     const cleanPhone = credentials.phone.replace(/\s/g, '');
     if (!/^\d{10}$/.test(cleanPhone)) {
       return { valid: false, error: '📱 10 digit का valid mobile number डालें' };
     }
-    
+
     if (credentials.password.length < 4) {
       return { valid: false, error: '🔒 Password कम से कम 4 characters का होना चाहिए' };
     }
-    
+
     return { valid: true };
   };
 
@@ -51,7 +50,7 @@ export const useAuth = () => {
     if (userData.name.length > 50) {
       return { valid: false, error: 'Username 50 characters से कम होना चाहिए' };
     }
-    
+
     // Mobile validation
     if (!userData.phone || !userData.phone.trim()) {
       return { valid: false, error: 'Mobile number जरूरी है' };
@@ -65,7 +64,7 @@ export const useAuth = () => {
     if (userData.phone.startsWith('0')) {
       return { valid: false, error: 'Mobile number 0 से शुरू नहीं हो सकता' };
     }
-    
+
     // Password validation
     if (!userData.password || !userData.password.trim()) {
       return { valid: false, error: 'Password जरूरी है' };
@@ -79,7 +78,7 @@ export const useAuth = () => {
     if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(userData.password)) {
       return { valid: false, error: 'Password में कम से कम एक letter और एक number होना चाहिए' };
     }
-    
+
     // Confirm Password validation
     if (!userData.confirmPassword || !userData.confirmPassword.trim()) {
       return { valid: false, error: 'Password confirm करना जरूरी है' };
@@ -87,37 +86,37 @@ export const useAuth = () => {
     if (userData.password !== userData.confirmPassword) {
       return { valid: false, error: 'Password और Confirm Password match नहीं कर रहे' };
     }
-    
+
     // Email validation (optional)
     if (userData.email && userData.email.trim() && !userData.email.includes('@')) {
       return { valid: false, error: 'Valid email address डालें' };
     }
-    
+
     // Referral code validation (optional)
     if (userData.referralCode && userData.referralCode.trim() && userData.referralCode.length < 6) {
       return { valid: false, error: 'Referral code कम से कम 6 characters का होना चाहिए' };
     }
-    
+
     return { valid: true };
   };
 
   const login = async (credentials: any) => {
     try {
       setIsLoading(true);
-      
+
       // Validate credentials first
       const validation = validateCredentials(credentials);
       if (!validation.valid) {
         setIsLoading(false);
         return { success: false, error: validation.error };
       }
-      
+
       // Prepare API payload
       const payload = {
         mobile: credentials.phone.trim(),
         password: credentials.password
       };
-      
+
       // Make API call to backend
       const response = await fetch(`${apiService.baseURL}/api/login/`, {
         method: 'POST',
@@ -126,9 +125,9 @@ export const useAuth = () => {
         },
         body: JSON.stringify(payload),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         if (response.status === 401) {
           return { success: false, error: 'Invalid mobile number या password। कृपया check करें।' };
@@ -138,7 +137,7 @@ export const useAuth = () => {
           return { success: false, error: 'Login में problem हुई। कृपया बाद में try करें।' };
         }
       }
-      
+
       // If login successful, create user object
       const loggedInUser = {
         id: data.user?.id || Date.now().toString(),
@@ -151,18 +150,18 @@ export const useAuth = () => {
         isVerified: data.user?.is_verified || false,
         joinedAt: data.user?.created_at || new Date().toISOString()
       };
-      
+
       // Store user data securely
       await AsyncStorage.setItem('user_data', JSON.stringify(loggedInUser));
       await AsyncStorage.setItem('auth_token', data.token || 'token_' + Date.now());
-      
+
       // Update states
       setUser(loggedInUser);
       setIsAuthenticated(true);
-      
+
       console.log('User authenticated successfully:', loggedInUser.name, 'ID:', loggedInUser.id);
       return { success: true, user: loggedInUser };
-      
+
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, error: 'Network error। कृपया अपना internet connection check करें।' };
@@ -174,14 +173,14 @@ export const useAuth = () => {
   const register = async (userData: any) => {
     try {
       setIsLoading(true);
-      
+
       // Validate registration data
       const validation = validateRegistration(userData);
       if (!validation.valid) {
         setIsLoading(false);
         return { success: false, error: validation.error };
       }
-      
+
       // Prepare API payload
       const payload = {
         username: userData.name.trim(),
@@ -191,7 +190,7 @@ export const useAuth = () => {
         confirm_password: userData.confirmPassword,
         referral_code: userData.referralCode?.trim().toUpperCase() || ''
       };
-      
+
       // Make API call to backend
       const response = await fetch(`${apiService.baseURL}/api/register/`, {
         method: 'POST',
@@ -200,9 +199,9 @@ export const useAuth = () => {
         },
         body: JSON.stringify(payload),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         // Handle different types of errors from backend
         if (response.status === 400) {
@@ -222,7 +221,7 @@ export const useAuth = () => {
           return { success: false, error: 'Registration failed. कृपया बाद में try करें।' };
         }
       }
-      
+
       // If registration successful, create user object
       const newUser = {
         id: data.user?.id || Date.now().toString(),
@@ -236,18 +235,18 @@ export const useAuth = () => {
         joinedAt: data.user?.created_at || new Date().toISOString(),
         referredBy: userData.referralCode || null
       };
-      
+
       // Store user data securely
       await AsyncStorage.setItem('user_data', JSON.stringify(newUser));
       await AsyncStorage.setItem('auth_token', data.token || 'token_' + Date.now());
-      
+
       // Update states
       setUser(newUser);
       setIsAuthenticated(true);
-      
+
       console.log('User registered and authenticated successfully:', newUser.name);
       return { success: true, user: newUser };
-      
+
     } catch (error) {
       console.error('Registration error:', error);
       return { success: false, error: 'Network error. कृपया अपना internet connection check करें।' };
@@ -260,12 +259,12 @@ export const useAuth = () => {
     try {
       // Clear all stored data
       await AsyncStorage.multiRemove(['user_data', 'auth_token']);
-      
+
       // Reset all states to initial values
       setUser(null);
       setIsAuthenticated(false);
       setIsLoading(false);
-      
+
       console.log('Logout successful - all states cleared');
       return { success: true };
     } catch (error) {
@@ -279,7 +278,7 @@ export const useAuth = () => {
       if (!isAuthenticated) {
         return { success: false, error: 'User not authenticated' };
       }
-      
+
       const updatedUser = { ...user, ...profileData };
       await AsyncStorage.setItem('user_data', JSON.stringify(updatedUser));
       setUser(updatedUser);
@@ -293,14 +292,14 @@ export const useAuth = () => {
     try {
       const userData = await AsyncStorage.getItem('user_data');
       const authToken = await AsyncStorage.getItem('auth_token');
-      
+
       if (userData && authToken) {
         const user = JSON.parse(userData);
         setUser(user);
         setIsAuthenticated(true);
         return { success: true, user };
       }
-      
+
       return { success: false };
     } catch (error) {
       console.error('Auth check error:', error);
@@ -330,10 +329,11 @@ export const useAuth = () => {
     initAuth();
   }, []);
 
+  const loading = isLoading;
   return {
     user,
     isAuthenticated,
-    isLoading,
+    isLoading: loading,
     login,
     register,
     logout,
